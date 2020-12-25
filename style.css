@@ -49,6 +49,7 @@ a {
   background-color: white;
   min-height: 80%;
   min-width: 30%;
+  flex-wrap: wrap;
 }
 .footer {
   background-color: #ffb6c1;
@@ -376,7 +377,11 @@ input {
   resize: none;
   border: none;
   text-indent: 15px;
+  outline: none;
 }
+/*.conversation-send textarea:focus {
+  border: none;
+}*/
 .his-message {
   display: flex;
   background-color: rgb(197, 197, 197);
@@ -406,11 +411,12 @@ input {
 .maintain {
   display: flex;
   flex-direction: column;
-  justify-content: end;
+  justify-content: flex-end;
   height: 90vh;
 }
 .pic-conversation {
   display: flex;
+  justify-content: center;
 }
 .pic-conversation img {
   height: 50px;
@@ -419,4 +425,75 @@ input {
 }
 hr {
   width: 95vw;
+}
+.courbe-index {
+  background-color: #dcdcdc;
+  margin: 15px 20px;
+  height: fit-content;
+  border-radius: 25px;
+  padding: 15px 15px;
+  width: 100vw;
+}
+.card-index {
+  background-color: rgb(197, 197, 197);
+  border-radius: 15px;
+  padding: 5px 5px;
+  margin: 5px 0;
+}
+.head-card-index {
+  display: flex;
+  align-items: center;
+  margin: 5px 5px;
+}
+.head-card-index img {
+  border-radius: 50%;
+  height: 50px;
+  width: 50px;
+  margin-right: 10px;
+}
+.head-card-img {
+  flex-grow: 0;
+}
+
+.head-card-username {
+  margin-right: 5px;
+}
+.head-card-time {
+  color: grey;
+  flex-grow: 0;
+}
+.card-index-content {
+  text-indent: 10px;
+  margin-left: 5px;
+}
+/*.main-index {
+  display: flex;
+  flex-direction: column;
+  background-color: orange;
+  width: 100vw;
+  overflow: hidden;
+}*/
+.posting-index {
+  margin-top: 15px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding-top: 15px;
+  /*background-color: grey;*/
+  flex-basis: 100%;
+  justify-content: center;
+}
+.posting-index textarea {
+  resize: none;
+  border-radius: 5px;
+  border: solid grey;
+  outline: none;
+  padding: 5px 5px;
+  text-indent: 10px;
+  width: 80vw;
+  margin-bottom: 5px;
+}
+.posting-index button {
+  padding: 10px 30px;
+  cursor: pointer;
 }
