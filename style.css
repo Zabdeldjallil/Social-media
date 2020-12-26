@@ -288,8 +288,14 @@ body {
   display: flex;
   flex-direction: column;
 }
-.selection-groupe textarea,
-input {
+.selection-groupe textarea {
+  outline: none;
+  padding: 15px 15px;
+  margin: 10px 0;
+  border-radius: 5px;
+  resize: none;
+}
+.selection-groupe input {
   outline: none;
   padding: 15px 15px;
   margin: 10px 0;
@@ -496,4 +502,84 @@ hr {
 .posting-index button {
   padding: 10px 30px;
   cursor: pointer;
+}
+.courbe-login {
+  background-color: #dcdcdc;
+  margin: 15px 50px;
+  height: 80vh;
+  border-radius: 25px;
+  padding: 15px 15px;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.login-form {
+  background-color: rgb(169, 169, 169);
+  height: 70vh;
+  width: 45vw;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  border-radius: 15px;
+}
+.login-form input {
+  padding: 5px 10px;
+  margin: 10px 0;
+  width: 25vw;
+}
+.login-form button {
+  padding: 5px 10px;
+  cursor: pointer;
+}
+.login-form form {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 40vw;
+}
+#connect {
+  margin-bottom: 15px;
+
+  padding-bottom: 50px;
+}
+.signup-form {
+  background-color: rgb(169, 169, 169);
+  height: 105vh;
+  width: 50vw;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  border-radius: 15px;
+}
+.signup-form input {
+  padding: 5px 10px;
+  margin: 10px 0;
+  width: 25vw;
+}
+.signup-form button {
+  padding: 5px 10px;
+  cursor: pointer;
+}
+.signup-form form {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 40vw;
+}
+.courbe-signup {
+  background-color: #dcdcdc;
+  margin: 15px 50px;
+  height: 120vh;
+  border-radius: 25px;
+  padding: 15px 15px;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.signup-form label {
+  text-align: center;
 }
