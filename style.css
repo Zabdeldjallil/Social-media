@@ -423,6 +423,7 @@ body {
 .pic-conversation {
   display: flex;
   justify-content: center;
+  align-items: center;
 }
 .pic-conversation img {
   height: 50px;
@@ -582,4 +583,47 @@ hr {
 }
 .signup-form label {
   text-align: center;
+}
+.maintain-chat {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100vw;
+  height: 100vh;
+}
+.body-chat {
+  background-color: #dcdcdc;
+  height: 80vh;
+  width: 85vw;
+  display: flex;
+  flex-direction: column;
+}
+.chat-one {
+  height: 5vh;
+  padding: 15px 10px;
+  background-color: rgb(169, 169, 169);
+  display: flex;
+  align-items: center;
+}
+.chat-one a {
+  color: black;
+  display: flex;
+  align-items: center;
+}
+.chat-one img {
+  height: 40px;
+  width: 40px;
+  margin-right: 10px;
+  border-radius: 50%;
+}
+.chat-one-name {
+  margin-right: 10px;
+}
+.chat-one:hover {
+  opacity: 0.4;
+  cursor: pointer;
+}
+#chat-hr {
+  width: auto;
+  margin: 0;
 }
