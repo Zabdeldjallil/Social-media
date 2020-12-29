@@ -9,7 +9,7 @@ import {Redirect} from "react-router-dom";
 export default function Profil({user}){
    // if(user) console.log(user)
    const history = useHistory();
-    {if(user)  return <>
+    {if(JSON.stringify(user)!=JSON.stringify({}))  return <>
         <div className="parent">
         <div className="header">
             <div className="gauche">

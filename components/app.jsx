@@ -5,10 +5,10 @@ require('babel-polyfill');
 import "../style.css"
 import Signup from "../components/Signup"
 import Login from "../components/Login"
-//import Conversation from "../components/Conversation"
 import Chat from "../components/Chat"
 import Conversation from "../components/Conversation"
 import Profil from "../components/Profil"
+import Home from "../components/Home"
 
 import {
     Route,
@@ -21,20 +21,24 @@ import {
   } from "react-router-dom";
 
   function App(){
-    const [user,setUser]=useState("")
+    const [user,setUser]=useState({})
       return <Switch>
     <Route exact path="/signup">
        <Signup />
      </Route>
-     
+
      <Route exact path="/login" >
        <Login setUser={setUser}/>
      </Route>
-     
+
+     <Route exact path="/home" >
+       <Home user={user}/>
+     </Route>
+
      <Route exact path="/conversation" >
        <Conversation user={user}/>
      </Route>
-     
+
      <Route exact path="/chat" >
        <Chat user={user} />
      </Route>

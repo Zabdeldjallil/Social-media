@@ -627,3 +627,8 @@ hr {
   width: auto;
   margin: 0;
 }
+.wrong-connection{
+  color: red;
+  /*background-color:black;*/
+  text-align: center;
+}

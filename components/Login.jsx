@@ -1,4 +1,4 @@
-import React from 'react'
+import React,{useState}from 'react'
 import {render} from 'react-dom'
 import { useForm } from "react-hook-form";
 import { useHistory } from 'react-router-dom';
@@ -8,10 +8,11 @@ require('babel-polyfill');
 
 
 export default function Login({setUser}){
+    const [error,setErr]=useState("")
     const { register, handleSubmit, watch, errors } = useForm();
     const history = useHistory();
     function onSubmit(data){
-        
+
         const requestOptions = {
             method: "POST",
             allowed_headers: "Content-Type,Authorization",
@@ -25,11 +26,11 @@ export default function Login({setUser}){
           .then((response) => response.json())
           .then((toto) => {
             if (toto.message === "working!") {
-                setUser("toto")
-                history.push("/profil")
+                setUser(toto.connected)
+                history.push("/home")
               //setUser(toto.connected);
             } else setErr(toto.message);
-          });  
+          });
     }
     return <>
         <div className="parent">
@@ -42,6 +43,7 @@ export default function Login({setUser}){
          <div className="courbe-login">
              <div className="login-form">
                  <span id="connect"><b>Signin</b></span>
+                 <p className='wrong-connection'>{error}</p>
                  <form action="/signin" method="post" onSubmit={handleSubmit(onSubmit)}>
                      <label htmlFor="email">Email</label>
                      <input type="email" name="email" id="email"  ref={register({ required: true })}/>
@@ -53,6 +55,6 @@ export default function Login({setUser}){
          </div>
         </div>
     </div>
-    
+
     </>
 }

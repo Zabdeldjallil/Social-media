@@ -6,7 +6,7 @@ import img from "../cutepic.jpeg"
 import {Redirect} from "react-router-dom";
 
 export default function Chat({user}){
-    {if(user)return <>
+    {if(JSON.stringify(user)!=JSON.stringify({})) return <>
          <div className="parent">
         <div className="header">
             <div className="gauche">
