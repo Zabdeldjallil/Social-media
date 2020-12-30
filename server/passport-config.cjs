@@ -1,8 +1,9 @@
 const bcrypt = require("bcrypt");
 const localStrategy = require("passport-local").Strategy;
 const mongoose = require("mongoose");
-const Schema = mongoose.Schema;
-const ObjectId = Schema.ObjectId;
+var UserModel = require("./model.cjs");
+/*const Schema = mongoose.Schema;
+const ObjectId = Schema.ObjectId;*/
 const passport = require("passport");
 (async function () {
   await mongoose.connect("mongodb://localhost/my_database", {
@@ -13,11 +14,11 @@ const passport = require("passport");
   });
 })();
 
-const User = new Schema({
+/*const User = new Schema({
   email: { type: String },
   password: { type: String },
-});
-const UserModel = mongoose.model("User", User);
+});*/
+//const UserModel = mongoose.model("User", User);
 /*UserModel.findOne({ email: "djillou500@gmail.com" }, function (err, docs) {
   if (err) {
     console.log(err);

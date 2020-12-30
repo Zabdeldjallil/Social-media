@@ -2,14 +2,19 @@ import React,{useState}from 'react'
 import {render} from 'react-dom'
 import { useForm } from "react-hook-form";
 import { useHistory } from 'react-router-dom';
+import { yupResolver } from '@hookform/resolvers/yup';
+import * as yup from "yup";
 require('babel-core/register');
 require('babel-polyfill');
 
 
-
+const schema = yup.object().shape({
+    email: yup.string().email().required(),
+    password:yup.string().required(),
+  });
 export default function Login({setUser}){
     const [error,setErr]=useState("")
-    const { register, handleSubmit, watch, errors } = useForm();
+    const { register, handleSubmit, watch, errors } = useForm({ resolver: yupResolver(schema),mode:'onBlur'});
     const history = useHistory();
     function onSubmit(data){
 
@@ -45,10 +50,12 @@ export default function Login({setUser}){
                  <span id="connect"><b>Signin</b></span>
                  <p className='wrong-connection'>{error}</p>
                  <form action="/signin" method="post" onSubmit={handleSubmit(onSubmit)}>
+                      {errors.email ? errors.email.message:""}
                      <label htmlFor="email">Email</label>
-                     <input type="email" name="email" id="email"  ref={register({ required: true })}/>
+                     <input type="email" name="email" id="email"  ref={register}/>
+                     {errors.password ? errors.password.message:""}
                      <label htmlFor="password">Password</label>
-                     <input type="password" name="password" id="password"  ref={register({ required: true })}/>
+                     <input type="password" name="password" id="password"  ref={register}/>
                      <button type="submit">Connect</button>
                 </form>
              </div>
