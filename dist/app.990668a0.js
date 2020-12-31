@@ -52792,6 +52792,8 @@ var _reactDom = require("react-dom");
 
 require("../style.css");
 
+var _reactRouterDom = require("react-router-dom");
+
 var _Signup = _interopRequireDefault(require("../components/Signup"));
 
 var _Login = _interopRequireDefault(require("../components/Login"));
@@ -52804,7 +52806,11 @@ var _Profil = _interopRequireDefault(require("../components/Profil"));
 
 var _cutepic = _interopRequireDefault(require("../cutepic.jpeg"));
 
-var _reactRouterDom = require("react-router-dom");
+var _reactHookForm = require("react-hook-form");
+
+var _yup = require("@hookform/resolvers/yup");
+
+var yup = _interopRequireWildcard(require("yup"));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -52812,16 +52818,76 @@ function _getRequireWildcardCache() { if (typeof WeakMap !== "function") return 
 
 function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } if (obj === null || typeof obj !== "object" && typeof obj !== "function") { return { default: obj }; } var cache = _getRequireWildcardCache(); if (cache && cache.has(obj)) { return cache.get(obj); } var newObj = {}; var hasPropertyDescriptor = Object.defineProperty && Object.getOwnPropertyDescriptor; for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) { var desc = hasPropertyDescriptor ? Object.getOwnPropertyDescriptor(obj, key) : null; if (desc && (desc.get || desc.set)) { Object.defineProperty(newObj, key, desc); } else { newObj[key] = obj[key]; } } } newObj.default = obj; if (cache) { cache.set(obj, newObj); } return newObj; }
 
+function _slicedToArray(arr, i) { return _arrayWithHoles(arr) || _iterableToArrayLimit(arr, i) || _unsupportedIterableToArray(arr, i) || _nonIterableRest(); }
+
+function _nonIterableRest() { throw new TypeError("Invalid attempt to destructure non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
+
+function _unsupportedIterableToArray(o, minLen) { if (!o) return; if (typeof o === "string") return _arrayLikeToArray(o, minLen); var n = Object.prototype.toString.call(o).slice(8, -1); if (n === "Object" && o.constructor) n = o.constructor.name; if (n === "Map" || n === "Set") return Array.from(o); if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _arrayLikeToArray(o, minLen); }
+
+function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len = arr.length; for (var i = 0, arr2 = new Array(len); i < len; i++) { arr2[i] = arr[i]; } return arr2; }
+
+function _iterableToArrayLimit(arr, i) { if (typeof Symbol === "undefined" || !(Symbol.iterator in Object(arr))) return; var _arr = []; var _n = true; var _d = false; var _e = undefined; try { for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i["return"] != null) _i["return"](); } finally { if (_d) throw _e; } } return _arr; }
+
+function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
+
 require('babel-core/register');
 
 require('babel-polyfill');
 
+var schema = yup.object().shape({
+  posting: yup.string().required()
+});
+
 function Home(_ref) {
   var user = _ref.user;
+  var history = (0, _reactRouterDom.useHistory)();
+
+  var _useState = (0, _react.useState)(false),
+      _useState2 = _slicedToArray(_useState, 2),
+      posted = _useState2[0],
+      setPosted = _useState2[1];
+
+  var _useForm = (0, _reactHookForm.useForm)({
+    resolver: (0, _yup.yupResolver)(schema),
+    mode: 'onSubmit'
+  }),
+      register = _useForm.register,
+      handleSubmit = _useForm.handleSubmit,
+      watch = _useForm.watch,
+      errors = _useForm.errors;
+
+  function onSubmit(data) {
+    var requestOptions = {
+      method: "POST",
+      allowed_headers: "Content-Type",
+      credentials: "same-origin",
+      headers: {
+        "Access-Control-Allow-Credentials": "true",
+        "Content-Type": "application/json",
+        "Accept": "application/json"
+      },
+      body: JSON.stringify({
+        data: data,
+        user: user
+      })
+    };
+    console.log(requestOptions.body);
+    fetch("http://localhost:8080/post", requestOptions).then(function (response) {
+      return response.json();
+    }).then(function (toto) {
+      if (toto.message === "working!") {
+        setPosted(function (c) {
+          return !c;
+        }); // history.go()
+        //window.location.reload();
+      } else console.log(toto.message);
+    });
+  }
+
   {
     if (JSON.stringify(user) != JSON.stringify({})) return /*#__PURE__*/_react.default.createElement("div", {
       className: "parent"
-    }, /*#__PURE__*/_react.default.createElement("div", {
+    }, console.log("render"), /*#__PURE__*/_react.default.createElement("div", {
       className: "header"
     }, /*#__PURE__*/_react.default.createElement("div", {
       className: "gauche"
@@ -52859,15 +52925,21 @@ function Home(_ref) {
       className: "main"
     }, /*#__PURE__*/_react.default.createElement("div", {
       className: "posting-index"
+    }, errors.posting ? errors.posting.message : "", /*#__PURE__*/_react.default.createElement("form", {
+      action: "",
+      method: "post",
+      className: "posting-index",
+      onSubmit: handleSubmit(onSubmit)
     }, /*#__PURE__*/_react.default.createElement("textarea", {
       name: "posting",
       id: "posting",
       cols: "30",
       rows: "10",
-      placeholder: "What's good boomer ?"
+      placeholder: "What's good boomer ?",
+      ref: register
     }), /*#__PURE__*/_react.default.createElement("button", {
       type: "submit"
-    }, "Share")), /*#__PURE__*/_react.default.createElement("div", {
+    }, "Share"))), /*#__PURE__*/_react.default.createElement("div", {
       className: "courbe-index"
     }, /*#__PURE__*/_react.default.createElement("div", {
       className: "card-index"
@@ -52923,7 +52995,7 @@ function Home(_ref) {
     });
   }
 }
-},{"react":"node_modules/react/index.js","react-dom":"node_modules/react-dom/index.js","babel-core/register":"node_modules/babel-core/register.js","babel-polyfill":"node_modules/babel-polyfill/lib/index.js","../style.css":"style.css","../components/Signup":"components/Signup.jsx","../components/Login":"components/Login.jsx","../components/Chat":"components/Chat.jsx","../components/Conversation":"components/Conversation.jsx","../components/Profil":"components/Profil.jsx","../cutepic.jpeg":"cutepic.jpeg","react-router-dom":"node_modules/react-router-dom/esm/react-router-dom.js"}],"components/app.jsx":[function(require,module,exports) {
+},{"react":"node_modules/react/index.js","react-dom":"node_modules/react-dom/index.js","babel-core/register":"node_modules/babel-core/register.js","babel-polyfill":"node_modules/babel-polyfill/lib/index.js","../style.css":"style.css","react-router-dom":"node_modules/react-router-dom/esm/react-router-dom.js","../components/Signup":"components/Signup.jsx","../components/Login":"components/Login.jsx","../components/Chat":"components/Chat.jsx","../components/Conversation":"components/Conversation.jsx","../components/Profil":"components/Profil.jsx","../cutepic.jpeg":"cutepic.jpeg","react-hook-form":"node_modules/react-hook-form/dist/index.esm.js","@hookform/resolvers/yup":"node_modules/@hookform/resolvers/yup.js","yup":"node_modules/yup/es/index.js"}],"components/app.jsx":[function(require,module,exports) {
 "use strict";
 
 var _react = _interopRequireWildcard(require("react"));
@@ -53039,7 +53111,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "35883" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "35231" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};
