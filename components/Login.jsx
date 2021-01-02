@@ -4,6 +4,7 @@ import { useForm } from "react-hook-form";
 import { useHistory } from 'react-router-dom';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from "yup";
+import axios from 'axios';
 require('babel-core/register');
 require('babel-polyfill');
 
@@ -17,8 +18,37 @@ export default function Login({setUser}){
     const { register, handleSubmit, watch, errors } = useForm({ resolver: yupResolver(schema),mode:'onBlur'});
     const history = useHistory();
     function onSubmit(data){
+/*axios.post("http://localhost:8080/signin",JSON.stringify(data),{
+  withCredentials:true,
+})
+.then((response)=>{console.log(response)
+  if(response.data.message=="working!") {setUser(toto.connected)
+    history.push("/home")}
+    else setErr(response.data.message)
 
-        const requestOptions = {
+})*/
+axios({
+  method: "POST",
+  url: "http://localhost:8080/signin",
+  data,
+  headers: {
+    "Content-Type": "application/json"
+  },
+  withCredentials:true
+}).then(res => {
+  console.log(res.data.message);
+  if(res.data.message=="working!"){
+    setUser(res.data.connected)
+    history.push("/home")
+  }else{setErr(res.data.message)}
+});
+/*.then((data)=>{
+  if(data.message==="working!"){
+    setUser(toto.connected)
+    history.push("/home")
+  }else setErr(toto.message)
+});*/
+        /*const requestOptions = {
             method: "POST",
             allowed_headers: "Content-Type,Authorization",
             headers: {
@@ -35,7 +65,7 @@ export default function Login({setUser}){
                 history.push("/home")
               //setUser(toto.connected);
             } else setErr(toto.message);
-          });
+          });*/
     }
     return <>
         <div className="parent">

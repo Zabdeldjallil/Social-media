@@ -52441,7 +52441,1807 @@ function Signup() {
     type: "reset"
   }, "Reset"))))))));
 }
-},{"react":"node_modules/react/index.js","react-dom":"node_modules/react-dom/index.js","react-router-dom":"node_modules/react-router-dom/esm/react-router-dom.js","react-hook-form":"node_modules/react-hook-form/dist/index.esm.js","@hookform/resolvers/yup":"node_modules/@hookform/resolvers/yup.js","yup":"node_modules/yup/es/index.js","babel-core/register":"node_modules/babel-core/register.js","babel-polyfill":"node_modules/babel-polyfill/lib/index.js"}],"components/Login.jsx":[function(require,module,exports) {
+},{"react":"node_modules/react/index.js","react-dom":"node_modules/react-dom/index.js","react-router-dom":"node_modules/react-router-dom/esm/react-router-dom.js","react-hook-form":"node_modules/react-hook-form/dist/index.esm.js","@hookform/resolvers/yup":"node_modules/@hookform/resolvers/yup.js","yup":"node_modules/yup/es/index.js","babel-core/register":"node_modules/babel-core/register.js","babel-polyfill":"node_modules/babel-polyfill/lib/index.js"}],"node_modules/axios/lib/helpers/bind.js":[function(require,module,exports) {
+'use strict';
+
+module.exports = function bind(fn, thisArg) {
+  return function wrap() {
+    var args = new Array(arguments.length);
+    for (var i = 0; i < args.length; i++) {
+      args[i] = arguments[i];
+    }
+    return fn.apply(thisArg, args);
+  };
+};
+
+},{}],"node_modules/axios/lib/utils.js":[function(require,module,exports) {
+'use strict';
+
+var bind = require('./helpers/bind');
+
+/*global toString:true*/
+
+// utils is a library of generic helper functions non-specific to axios
+
+var toString = Object.prototype.toString;
+
+/**
+ * Determine if a value is an Array
+ *
+ * @param {Object} val The value to test
+ * @returns {boolean} True if value is an Array, otherwise false
+ */
+function isArray(val) {
+  return toString.call(val) === '[object Array]';
+}
+
+/**
+ * Determine if a value is undefined
+ *
+ * @param {Object} val The value to test
+ * @returns {boolean} True if the value is undefined, otherwise false
+ */
+function isUndefined(val) {
+  return typeof val === 'undefined';
+}
+
+/**
+ * Determine if a value is a Buffer
+ *
+ * @param {Object} val The value to test
+ * @returns {boolean} True if value is a Buffer, otherwise false
+ */
+function isBuffer(val) {
+  return val !== null && !isUndefined(val) && val.constructor !== null && !isUndefined(val.constructor)
+    && typeof val.constructor.isBuffer === 'function' && val.constructor.isBuffer(val);
+}
+
+/**
+ * Determine if a value is an ArrayBuffer
+ *
+ * @param {Object} val The value to test
+ * @returns {boolean} True if value is an ArrayBuffer, otherwise false
+ */
+function isArrayBuffer(val) {
+  return toString.call(val) === '[object ArrayBuffer]';
+}
+
+/**
+ * Determine if a value is a FormData
+ *
+ * @param {Object} val The value to test
+ * @returns {boolean} True if value is an FormData, otherwise false
+ */
+function isFormData(val) {
+  return (typeof FormData !== 'undefined') && (val instanceof FormData);
+}
+
+/**
+ * Determine if a value is a view on an ArrayBuffer
+ *
+ * @param {Object} val The value to test
+ * @returns {boolean} True if value is a view on an ArrayBuffer, otherwise false
+ */
+function isArrayBufferView(val) {
+  var result;
+  if ((typeof ArrayBuffer !== 'undefined') && (ArrayBuffer.isView)) {
+    result = ArrayBuffer.isView(val);
+  } else {
+    result = (val) && (val.buffer) && (val.buffer instanceof ArrayBuffer);
+  }
+  return result;
+}
+
+/**
+ * Determine if a value is a String
+ *
+ * @param {Object} val The value to test
+ * @returns {boolean} True if value is a String, otherwise false
+ */
+function isString(val) {
+  return typeof val === 'string';
+}
+
+/**
+ * Determine if a value is a Number
+ *
+ * @param {Object} val The value to test
+ * @returns {boolean} True if value is a Number, otherwise false
+ */
+function isNumber(val) {
+  return typeof val === 'number';
+}
+
+/**
+ * Determine if a value is an Object
+ *
+ * @param {Object} val The value to test
+ * @returns {boolean} True if value is an Object, otherwise false
+ */
+function isObject(val) {
+  return val !== null && typeof val === 'object';
+}
+
+/**
+ * Determine if a value is a plain Object
+ *
+ * @param {Object} val The value to test
+ * @return {boolean} True if value is a plain Object, otherwise false
+ */
+function isPlainObject(val) {
+  if (toString.call(val) !== '[object Object]') {
+    return false;
+  }
+
+  var prototype = Object.getPrototypeOf(val);
+  return prototype === null || prototype === Object.prototype;
+}
+
+/**
+ * Determine if a value is a Date
+ *
+ * @param {Object} val The value to test
+ * @returns {boolean} True if value is a Date, otherwise false
+ */
+function isDate(val) {
+  return toString.call(val) === '[object Date]';
+}
+
+/**
+ * Determine if a value is a File
+ *
+ * @param {Object} val The value to test
+ * @returns {boolean} True if value is a File, otherwise false
+ */
+function isFile(val) {
+  return toString.call(val) === '[object File]';
+}
+
+/**
+ * Determine if a value is a Blob
+ *
+ * @param {Object} val The value to test
+ * @returns {boolean} True if value is a Blob, otherwise false
+ */
+function isBlob(val) {
+  return toString.call(val) === '[object Blob]';
+}
+
+/**
+ * Determine if a value is a Function
+ *
+ * @param {Object} val The value to test
+ * @returns {boolean} True if value is a Function, otherwise false
+ */
+function isFunction(val) {
+  return toString.call(val) === '[object Function]';
+}
+
+/**
+ * Determine if a value is a Stream
+ *
+ * @param {Object} val The value to test
+ * @returns {boolean} True if value is a Stream, otherwise false
+ */
+function isStream(val) {
+  return isObject(val) && isFunction(val.pipe);
+}
+
+/**
+ * Determine if a value is a URLSearchParams object
+ *
+ * @param {Object} val The value to test
+ * @returns {boolean} True if value is a URLSearchParams object, otherwise false
+ */
+function isURLSearchParams(val) {
+  return typeof URLSearchParams !== 'undefined' && val instanceof URLSearchParams;
+}
+
+/**
+ * Trim excess whitespace off the beginning and end of a string
+ *
+ * @param {String} str The String to trim
+ * @returns {String} The String freed of excess whitespace
+ */
+function trim(str) {
+  return str.replace(/^\s*/, '').replace(/\s*$/, '');
+}
+
+/**
+ * Determine if we're running in a standard browser environment
+ *
+ * This allows axios to run in a web worker, and react-native.
+ * Both environments support XMLHttpRequest, but not fully standard globals.
+ *
+ * web workers:
+ *  typeof window -> undefined
+ *  typeof document -> undefined
+ *
+ * react-native:
+ *  navigator.product -> 'ReactNative'
+ * nativescript
+ *  navigator.product -> 'NativeScript' or 'NS'
+ */
+function isStandardBrowserEnv() {
+  if (typeof navigator !== 'undefined' && (navigator.product === 'ReactNative' ||
+                                           navigator.product === 'NativeScript' ||
+                                           navigator.product === 'NS')) {
+    return false;
+  }
+  return (
+    typeof window !== 'undefined' &&
+    typeof document !== 'undefined'
+  );
+}
+
+/**
+ * Iterate over an Array or an Object invoking a function for each item.
+ *
+ * If `obj` is an Array callback will be called passing
+ * the value, index, and complete array for each item.
+ *
+ * If 'obj' is an Object callback will be called passing
+ * the value, key, and complete object for each property.
+ *
+ * @param {Object|Array} obj The object to iterate
+ * @param {Function} fn The callback to invoke for each item
+ */
+function forEach(obj, fn) {
+  // Don't bother if no value provided
+  if (obj === null || typeof obj === 'undefined') {
+    return;
+  }
+
+  // Force an array if not already something iterable
+  if (typeof obj !== 'object') {
+    /*eslint no-param-reassign:0*/
+    obj = [obj];
+  }
+
+  if (isArray(obj)) {
+    // Iterate over array values
+    for (var i = 0, l = obj.length; i < l; i++) {
+      fn.call(null, obj[i], i, obj);
+    }
+  } else {
+    // Iterate over object keys
+    for (var key in obj) {
+      if (Object.prototype.hasOwnProperty.call(obj, key)) {
+        fn.call(null, obj[key], key, obj);
+      }
+    }
+  }
+}
+
+/**
+ * Accepts varargs expecting each argument to be an object, then
+ * immutably merges the properties of each object and returns result.
+ *
+ * When multiple objects contain the same key the later object in
+ * the arguments list will take precedence.
+ *
+ * Example:
+ *
+ * ```js
+ * var result = merge({foo: 123}, {foo: 456});
+ * console.log(result.foo); // outputs 456
+ * ```
+ *
+ * @param {Object} obj1 Object to merge
+ * @returns {Object} Result of all merge properties
+ */
+function merge(/* obj1, obj2, obj3, ... */) {
+  var result = {};
+  function assignValue(val, key) {
+    if (isPlainObject(result[key]) && isPlainObject(val)) {
+      result[key] = merge(result[key], val);
+    } else if (isPlainObject(val)) {
+      result[key] = merge({}, val);
+    } else if (isArray(val)) {
+      result[key] = val.slice();
+    } else {
+      result[key] = val;
+    }
+  }
+
+  for (var i = 0, l = arguments.length; i < l; i++) {
+    forEach(arguments[i], assignValue);
+  }
+  return result;
+}
+
+/**
+ * Extends object a by mutably adding to it the properties of object b.
+ *
+ * @param {Object} a The object to be extended
+ * @param {Object} b The object to copy properties from
+ * @param {Object} thisArg The object to bind function to
+ * @return {Object} The resulting value of object a
+ */
+function extend(a, b, thisArg) {
+  forEach(b, function assignValue(val, key) {
+    if (thisArg && typeof val === 'function') {
+      a[key] = bind(val, thisArg);
+    } else {
+      a[key] = val;
+    }
+  });
+  return a;
+}
+
+/**
+ * Remove byte order marker. This catches EF BB BF (the UTF-8 BOM)
+ *
+ * @param {string} content with BOM
+ * @return {string} content value without BOM
+ */
+function stripBOM(content) {
+  if (content.charCodeAt(0) === 0xFEFF) {
+    content = content.slice(1);
+  }
+  return content;
+}
+
+module.exports = {
+  isArray: isArray,
+  isArrayBuffer: isArrayBuffer,
+  isBuffer: isBuffer,
+  isFormData: isFormData,
+  isArrayBufferView: isArrayBufferView,
+  isString: isString,
+  isNumber: isNumber,
+  isObject: isObject,
+  isPlainObject: isPlainObject,
+  isUndefined: isUndefined,
+  isDate: isDate,
+  isFile: isFile,
+  isBlob: isBlob,
+  isFunction: isFunction,
+  isStream: isStream,
+  isURLSearchParams: isURLSearchParams,
+  isStandardBrowserEnv: isStandardBrowserEnv,
+  forEach: forEach,
+  merge: merge,
+  extend: extend,
+  trim: trim,
+  stripBOM: stripBOM
+};
+
+},{"./helpers/bind":"node_modules/axios/lib/helpers/bind.js"}],"node_modules/axios/lib/helpers/buildURL.js":[function(require,module,exports) {
+'use strict';
+
+var utils = require('./../utils');
+
+function encode(val) {
+  return encodeURIComponent(val).
+    replace(/%3A/gi, ':').
+    replace(/%24/g, '$').
+    replace(/%2C/gi, ',').
+    replace(/%20/g, '+').
+    replace(/%5B/gi, '[').
+    replace(/%5D/gi, ']');
+}
+
+/**
+ * Build a URL by appending params to the end
+ *
+ * @param {string} url The base of the url (e.g., http://www.google.com)
+ * @param {object} [params] The params to be appended
+ * @returns {string} The formatted url
+ */
+module.exports = function buildURL(url, params, paramsSerializer) {
+  /*eslint no-param-reassign:0*/
+  if (!params) {
+    return url;
+  }
+
+  var serializedParams;
+  if (paramsSerializer) {
+    serializedParams = paramsSerializer(params);
+  } else if (utils.isURLSearchParams(params)) {
+    serializedParams = params.toString();
+  } else {
+    var parts = [];
+
+    utils.forEach(params, function serialize(val, key) {
+      if (val === null || typeof val === 'undefined') {
+        return;
+      }
+
+      if (utils.isArray(val)) {
+        key = key + '[]';
+      } else {
+        val = [val];
+      }
+
+      utils.forEach(val, function parseValue(v) {
+        if (utils.isDate(v)) {
+          v = v.toISOString();
+        } else if (utils.isObject(v)) {
+          v = JSON.stringify(v);
+        }
+        parts.push(encode(key) + '=' + encode(v));
+      });
+    });
+
+    serializedParams = parts.join('&');
+  }
+
+  if (serializedParams) {
+    var hashmarkIndex = url.indexOf('#');
+    if (hashmarkIndex !== -1) {
+      url = url.slice(0, hashmarkIndex);
+    }
+
+    url += (url.indexOf('?') === -1 ? '?' : '&') + serializedParams;
+  }
+
+  return url;
+};
+
+},{"./../utils":"node_modules/axios/lib/utils.js"}],"node_modules/axios/lib/core/InterceptorManager.js":[function(require,module,exports) {
+'use strict';
+
+var utils = require('./../utils');
+
+function InterceptorManager() {
+  this.handlers = [];
+}
+
+/**
+ * Add a new interceptor to the stack
+ *
+ * @param {Function} fulfilled The function to handle `then` for a `Promise`
+ * @param {Function} rejected The function to handle `reject` for a `Promise`
+ *
+ * @return {Number} An ID used to remove interceptor later
+ */
+InterceptorManager.prototype.use = function use(fulfilled, rejected) {
+  this.handlers.push({
+    fulfilled: fulfilled,
+    rejected: rejected
+  });
+  return this.handlers.length - 1;
+};
+
+/**
+ * Remove an interceptor from the stack
+ *
+ * @param {Number} id The ID that was returned by `use`
+ */
+InterceptorManager.prototype.eject = function eject(id) {
+  if (this.handlers[id]) {
+    this.handlers[id] = null;
+  }
+};
+
+/**
+ * Iterate over all the registered interceptors
+ *
+ * This method is particularly useful for skipping over any
+ * interceptors that may have become `null` calling `eject`.
+ *
+ * @param {Function} fn The function to call for each interceptor
+ */
+InterceptorManager.prototype.forEach = function forEach(fn) {
+  utils.forEach(this.handlers, function forEachHandler(h) {
+    if (h !== null) {
+      fn(h);
+    }
+  });
+};
+
+module.exports = InterceptorManager;
+
+},{"./../utils":"node_modules/axios/lib/utils.js"}],"node_modules/axios/lib/core/transformData.js":[function(require,module,exports) {
+'use strict';
+
+var utils = require('./../utils');
+
+/**
+ * Transform the data for a request or a response
+ *
+ * @param {Object|String} data The data to be transformed
+ * @param {Array} headers The headers for the request or response
+ * @param {Array|Function} fns A single function or Array of functions
+ * @returns {*} The resulting transformed data
+ */
+module.exports = function transformData(data, headers, fns) {
+  /*eslint no-param-reassign:0*/
+  utils.forEach(fns, function transform(fn) {
+    data = fn(data, headers);
+  });
+
+  return data;
+};
+
+},{"./../utils":"node_modules/axios/lib/utils.js"}],"node_modules/axios/lib/cancel/isCancel.js":[function(require,module,exports) {
+'use strict';
+
+module.exports = function isCancel(value) {
+  return !!(value && value.__CANCEL__);
+};
+
+},{}],"node_modules/axios/lib/helpers/normalizeHeaderName.js":[function(require,module,exports) {
+'use strict';
+
+var utils = require('../utils');
+
+module.exports = function normalizeHeaderName(headers, normalizedName) {
+  utils.forEach(headers, function processHeader(value, name) {
+    if (name !== normalizedName && name.toUpperCase() === normalizedName.toUpperCase()) {
+      headers[normalizedName] = value;
+      delete headers[name];
+    }
+  });
+};
+
+},{"../utils":"node_modules/axios/lib/utils.js"}],"node_modules/axios/lib/core/enhanceError.js":[function(require,module,exports) {
+'use strict';
+
+/**
+ * Update an Error with the specified config, error code, and response.
+ *
+ * @param {Error} error The error to update.
+ * @param {Object} config The config.
+ * @param {string} [code] The error code (for example, 'ECONNABORTED').
+ * @param {Object} [request] The request.
+ * @param {Object} [response] The response.
+ * @returns {Error} The error.
+ */
+module.exports = function enhanceError(error, config, code, request, response) {
+  error.config = config;
+  if (code) {
+    error.code = code;
+  }
+
+  error.request = request;
+  error.response = response;
+  error.isAxiosError = true;
+
+  error.toJSON = function toJSON() {
+    return {
+      // Standard
+      message: this.message,
+      name: this.name,
+      // Microsoft
+      description: this.description,
+      number: this.number,
+      // Mozilla
+      fileName: this.fileName,
+      lineNumber: this.lineNumber,
+      columnNumber: this.columnNumber,
+      stack: this.stack,
+      // Axios
+      config: this.config,
+      code: this.code
+    };
+  };
+  return error;
+};
+
+},{}],"node_modules/axios/lib/core/createError.js":[function(require,module,exports) {
+'use strict';
+
+var enhanceError = require('./enhanceError');
+
+/**
+ * Create an Error with the specified message, config, error code, request and response.
+ *
+ * @param {string} message The error message.
+ * @param {Object} config The config.
+ * @param {string} [code] The error code (for example, 'ECONNABORTED').
+ * @param {Object} [request] The request.
+ * @param {Object} [response] The response.
+ * @returns {Error} The created error.
+ */
+module.exports = function createError(message, config, code, request, response) {
+  var error = new Error(message);
+  return enhanceError(error, config, code, request, response);
+};
+
+},{"./enhanceError":"node_modules/axios/lib/core/enhanceError.js"}],"node_modules/axios/lib/core/settle.js":[function(require,module,exports) {
+'use strict';
+
+var createError = require('./createError');
+
+/**
+ * Resolve or reject a Promise based on response status.
+ *
+ * @param {Function} resolve A function that resolves the promise.
+ * @param {Function} reject A function that rejects the promise.
+ * @param {object} response The response.
+ */
+module.exports = function settle(resolve, reject, response) {
+  var validateStatus = response.config.validateStatus;
+  if (!response.status || !validateStatus || validateStatus(response.status)) {
+    resolve(response);
+  } else {
+    reject(createError(
+      'Request failed with status code ' + response.status,
+      response.config,
+      null,
+      response.request,
+      response
+    ));
+  }
+};
+
+},{"./createError":"node_modules/axios/lib/core/createError.js"}],"node_modules/axios/lib/helpers/cookies.js":[function(require,module,exports) {
+'use strict';
+
+var utils = require('./../utils');
+
+module.exports = (
+  utils.isStandardBrowserEnv() ?
+
+  // Standard browser envs support document.cookie
+    (function standardBrowserEnv() {
+      return {
+        write: function write(name, value, expires, path, domain, secure) {
+          var cookie = [];
+          cookie.push(name + '=' + encodeURIComponent(value));
+
+          if (utils.isNumber(expires)) {
+            cookie.push('expires=' + new Date(expires).toGMTString());
+          }
+
+          if (utils.isString(path)) {
+            cookie.push('path=' + path);
+          }
+
+          if (utils.isString(domain)) {
+            cookie.push('domain=' + domain);
+          }
+
+          if (secure === true) {
+            cookie.push('secure');
+          }
+
+          document.cookie = cookie.join('; ');
+        },
+
+        read: function read(name) {
+          var match = document.cookie.match(new RegExp('(^|;\\s*)(' + name + ')=([^;]*)'));
+          return (match ? decodeURIComponent(match[3]) : null);
+        },
+
+        remove: function remove(name) {
+          this.write(name, '', Date.now() - 86400000);
+        }
+      };
+    })() :
+
+  // Non standard browser env (web workers, react-native) lack needed support.
+    (function nonStandardBrowserEnv() {
+      return {
+        write: function write() {},
+        read: function read() { return null; },
+        remove: function remove() {}
+      };
+    })()
+);
+
+},{"./../utils":"node_modules/axios/lib/utils.js"}],"node_modules/axios/lib/helpers/isAbsoluteURL.js":[function(require,module,exports) {
+'use strict';
+
+/**
+ * Determines whether the specified URL is absolute
+ *
+ * @param {string} url The URL to test
+ * @returns {boolean} True if the specified URL is absolute, otherwise false
+ */
+module.exports = function isAbsoluteURL(url) {
+  // A URL is considered absolute if it begins with "<scheme>://" or "//" (protocol-relative URL).
+  // RFC 3986 defines scheme name as a sequence of characters beginning with a letter and followed
+  // by any combination of letters, digits, plus, period, or hyphen.
+  return /^([a-z][a-z\d\+\-\.]*:)?\/\//i.test(url);
+};
+
+},{}],"node_modules/axios/lib/helpers/combineURLs.js":[function(require,module,exports) {
+'use strict';
+
+/**
+ * Creates a new URL by combining the specified URLs
+ *
+ * @param {string} baseURL The base URL
+ * @param {string} relativeURL The relative URL
+ * @returns {string} The combined URL
+ */
+module.exports = function combineURLs(baseURL, relativeURL) {
+  return relativeURL
+    ? baseURL.replace(/\/+$/, '') + '/' + relativeURL.replace(/^\/+/, '')
+    : baseURL;
+};
+
+},{}],"node_modules/axios/lib/core/buildFullPath.js":[function(require,module,exports) {
+'use strict';
+
+var isAbsoluteURL = require('../helpers/isAbsoluteURL');
+var combineURLs = require('../helpers/combineURLs');
+
+/**
+ * Creates a new URL by combining the baseURL with the requestedURL,
+ * only when the requestedURL is not already an absolute URL.
+ * If the requestURL is absolute, this function returns the requestedURL untouched.
+ *
+ * @param {string} baseURL The base URL
+ * @param {string} requestedURL Absolute or relative URL to combine
+ * @returns {string} The combined full path
+ */
+module.exports = function buildFullPath(baseURL, requestedURL) {
+  if (baseURL && !isAbsoluteURL(requestedURL)) {
+    return combineURLs(baseURL, requestedURL);
+  }
+  return requestedURL;
+};
+
+},{"../helpers/isAbsoluteURL":"node_modules/axios/lib/helpers/isAbsoluteURL.js","../helpers/combineURLs":"node_modules/axios/lib/helpers/combineURLs.js"}],"node_modules/axios/lib/helpers/parseHeaders.js":[function(require,module,exports) {
+'use strict';
+
+var utils = require('./../utils');
+
+// Headers whose duplicates are ignored by node
+// c.f. https://nodejs.org/api/http.html#http_message_headers
+var ignoreDuplicateOf = [
+  'age', 'authorization', 'content-length', 'content-type', 'etag',
+  'expires', 'from', 'host', 'if-modified-since', 'if-unmodified-since',
+  'last-modified', 'location', 'max-forwards', 'proxy-authorization',
+  'referer', 'retry-after', 'user-agent'
+];
+
+/**
+ * Parse headers into an object
+ *
+ * ```
+ * Date: Wed, 27 Aug 2014 08:58:49 GMT
+ * Content-Type: application/json
+ * Connection: keep-alive
+ * Transfer-Encoding: chunked
+ * ```
+ *
+ * @param {String} headers Headers needing to be parsed
+ * @returns {Object} Headers parsed into an object
+ */
+module.exports = function parseHeaders(headers) {
+  var parsed = {};
+  var key;
+  var val;
+  var i;
+
+  if (!headers) { return parsed; }
+
+  utils.forEach(headers.split('\n'), function parser(line) {
+    i = line.indexOf(':');
+    key = utils.trim(line.substr(0, i)).toLowerCase();
+    val = utils.trim(line.substr(i + 1));
+
+    if (key) {
+      if (parsed[key] && ignoreDuplicateOf.indexOf(key) >= 0) {
+        return;
+      }
+      if (key === 'set-cookie') {
+        parsed[key] = (parsed[key] ? parsed[key] : []).concat([val]);
+      } else {
+        parsed[key] = parsed[key] ? parsed[key] + ', ' + val : val;
+      }
+    }
+  });
+
+  return parsed;
+};
+
+},{"./../utils":"node_modules/axios/lib/utils.js"}],"node_modules/axios/lib/helpers/isURLSameOrigin.js":[function(require,module,exports) {
+'use strict';
+
+var utils = require('./../utils');
+
+module.exports = (
+  utils.isStandardBrowserEnv() ?
+
+  // Standard browser envs have full support of the APIs needed to test
+  // whether the request URL is of the same origin as current location.
+    (function standardBrowserEnv() {
+      var msie = /(msie|trident)/i.test(navigator.userAgent);
+      var urlParsingNode = document.createElement('a');
+      var originURL;
+
+      /**
+    * Parse a URL to discover it's components
+    *
+    * @param {String} url The URL to be parsed
+    * @returns {Object}
+    */
+      function resolveURL(url) {
+        var href = url;
+
+        if (msie) {
+        // IE needs attribute set twice to normalize properties
+          urlParsingNode.setAttribute('href', href);
+          href = urlParsingNode.href;
+        }
+
+        urlParsingNode.setAttribute('href', href);
+
+        // urlParsingNode provides the UrlUtils interface - http://url.spec.whatwg.org/#urlutils
+        return {
+          href: urlParsingNode.href,
+          protocol: urlParsingNode.protocol ? urlParsingNode.protocol.replace(/:$/, '') : '',
+          host: urlParsingNode.host,
+          search: urlParsingNode.search ? urlParsingNode.search.replace(/^\?/, '') : '',
+          hash: urlParsingNode.hash ? urlParsingNode.hash.replace(/^#/, '') : '',
+          hostname: urlParsingNode.hostname,
+          port: urlParsingNode.port,
+          pathname: (urlParsingNode.pathname.charAt(0) === '/') ?
+            urlParsingNode.pathname :
+            '/' + urlParsingNode.pathname
+        };
+      }
+
+      originURL = resolveURL(window.location.href);
+
+      /**
+    * Determine if a URL shares the same origin as the current location
+    *
+    * @param {String} requestURL The URL to test
+    * @returns {boolean} True if URL shares the same origin, otherwise false
+    */
+      return function isURLSameOrigin(requestURL) {
+        var parsed = (utils.isString(requestURL)) ? resolveURL(requestURL) : requestURL;
+        return (parsed.protocol === originURL.protocol &&
+            parsed.host === originURL.host);
+      };
+    })() :
+
+  // Non standard browser envs (web workers, react-native) lack needed support.
+    (function nonStandardBrowserEnv() {
+      return function isURLSameOrigin() {
+        return true;
+      };
+    })()
+);
+
+},{"./../utils":"node_modules/axios/lib/utils.js"}],"node_modules/axios/lib/adapters/xhr.js":[function(require,module,exports) {
+'use strict';
+
+var utils = require('./../utils');
+var settle = require('./../core/settle');
+var cookies = require('./../helpers/cookies');
+var buildURL = require('./../helpers/buildURL');
+var buildFullPath = require('../core/buildFullPath');
+var parseHeaders = require('./../helpers/parseHeaders');
+var isURLSameOrigin = require('./../helpers/isURLSameOrigin');
+var createError = require('../core/createError');
+
+module.exports = function xhrAdapter(config) {
+  return new Promise(function dispatchXhrRequest(resolve, reject) {
+    var requestData = config.data;
+    var requestHeaders = config.headers;
+
+    if (utils.isFormData(requestData)) {
+      delete requestHeaders['Content-Type']; // Let the browser set it
+    }
+
+    var request = new XMLHttpRequest();
+
+    // HTTP basic authentication
+    if (config.auth) {
+      var username = config.auth.username || '';
+      var password = config.auth.password ? unescape(encodeURIComponent(config.auth.password)) : '';
+      requestHeaders.Authorization = 'Basic ' + btoa(username + ':' + password);
+    }
+
+    var fullPath = buildFullPath(config.baseURL, config.url);
+    request.open(config.method.toUpperCase(), buildURL(fullPath, config.params, config.paramsSerializer), true);
+
+    // Set the request timeout in MS
+    request.timeout = config.timeout;
+
+    // Listen for ready state
+    request.onreadystatechange = function handleLoad() {
+      if (!request || request.readyState !== 4) {
+        return;
+      }
+
+      // The request errored out and we didn't get a response, this will be
+      // handled by onerror instead
+      // With one exception: request that using file: protocol, most browsers
+      // will return status as 0 even though it's a successful request
+      if (request.status === 0 && !(request.responseURL && request.responseURL.indexOf('file:') === 0)) {
+        return;
+      }
+
+      // Prepare the response
+      var responseHeaders = 'getAllResponseHeaders' in request ? parseHeaders(request.getAllResponseHeaders()) : null;
+      var responseData = !config.responseType || config.responseType === 'text' ? request.responseText : request.response;
+      var response = {
+        data: responseData,
+        status: request.status,
+        statusText: request.statusText,
+        headers: responseHeaders,
+        config: config,
+        request: request
+      };
+
+      settle(resolve, reject, response);
+
+      // Clean up request
+      request = null;
+    };
+
+    // Handle browser request cancellation (as opposed to a manual cancellation)
+    request.onabort = function handleAbort() {
+      if (!request) {
+        return;
+      }
+
+      reject(createError('Request aborted', config, 'ECONNABORTED', request));
+
+      // Clean up request
+      request = null;
+    };
+
+    // Handle low level network errors
+    request.onerror = function handleError() {
+      // Real errors are hidden from us by the browser
+      // onerror should only fire if it's a network error
+      reject(createError('Network Error', config, null, request));
+
+      // Clean up request
+      request = null;
+    };
+
+    // Handle timeout
+    request.ontimeout = function handleTimeout() {
+      var timeoutErrorMessage = 'timeout of ' + config.timeout + 'ms exceeded';
+      if (config.timeoutErrorMessage) {
+        timeoutErrorMessage = config.timeoutErrorMessage;
+      }
+      reject(createError(timeoutErrorMessage, config, 'ECONNABORTED',
+        request));
+
+      // Clean up request
+      request = null;
+    };
+
+    // Add xsrf header
+    // This is only done if running in a standard browser environment.
+    // Specifically not if we're in a web worker, or react-native.
+    if (utils.isStandardBrowserEnv()) {
+      // Add xsrf header
+      var xsrfValue = (config.withCredentials || isURLSameOrigin(fullPath)) && config.xsrfCookieName ?
+        cookies.read(config.xsrfCookieName) :
+        undefined;
+
+      if (xsrfValue) {
+        requestHeaders[config.xsrfHeaderName] = xsrfValue;
+      }
+    }
+
+    // Add headers to the request
+    if ('setRequestHeader' in request) {
+      utils.forEach(requestHeaders, function setRequestHeader(val, key) {
+        if (typeof requestData === 'undefined' && key.toLowerCase() === 'content-type') {
+          // Remove Content-Type if data is undefined
+          delete requestHeaders[key];
+        } else {
+          // Otherwise add header to the request
+          request.setRequestHeader(key, val);
+        }
+      });
+    }
+
+    // Add withCredentials to request if needed
+    if (!utils.isUndefined(config.withCredentials)) {
+      request.withCredentials = !!config.withCredentials;
+    }
+
+    // Add responseType to request if needed
+    if (config.responseType) {
+      try {
+        request.responseType = config.responseType;
+      } catch (e) {
+        // Expected DOMException thrown by browsers not compatible XMLHttpRequest Level 2.
+        // But, this can be suppressed for 'json' type as it can be parsed by default 'transformResponse' function.
+        if (config.responseType !== 'json') {
+          throw e;
+        }
+      }
+    }
+
+    // Handle progress if needed
+    if (typeof config.onDownloadProgress === 'function') {
+      request.addEventListener('progress', config.onDownloadProgress);
+    }
+
+    // Not all browsers support upload events
+    if (typeof config.onUploadProgress === 'function' && request.upload) {
+      request.upload.addEventListener('progress', config.onUploadProgress);
+    }
+
+    if (config.cancelToken) {
+      // Handle cancellation
+      config.cancelToken.promise.then(function onCanceled(cancel) {
+        if (!request) {
+          return;
+        }
+
+        request.abort();
+        reject(cancel);
+        // Clean up request
+        request = null;
+      });
+    }
+
+    if (!requestData) {
+      requestData = null;
+    }
+
+    // Send the request
+    request.send(requestData);
+  });
+};
+
+},{"./../utils":"node_modules/axios/lib/utils.js","./../core/settle":"node_modules/axios/lib/core/settle.js","./../helpers/cookies":"node_modules/axios/lib/helpers/cookies.js","./../helpers/buildURL":"node_modules/axios/lib/helpers/buildURL.js","../core/buildFullPath":"node_modules/axios/lib/core/buildFullPath.js","./../helpers/parseHeaders":"node_modules/axios/lib/helpers/parseHeaders.js","./../helpers/isURLSameOrigin":"node_modules/axios/lib/helpers/isURLSameOrigin.js","../core/createError":"node_modules/axios/lib/core/createError.js"}],"node_modules/process/browser.js":[function(require,module,exports) {
+
+// shim for using process in browser
+var process = module.exports = {}; // cached from whatever global is present so that test runners that stub it
+// don't break things.  But we need to wrap it in a try catch in case it is
+// wrapped in strict mode code which doesn't define any globals.  It's inside a
+// function because try/catches deoptimize in certain engines.
+
+var cachedSetTimeout;
+var cachedClearTimeout;
+
+function defaultSetTimout() {
+  throw new Error('setTimeout has not been defined');
+}
+
+function defaultClearTimeout() {
+  throw new Error('clearTimeout has not been defined');
+}
+
+(function () {
+  try {
+    if (typeof setTimeout === 'function') {
+      cachedSetTimeout = setTimeout;
+    } else {
+      cachedSetTimeout = defaultSetTimout;
+    }
+  } catch (e) {
+    cachedSetTimeout = defaultSetTimout;
+  }
+
+  try {
+    if (typeof clearTimeout === 'function') {
+      cachedClearTimeout = clearTimeout;
+    } else {
+      cachedClearTimeout = defaultClearTimeout;
+    }
+  } catch (e) {
+    cachedClearTimeout = defaultClearTimeout;
+  }
+})();
+
+function runTimeout(fun) {
+  if (cachedSetTimeout === setTimeout) {
+    //normal enviroments in sane situations
+    return setTimeout(fun, 0);
+  } // if setTimeout wasn't available but was latter defined
+
+
+  if ((cachedSetTimeout === defaultSetTimout || !cachedSetTimeout) && setTimeout) {
+    cachedSetTimeout = setTimeout;
+    return setTimeout(fun, 0);
+  }
+
+  try {
+    // when when somebody has screwed with setTimeout but no I.E. maddness
+    return cachedSetTimeout(fun, 0);
+  } catch (e) {
+    try {
+      // When we are in I.E. but the script has been evaled so I.E. doesn't trust the global object when called normally
+      return cachedSetTimeout.call(null, fun, 0);
+    } catch (e) {
+      // same as above but when it's a version of I.E. that must have the global object for 'this', hopfully our context correct otherwise it will throw a global error
+      return cachedSetTimeout.call(this, fun, 0);
+    }
+  }
+}
+
+function runClearTimeout(marker) {
+  if (cachedClearTimeout === clearTimeout) {
+    //normal enviroments in sane situations
+    return clearTimeout(marker);
+  } // if clearTimeout wasn't available but was latter defined
+
+
+  if ((cachedClearTimeout === defaultClearTimeout || !cachedClearTimeout) && clearTimeout) {
+    cachedClearTimeout = clearTimeout;
+    return clearTimeout(marker);
+  }
+
+  try {
+    // when when somebody has screwed with setTimeout but no I.E. maddness
+    return cachedClearTimeout(marker);
+  } catch (e) {
+    try {
+      // When we are in I.E. but the script has been evaled so I.E. doesn't  trust the global object when called normally
+      return cachedClearTimeout.call(null, marker);
+    } catch (e) {
+      // same as above but when it's a version of I.E. that must have the global object for 'this', hopfully our context correct otherwise it will throw a global error.
+      // Some versions of I.E. have different rules for clearTimeout vs setTimeout
+      return cachedClearTimeout.call(this, marker);
+    }
+  }
+}
+
+var queue = [];
+var draining = false;
+var currentQueue;
+var queueIndex = -1;
+
+function cleanUpNextTick() {
+  if (!draining || !currentQueue) {
+    return;
+  }
+
+  draining = false;
+
+  if (currentQueue.length) {
+    queue = currentQueue.concat(queue);
+  } else {
+    queueIndex = -1;
+  }
+
+  if (queue.length) {
+    drainQueue();
+  }
+}
+
+function drainQueue() {
+  if (draining) {
+    return;
+  }
+
+  var timeout = runTimeout(cleanUpNextTick);
+  draining = true;
+  var len = queue.length;
+
+  while (len) {
+    currentQueue = queue;
+    queue = [];
+
+    while (++queueIndex < len) {
+      if (currentQueue) {
+        currentQueue[queueIndex].run();
+      }
+    }
+
+    queueIndex = -1;
+    len = queue.length;
+  }
+
+  currentQueue = null;
+  draining = false;
+  runClearTimeout(timeout);
+}
+
+process.nextTick = function (fun) {
+  var args = new Array(arguments.length - 1);
+
+  if (arguments.length > 1) {
+    for (var i = 1; i < arguments.length; i++) {
+      args[i - 1] = arguments[i];
+    }
+  }
+
+  queue.push(new Item(fun, args));
+
+  if (queue.length === 1 && !draining) {
+    runTimeout(drainQueue);
+  }
+}; // v8 likes predictible objects
+
+
+function Item(fun, array) {
+  this.fun = fun;
+  this.array = array;
+}
+
+Item.prototype.run = function () {
+  this.fun.apply(null, this.array);
+};
+
+process.title = 'browser';
+process.env = {};
+process.argv = [];
+process.version = ''; // empty string to avoid regexp issues
+
+process.versions = {};
+
+function noop() {}
+
+process.on = noop;
+process.addListener = noop;
+process.once = noop;
+process.off = noop;
+process.removeListener = noop;
+process.removeAllListeners = noop;
+process.emit = noop;
+process.prependListener = noop;
+process.prependOnceListener = noop;
+
+process.listeners = function (name) {
+  return [];
+};
+
+process.binding = function (name) {
+  throw new Error('process.binding is not supported');
+};
+
+process.cwd = function () {
+  return '/';
+};
+
+process.chdir = function (dir) {
+  throw new Error('process.chdir is not supported');
+};
+
+process.umask = function () {
+  return 0;
+};
+},{}],"node_modules/axios/lib/defaults.js":[function(require,module,exports) {
+var process = require("process");
+'use strict';
+
+var utils = require('./utils');
+var normalizeHeaderName = require('./helpers/normalizeHeaderName');
+
+var DEFAULT_CONTENT_TYPE = {
+  'Content-Type': 'application/x-www-form-urlencoded'
+};
+
+function setContentTypeIfUnset(headers, value) {
+  if (!utils.isUndefined(headers) && utils.isUndefined(headers['Content-Type'])) {
+    headers['Content-Type'] = value;
+  }
+}
+
+function getDefaultAdapter() {
+  var adapter;
+  if (typeof XMLHttpRequest !== 'undefined') {
+    // For browsers use XHR adapter
+    adapter = require('./adapters/xhr');
+  } else if (typeof process !== 'undefined' && Object.prototype.toString.call(process) === '[object process]') {
+    // For node use HTTP adapter
+    adapter = require('./adapters/http');
+  }
+  return adapter;
+}
+
+var defaults = {
+  adapter: getDefaultAdapter(),
+
+  transformRequest: [function transformRequest(data, headers) {
+    normalizeHeaderName(headers, 'Accept');
+    normalizeHeaderName(headers, 'Content-Type');
+    if (utils.isFormData(data) ||
+      utils.isArrayBuffer(data) ||
+      utils.isBuffer(data) ||
+      utils.isStream(data) ||
+      utils.isFile(data) ||
+      utils.isBlob(data)
+    ) {
+      return data;
+    }
+    if (utils.isArrayBufferView(data)) {
+      return data.buffer;
+    }
+    if (utils.isURLSearchParams(data)) {
+      setContentTypeIfUnset(headers, 'application/x-www-form-urlencoded;charset=utf-8');
+      return data.toString();
+    }
+    if (utils.isObject(data)) {
+      setContentTypeIfUnset(headers, 'application/json;charset=utf-8');
+      return JSON.stringify(data);
+    }
+    return data;
+  }],
+
+  transformResponse: [function transformResponse(data) {
+    /*eslint no-param-reassign:0*/
+    if (typeof data === 'string') {
+      try {
+        data = JSON.parse(data);
+      } catch (e) { /* Ignore */ }
+    }
+    return data;
+  }],
+
+  /**
+   * A timeout in milliseconds to abort a request. If set to 0 (default) a
+   * timeout is not created.
+   */
+  timeout: 0,
+
+  xsrfCookieName: 'XSRF-TOKEN',
+  xsrfHeaderName: 'X-XSRF-TOKEN',
+
+  maxContentLength: -1,
+  maxBodyLength: -1,
+
+  validateStatus: function validateStatus(status) {
+    return status >= 200 && status < 300;
+  }
+};
+
+defaults.headers = {
+  common: {
+    'Accept': 'application/json, text/plain, */*'
+  }
+};
+
+utils.forEach(['delete', 'get', 'head'], function forEachMethodNoData(method) {
+  defaults.headers[method] = {};
+});
+
+utils.forEach(['post', 'put', 'patch'], function forEachMethodWithData(method) {
+  defaults.headers[method] = utils.merge(DEFAULT_CONTENT_TYPE);
+});
+
+module.exports = defaults;
+
+},{"./utils":"node_modules/axios/lib/utils.js","./helpers/normalizeHeaderName":"node_modules/axios/lib/helpers/normalizeHeaderName.js","./adapters/xhr":"node_modules/axios/lib/adapters/xhr.js","./adapters/http":"node_modules/axios/lib/adapters/xhr.js","process":"node_modules/process/browser.js"}],"node_modules/axios/lib/core/dispatchRequest.js":[function(require,module,exports) {
+'use strict';
+
+var utils = require('./../utils');
+var transformData = require('./transformData');
+var isCancel = require('../cancel/isCancel');
+var defaults = require('../defaults');
+
+/**
+ * Throws a `Cancel` if cancellation has been requested.
+ */
+function throwIfCancellationRequested(config) {
+  if (config.cancelToken) {
+    config.cancelToken.throwIfRequested();
+  }
+}
+
+/**
+ * Dispatch a request to the server using the configured adapter.
+ *
+ * @param {object} config The config that is to be used for the request
+ * @returns {Promise} The Promise to be fulfilled
+ */
+module.exports = function dispatchRequest(config) {
+  throwIfCancellationRequested(config);
+
+  // Ensure headers exist
+  config.headers = config.headers || {};
+
+  // Transform request data
+  config.data = transformData(
+    config.data,
+    config.headers,
+    config.transformRequest
+  );
+
+  // Flatten headers
+  config.headers = utils.merge(
+    config.headers.common || {},
+    config.headers[config.method] || {},
+    config.headers
+  );
+
+  utils.forEach(
+    ['delete', 'get', 'head', 'post', 'put', 'patch', 'common'],
+    function cleanHeaderConfig(method) {
+      delete config.headers[method];
+    }
+  );
+
+  var adapter = config.adapter || defaults.adapter;
+
+  return adapter(config).then(function onAdapterResolution(response) {
+    throwIfCancellationRequested(config);
+
+    // Transform response data
+    response.data = transformData(
+      response.data,
+      response.headers,
+      config.transformResponse
+    );
+
+    return response;
+  }, function onAdapterRejection(reason) {
+    if (!isCancel(reason)) {
+      throwIfCancellationRequested(config);
+
+      // Transform response data
+      if (reason && reason.response) {
+        reason.response.data = transformData(
+          reason.response.data,
+          reason.response.headers,
+          config.transformResponse
+        );
+      }
+    }
+
+    return Promise.reject(reason);
+  });
+};
+
+},{"./../utils":"node_modules/axios/lib/utils.js","./transformData":"node_modules/axios/lib/core/transformData.js","../cancel/isCancel":"node_modules/axios/lib/cancel/isCancel.js","../defaults":"node_modules/axios/lib/defaults.js"}],"node_modules/axios/lib/core/mergeConfig.js":[function(require,module,exports) {
+'use strict';
+
+var utils = require('../utils');
+
+/**
+ * Config-specific merge-function which creates a new config-object
+ * by merging two configuration objects together.
+ *
+ * @param {Object} config1
+ * @param {Object} config2
+ * @returns {Object} New object resulting from merging config2 to config1
+ */
+module.exports = function mergeConfig(config1, config2) {
+  // eslint-disable-next-line no-param-reassign
+  config2 = config2 || {};
+  var config = {};
+
+  var valueFromConfig2Keys = ['url', 'method', 'data'];
+  var mergeDeepPropertiesKeys = ['headers', 'auth', 'proxy', 'params'];
+  var defaultToConfig2Keys = [
+    'baseURL', 'transformRequest', 'transformResponse', 'paramsSerializer',
+    'timeout', 'timeoutMessage', 'withCredentials', 'adapter', 'responseType', 'xsrfCookieName',
+    'xsrfHeaderName', 'onUploadProgress', 'onDownloadProgress', 'decompress',
+    'maxContentLength', 'maxBodyLength', 'maxRedirects', 'transport', 'httpAgent',
+    'httpsAgent', 'cancelToken', 'socketPath', 'responseEncoding'
+  ];
+  var directMergeKeys = ['validateStatus'];
+
+  function getMergedValue(target, source) {
+    if (utils.isPlainObject(target) && utils.isPlainObject(source)) {
+      return utils.merge(target, source);
+    } else if (utils.isPlainObject(source)) {
+      return utils.merge({}, source);
+    } else if (utils.isArray(source)) {
+      return source.slice();
+    }
+    return source;
+  }
+
+  function mergeDeepProperties(prop) {
+    if (!utils.isUndefined(config2[prop])) {
+      config[prop] = getMergedValue(config1[prop], config2[prop]);
+    } else if (!utils.isUndefined(config1[prop])) {
+      config[prop] = getMergedValue(undefined, config1[prop]);
+    }
+  }
+
+  utils.forEach(valueFromConfig2Keys, function valueFromConfig2(prop) {
+    if (!utils.isUndefined(config2[prop])) {
+      config[prop] = getMergedValue(undefined, config2[prop]);
+    }
+  });
+
+  utils.forEach(mergeDeepPropertiesKeys, mergeDeepProperties);
+
+  utils.forEach(defaultToConfig2Keys, function defaultToConfig2(prop) {
+    if (!utils.isUndefined(config2[prop])) {
+      config[prop] = getMergedValue(undefined, config2[prop]);
+    } else if (!utils.isUndefined(config1[prop])) {
+      config[prop] = getMergedValue(undefined, config1[prop]);
+    }
+  });
+
+  utils.forEach(directMergeKeys, function merge(prop) {
+    if (prop in config2) {
+      config[prop] = getMergedValue(config1[prop], config2[prop]);
+    } else if (prop in config1) {
+      config[prop] = getMergedValue(undefined, config1[prop]);
+    }
+  });
+
+  var axiosKeys = valueFromConfig2Keys
+    .concat(mergeDeepPropertiesKeys)
+    .concat(defaultToConfig2Keys)
+    .concat(directMergeKeys);
+
+  var otherKeys = Object
+    .keys(config1)
+    .concat(Object.keys(config2))
+    .filter(function filterAxiosKeys(key) {
+      return axiosKeys.indexOf(key) === -1;
+    });
+
+  utils.forEach(otherKeys, mergeDeepProperties);
+
+  return config;
+};
+
+},{"../utils":"node_modules/axios/lib/utils.js"}],"node_modules/axios/lib/core/Axios.js":[function(require,module,exports) {
+'use strict';
+
+var utils = require('./../utils');
+var buildURL = require('../helpers/buildURL');
+var InterceptorManager = require('./InterceptorManager');
+var dispatchRequest = require('./dispatchRequest');
+var mergeConfig = require('./mergeConfig');
+
+/**
+ * Create a new instance of Axios
+ *
+ * @param {Object} instanceConfig The default config for the instance
+ */
+function Axios(instanceConfig) {
+  this.defaults = instanceConfig;
+  this.interceptors = {
+    request: new InterceptorManager(),
+    response: new InterceptorManager()
+  };
+}
+
+/**
+ * Dispatch a request
+ *
+ * @param {Object} config The config specific for this request (merged with this.defaults)
+ */
+Axios.prototype.request = function request(config) {
+  /*eslint no-param-reassign:0*/
+  // Allow for axios('example/url'[, config]) a la fetch API
+  if (typeof config === 'string') {
+    config = arguments[1] || {};
+    config.url = arguments[0];
+  } else {
+    config = config || {};
+  }
+
+  config = mergeConfig(this.defaults, config);
+
+  // Set config.method
+  if (config.method) {
+    config.method = config.method.toLowerCase();
+  } else if (this.defaults.method) {
+    config.method = this.defaults.method.toLowerCase();
+  } else {
+    config.method = 'get';
+  }
+
+  // Hook up interceptors middleware
+  var chain = [dispatchRequest, undefined];
+  var promise = Promise.resolve(config);
+
+  this.interceptors.request.forEach(function unshiftRequestInterceptors(interceptor) {
+    chain.unshift(interceptor.fulfilled, interceptor.rejected);
+  });
+
+  this.interceptors.response.forEach(function pushResponseInterceptors(interceptor) {
+    chain.push(interceptor.fulfilled, interceptor.rejected);
+  });
+
+  while (chain.length) {
+    promise = promise.then(chain.shift(), chain.shift());
+  }
+
+  return promise;
+};
+
+Axios.prototype.getUri = function getUri(config) {
+  config = mergeConfig(this.defaults, config);
+  return buildURL(config.url, config.params, config.paramsSerializer).replace(/^\?/, '');
+};
+
+// Provide aliases for supported request methods
+utils.forEach(['delete', 'get', 'head', 'options'], function forEachMethodNoData(method) {
+  /*eslint func-names:0*/
+  Axios.prototype[method] = function(url, config) {
+    return this.request(mergeConfig(config || {}, {
+      method: method,
+      url: url,
+      data: (config || {}).data
+    }));
+  };
+});
+
+utils.forEach(['post', 'put', 'patch'], function forEachMethodWithData(method) {
+  /*eslint func-names:0*/
+  Axios.prototype[method] = function(url, data, config) {
+    return this.request(mergeConfig(config || {}, {
+      method: method,
+      url: url,
+      data: data
+    }));
+  };
+});
+
+module.exports = Axios;
+
+},{"./../utils":"node_modules/axios/lib/utils.js","../helpers/buildURL":"node_modules/axios/lib/helpers/buildURL.js","./InterceptorManager":"node_modules/axios/lib/core/InterceptorManager.js","./dispatchRequest":"node_modules/axios/lib/core/dispatchRequest.js","./mergeConfig":"node_modules/axios/lib/core/mergeConfig.js"}],"node_modules/axios/lib/cancel/Cancel.js":[function(require,module,exports) {
+'use strict';
+
+/**
+ * A `Cancel` is an object that is thrown when an operation is canceled.
+ *
+ * @class
+ * @param {string=} message The message.
+ */
+function Cancel(message) {
+  this.message = message;
+}
+
+Cancel.prototype.toString = function toString() {
+  return 'Cancel' + (this.message ? ': ' + this.message : '');
+};
+
+Cancel.prototype.__CANCEL__ = true;
+
+module.exports = Cancel;
+
+},{}],"node_modules/axios/lib/cancel/CancelToken.js":[function(require,module,exports) {
+'use strict';
+
+var Cancel = require('./Cancel');
+
+/**
+ * A `CancelToken` is an object that can be used to request cancellation of an operation.
+ *
+ * @class
+ * @param {Function} executor The executor function.
+ */
+function CancelToken(executor) {
+  if (typeof executor !== 'function') {
+    throw new TypeError('executor must be a function.');
+  }
+
+  var resolvePromise;
+  this.promise = new Promise(function promiseExecutor(resolve) {
+    resolvePromise = resolve;
+  });
+
+  var token = this;
+  executor(function cancel(message) {
+    if (token.reason) {
+      // Cancellation has already been requested
+      return;
+    }
+
+    token.reason = new Cancel(message);
+    resolvePromise(token.reason);
+  });
+}
+
+/**
+ * Throws a `Cancel` if cancellation has been requested.
+ */
+CancelToken.prototype.throwIfRequested = function throwIfRequested() {
+  if (this.reason) {
+    throw this.reason;
+  }
+};
+
+/**
+ * Returns an object that contains a new `CancelToken` and a function that, when called,
+ * cancels the `CancelToken`.
+ */
+CancelToken.source = function source() {
+  var cancel;
+  var token = new CancelToken(function executor(c) {
+    cancel = c;
+  });
+  return {
+    token: token,
+    cancel: cancel
+  };
+};
+
+module.exports = CancelToken;
+
+},{"./Cancel":"node_modules/axios/lib/cancel/Cancel.js"}],"node_modules/axios/lib/helpers/spread.js":[function(require,module,exports) {
+'use strict';
+
+/**
+ * Syntactic sugar for invoking a function and expanding an array for arguments.
+ *
+ * Common use case would be to use `Function.prototype.apply`.
+ *
+ *  ```js
+ *  function f(x, y, z) {}
+ *  var args = [1, 2, 3];
+ *  f.apply(null, args);
+ *  ```
+ *
+ * With `spread` this example can be re-written.
+ *
+ *  ```js
+ *  spread(function(x, y, z) {})([1, 2, 3]);
+ *  ```
+ *
+ * @param {Function} callback
+ * @returns {Function}
+ */
+module.exports = function spread(callback) {
+  return function wrap(arr) {
+    return callback.apply(null, arr);
+  };
+};
+
+},{}],"node_modules/axios/lib/helpers/isAxiosError.js":[function(require,module,exports) {
+'use strict';
+
+/**
+ * Determines whether the payload is an error thrown by Axios
+ *
+ * @param {*} payload The value to test
+ * @returns {boolean} True if the payload is an error thrown by Axios, otherwise false
+ */
+module.exports = function isAxiosError(payload) {
+  return (typeof payload === 'object') && (payload.isAxiosError === true);
+};
+
+},{}],"node_modules/axios/lib/axios.js":[function(require,module,exports) {
+'use strict';
+
+var utils = require('./utils');
+var bind = require('./helpers/bind');
+var Axios = require('./core/Axios');
+var mergeConfig = require('./core/mergeConfig');
+var defaults = require('./defaults');
+
+/**
+ * Create an instance of Axios
+ *
+ * @param {Object} defaultConfig The default config for the instance
+ * @return {Axios} A new instance of Axios
+ */
+function createInstance(defaultConfig) {
+  var context = new Axios(defaultConfig);
+  var instance = bind(Axios.prototype.request, context);
+
+  // Copy axios.prototype to instance
+  utils.extend(instance, Axios.prototype, context);
+
+  // Copy context to instance
+  utils.extend(instance, context);
+
+  return instance;
+}
+
+// Create the default instance to be exported
+var axios = createInstance(defaults);
+
+// Expose Axios class to allow class inheritance
+axios.Axios = Axios;
+
+// Factory for creating new instances
+axios.create = function create(instanceConfig) {
+  return createInstance(mergeConfig(axios.defaults, instanceConfig));
+};
+
+// Expose Cancel & CancelToken
+axios.Cancel = require('./cancel/Cancel');
+axios.CancelToken = require('./cancel/CancelToken');
+axios.isCancel = require('./cancel/isCancel');
+
+// Expose all/spread
+axios.all = function all(promises) {
+  return Promise.all(promises);
+};
+axios.spread = require('./helpers/spread');
+
+// Expose isAxiosError
+axios.isAxiosError = require('./helpers/isAxiosError');
+
+module.exports = axios;
+
+// Allow use of default import syntax in TypeScript
+module.exports.default = axios;
+
+},{"./utils":"node_modules/axios/lib/utils.js","./helpers/bind":"node_modules/axios/lib/helpers/bind.js","./core/Axios":"node_modules/axios/lib/core/Axios.js","./core/mergeConfig":"node_modules/axios/lib/core/mergeConfig.js","./defaults":"node_modules/axios/lib/defaults.js","./cancel/Cancel":"node_modules/axios/lib/cancel/Cancel.js","./cancel/CancelToken":"node_modules/axios/lib/cancel/CancelToken.js","./cancel/isCancel":"node_modules/axios/lib/cancel/isCancel.js","./helpers/spread":"node_modules/axios/lib/helpers/spread.js","./helpers/isAxiosError":"node_modules/axios/lib/helpers/isAxiosError.js"}],"node_modules/axios/index.js":[function(require,module,exports) {
+module.exports = require('./lib/axios');
+},{"./lib/axios":"node_modules/axios/lib/axios.js"}],"components/Login.jsx":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -52460,6 +54260,10 @@ var _reactRouterDom = require("react-router-dom");
 var _yup = require("@hookform/resolvers/yup");
 
 var yup = _interopRequireWildcard(require("yup"));
+
+var _axios = _interopRequireDefault(require("axios"));
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _getRequireWildcardCache() { if (typeof WeakMap !== "function") return null; var cache = new WeakMap(); _getRequireWildcardCache = function () { return cache; }; return cache; }
 
@@ -52506,23 +54310,58 @@ function Login(_ref) {
   var history = (0, _reactRouterDom.useHistory)();
 
   function onSubmit(data) {
-    var requestOptions = {
+    /*axios.post("http://localhost:8080/signin",JSON.stringify(data),{
+      withCredentials:true,
+    })
+    .then((response)=>{console.log(response)
+      if(response.data.message=="working!") {setUser(toto.connected)
+        history.push("/home")}
+        else setErr(response.data.message)
+    
+    })*/
+    (0, _axios.default)({
       method: "POST",
-      allowed_headers: "Content-Type,Authorization",
+      url: "http://localhost:8080/signin",
+      data: data,
       headers: {
-        "Content-Type": "application/json",
-        Accept: "application/json"
+        "Content-Type": "application/json"
       },
-      body: JSON.stringify(data)
-    };
-    fetch("http://localhost:8080/signin", requestOptions).then(function (response) {
-      return response.json();
-    }).then(function (toto) {
-      if (toto.message === "working!") {
-        setUser(toto.connected);
-        history.push("/home"); //setUser(toto.connected);
-      } else setErr(toto.message);
+      withCredentials: true
+    }).then(function (res) {
+      console.log(res.data.message);
+
+      if (res.data.message == "working!") {
+        setUser(res.data.connected);
+        history.push("/home");
+      } else {
+        setErr(res.data.message);
+      }
     });
+    /*.then((data)=>{
+      if(data.message==="working!"){
+        setUser(toto.connected)
+        history.push("/home")
+      }else setErr(toto.message)
+    });*/
+
+    /*const requestOptions = {
+        method: "POST",
+        allowed_headers: "Content-Type,Authorization",
+        headers: {
+          "Content-Type": "application/json",
+          Accept: "application/json",
+        },
+        body: JSON.stringify(data),
+      };
+      fetch("http://localhost:8080/signin", requestOptions)
+      .then((response) => response.json())
+      .then((toto) => {
+        if (toto.message === "working!") {
+            setUser(toto.connected)
+            history.push("/home")
+          //setUser(toto.connected);
+        } else setErr(toto.message);
+      });*/
   }
 
   return /*#__PURE__*/_react.default.createElement(_react.default.Fragment, null, /*#__PURE__*/_react.default.createElement("div", {
@@ -52565,7 +54404,7 @@ function Login(_ref) {
     type: "submit"
   }, "Connect")))))));
 }
-},{"react":"node_modules/react/index.js","react-dom":"node_modules/react-dom/index.js","react-hook-form":"node_modules/react-hook-form/dist/index.esm.js","react-router-dom":"node_modules/react-router-dom/esm/react-router-dom.js","@hookform/resolvers/yup":"node_modules/@hookform/resolvers/yup.js","yup":"node_modules/yup/es/index.js","babel-core/register":"node_modules/babel-core/register.js","babel-polyfill":"node_modules/babel-polyfill/lib/index.js"}],"cutepic.jpeg":[function(require,module,exports) {
+},{"react":"node_modules/react/index.js","react-dom":"node_modules/react-dom/index.js","react-hook-form":"node_modules/react-hook-form/dist/index.esm.js","react-router-dom":"node_modules/react-router-dom/esm/react-router-dom.js","@hookform/resolvers/yup":"node_modules/@hookform/resolvers/yup.js","yup":"node_modules/yup/es/index.js","axios":"node_modules/axios/index.js","babel-core/register":"node_modules/babel-core/register.js","babel-polyfill":"node_modules/babel-polyfill/lib/index.js"}],"cutepic.jpeg":[function(require,module,exports) {
 module.exports = "/cutepic.bb3f01d7.jpeg";
 },{}],"components/Chat.jsx":[function(require,module,exports) {
 "use strict";
@@ -52778,7 +54617,5878 @@ function Profil(_ref) {
     });
   }
 }
-},{"react":"node_modules/react/index.js","react-dom":"node_modules/react-dom/index.js","react-router-dom":"node_modules/react-router-dom/esm/react-router-dom.js","babel-core/register":"node_modules/babel-core/register.js","babel-polyfill":"node_modules/babel-polyfill/lib/index.js","../cutepic.jpeg":"cutepic.jpeg"}],"components/Home.jsx":[function(require,module,exports) {
+},{"react":"node_modules/react/index.js","react-dom":"node_modules/react-dom/index.js","react-router-dom":"node_modules/react-router-dom/esm/react-router-dom.js","babel-core/register":"node_modules/babel-core/register.js","babel-polyfill":"node_modules/babel-polyfill/lib/index.js","../cutepic.jpeg":"cutepic.jpeg"}],"node_modules/react-query/es/core/utils.js":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.noop = noop;
+exports.functionalUpdate = functionalUpdate;
+exports.isValidTimeout = isValidTimeout;
+exports.ensureArray = ensureArray;
+exports.difference = difference;
+exports.replaceAt = replaceAt;
+exports.timeUntilStale = timeUntilStale;
+exports.parseQueryArgs = parseQueryArgs;
+exports.parseMutationArgs = parseMutationArgs;
+exports.parseFilterArgs = parseFilterArgs;
+exports.matchQuery = matchQuery;
+exports.getQueryKeyHashFn = getQueryKeyHashFn;
+exports.hashQueryKey = hashQueryKey;
+exports.stableValueHash = stableValueHash;
+exports.partialMatchKey = partialMatchKey;
+exports.partialDeepEqual = partialDeepEqual;
+exports.replaceEqualDeep = replaceEqualDeep;
+exports.shallowEqualObjects = shallowEqualObjects;
+exports.isPlainObject = isPlainObject;
+exports.isQueryKey = isQueryKey;
+exports.isError = isError;
+exports.sleep = sleep;
+exports.getStatusProps = getStatusProps;
+exports.scheduleMicrotask = scheduleMicrotask;
+exports.isServer = void 0;
+
+var _extends2 = _interopRequireDefault(require("@babel/runtime/helpers/esm/extends"));
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+// TYPES
+// UTILS
+var isServer = typeof window === 'undefined';
+exports.isServer = isServer;
+
+function noop() {
+  return undefined;
+}
+
+function functionalUpdate(updater, input) {
+  return typeof updater === 'function' ? updater(input) : updater;
+}
+
+function isValidTimeout(value) {
+  return typeof value === 'number' && value >= 0 && value !== Infinity;
+}
+
+function ensureArray(value) {
+  return Array.isArray(value) ? value : [value];
+}
+
+function difference(array1, array2) {
+  return array1.filter(function (x) {
+    return array2.indexOf(x) === -1;
+  });
+}
+
+function replaceAt(array, index, value) {
+  var copy = array.slice(0);
+  copy[index] = value;
+  return copy;
+}
+
+function timeUntilStale(updatedAt, staleTime) {
+  return Math.max(updatedAt + (staleTime || 0) - Date.now(), 0);
+}
+
+function parseQueryArgs(arg1, arg2, arg3) {
+  if (!isQueryKey(arg1)) {
+    return arg1;
+  }
+
+  if (typeof arg2 === 'function') {
+    return (0, _extends2.default)({}, arg3, {
+      queryKey: arg1,
+      queryFn: arg2
+    });
+  }
+
+  return (0, _extends2.default)({}, arg2, {
+    queryKey: arg1
+  });
+}
+
+function parseMutationArgs(arg1, arg2, arg3) {
+  if (isQueryKey(arg1)) {
+    if (typeof arg2 === 'function') {
+      return (0, _extends2.default)({}, arg3, {
+        mutationKey: arg1,
+        mutationFn: arg2
+      });
+    }
+
+    return (0, _extends2.default)({}, arg2, {
+      mutationKey: arg1
+    });
+  }
+
+  if (typeof arg1 === 'function') {
+    return (0, _extends2.default)({}, arg2, {
+      mutationFn: arg1
+    });
+  }
+
+  return (0, _extends2.default)({}, arg1);
+}
+
+function parseFilterArgs(arg1, arg2, arg3) {
+  return isQueryKey(arg1) ? [(0, _extends2.default)({}, arg2, {
+    queryKey: arg1
+  }), arg3] : [arg1 || {}, arg2];
+}
+
+function matchQuery(filters, query) {
+  var active = filters.active,
+      exact = filters.exact,
+      fetching = filters.fetching,
+      inactive = filters.inactive,
+      predicate = filters.predicate,
+      queryKey = filters.queryKey,
+      stale = filters.stale;
+
+  if (isQueryKey(queryKey)) {
+    if (exact) {
+      var hashFn = getQueryKeyHashFn(query.options);
+
+      if (query.queryHash !== hashFn(queryKey)) {
+        return false;
+      }
+    } else if (!partialMatchKey(query.queryKey, queryKey)) {
+      return false;
+    }
+  }
+
+  var isActive;
+
+  if (inactive === false || active && !inactive) {
+    isActive = true;
+  } else if (active === false || inactive && !active) {
+    isActive = false;
+  }
+
+  if (typeof isActive === 'boolean' && query.isActive() !== isActive) {
+    return false;
+  }
+
+  if (typeof stale === 'boolean' && query.isStale() !== stale) {
+    return false;
+  }
+
+  if (typeof fetching === 'boolean' && query.isFetching() !== fetching) {
+    return false;
+  }
+
+  if (predicate && !predicate(query)) {
+    return false;
+  }
+
+  return true;
+}
+
+function getQueryKeyHashFn(options) {
+  return (options == null ? void 0 : options.queryKeyHashFn) || hashQueryKey;
+}
+/**
+ * Default query keys hash function.
+ */
+
+
+function hashQueryKey(queryKey) {
+  return stableValueHash(queryKey);
+}
+/**
+ * Hashes the value into a stable hash.
+ */
+
+
+function stableValueHash(value) {
+  return JSON.stringify(value, function (_, val) {
+    return isPlainObject(val) ? Object.keys(val).sort().reduce(function (result, key) {
+      result[key] = val[key];
+      return result;
+    }, {}) : val;
+  });
+}
+/**
+ * Checks if key `b` partially matches with key `a`.
+ */
+
+
+function partialMatchKey(a, b) {
+  return partialDeepEqual(ensureArray(a), ensureArray(b));
+}
+/**
+ * Checks if `b` partially matches with `a`.
+ */
+
+
+function partialDeepEqual(a, b) {
+  if (a === b) {
+    return true;
+  }
+
+  if (typeof a !== typeof b) {
+    return false;
+  }
+
+  if (a && b && typeof a === 'object' && typeof b === 'object') {
+    return !Object.keys(b).some(function (key) {
+      return !partialDeepEqual(a[key], b[key]);
+    });
+  }
+
+  return false;
+}
+/**
+ * This function returns `a` if `b` is deeply equal.
+ * If not, it will replace any deeply equal children of `b` with those of `a`.
+ * This can be used for structural sharing between JSON values for example.
+ */
+
+
+function replaceEqualDeep(a, b) {
+  if (a === b) {
+    return a;
+  }
+
+  var array = Array.isArray(a) && Array.isArray(b);
+
+  if (array || isPlainObject(a) && isPlainObject(b)) {
+    var aSize = array ? a.length : Object.keys(a).length;
+    var bItems = array ? b : Object.keys(b);
+    var bSize = bItems.length;
+    var copy = array ? [] : {};
+    var equalItems = 0;
+
+    for (var i = 0; i < bSize; i++) {
+      var key = array ? i : bItems[i];
+      copy[key] = replaceEqualDeep(a[key], b[key]);
+
+      if (copy[key] === a[key]) {
+        equalItems++;
+      }
+    }
+
+    return aSize === bSize && equalItems === aSize ? a : copy;
+  }
+
+  return b;
+}
+/**
+ * Shallow compare objects. Only works with objects that always have the same properties.
+ */
+
+
+function shallowEqualObjects(a, b) {
+  if (a && !b || b && !a) {
+    return false;
+  }
+
+  for (var key in a) {
+    if (a[key] !== b[key]) {
+      return false;
+    }
+  }
+
+  return true;
+} // Copied from: https://github.com/jonschlinkert/is-plain-object
+
+
+function isPlainObject(o) {
+  if (!hasObjectPrototype(o)) {
+    return false;
+  } // If has modified constructor
+
+
+  var ctor = o.constructor;
+
+  if (typeof ctor === 'undefined') {
+    return true;
+  } // If has modified prototype
+
+
+  var prot = ctor.prototype;
+
+  if (!hasObjectPrototype(prot)) {
+    return false;
+  } // If constructor does not have an Object-specific method
+
+
+  if (!prot.hasOwnProperty('isPrototypeOf')) {
+    return false;
+  } // Most likely a plain Object
+
+
+  return true;
+}
+
+function hasObjectPrototype(o) {
+  return Object.prototype.toString.call(o) === '[object Object]';
+}
+
+function isQueryKey(value) {
+  return typeof value === 'string' || Array.isArray(value);
+}
+
+function isError(value) {
+  return value instanceof Error;
+}
+
+function sleep(timeout) {
+  return new Promise(function (resolve) {
+    setTimeout(resolve, timeout);
+  });
+}
+
+function getStatusProps(status) {
+  return {
+    status: status,
+    isLoading: status === 'loading',
+    isSuccess: status === 'success',
+    isError: status === 'error',
+    isIdle: status === 'idle'
+  };
+}
+/**
+ * Schedules a microtask.
+ * This can be useful to schedule state updates after rendering.
+ */
+
+
+function scheduleMicrotask(callback) {
+  Promise.resolve().then(callback).catch(function (error) {
+    return setTimeout(function () {
+      throw error;
+    });
+  });
+}
+},{"@babel/runtime/helpers/esm/extends":"node_modules/@babel/runtime/helpers/esm/extends.js"}],"node_modules/react-query/es/core/notifyManager.js":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.notifyManager = void 0;
+
+var _utils = require("./utils");
+
+// TYPES
+// CLASS
+var NotifyManager = /*#__PURE__*/function () {
+  function NotifyManager() {
+    this.queue = [];
+    this.transactions = 0;
+
+    this.notifyFn = function (callback) {
+      callback();
+    };
+
+    this.batchNotifyFn = function (callback) {
+      callback();
+    };
+  }
+
+  var _proto = NotifyManager.prototype;
+
+  _proto.batch = function batch(callback) {
+    this.transactions++;
+    var result = callback();
+    this.transactions--;
+
+    if (!this.transactions) {
+      this.flush();
+    }
+
+    return result;
+  };
+
+  _proto.schedule = function schedule(callback) {
+    var _this = this;
+
+    if (this.transactions) {
+      this.queue.push(callback);
+    } else {
+      (0, _utils.scheduleMicrotask)(function () {
+        _this.notifyFn(callback);
+      });
+    }
+  }
+  /**
+   * All calls to the wrapped function will be batched.
+   */
+  ;
+
+  _proto.batchCalls = function batchCalls(callback) {
+    var _this2 = this;
+
+    return function () {
+      for (var _len = arguments.length, args = new Array(_len), _key = 0; _key < _len; _key++) {
+        args[_key] = arguments[_key];
+      }
+
+      _this2.schedule(function () {
+        callback.apply(void 0, args);
+      });
+    };
+  };
+
+  _proto.flush = function flush() {
+    var _this3 = this;
+
+    var queue = this.queue;
+    this.queue = [];
+
+    if (queue.length) {
+      (0, _utils.scheduleMicrotask)(function () {
+        _this3.batchNotifyFn(function () {
+          queue.forEach(function (callback) {
+            _this3.notifyFn(callback);
+          });
+        });
+      });
+    }
+  }
+  /**
+   * Use this method to set a custom notify function.
+   * This can be used to for example wrap notifications with `React.act` while running tests.
+   */
+  ;
+
+  _proto.setNotifyFunction = function setNotifyFunction(fn) {
+    this.notifyFn = fn;
+  }
+  /**
+   * Use this method to set a custom function to batch notifications together into a single tick.
+   * By default React Query will use the batch function provided by ReactDOM or React Native.
+   */
+  ;
+
+  _proto.setBatchNotifyFunction = function setBatchNotifyFunction(fn) {
+    this.batchNotifyFn = fn;
+  };
+
+  return NotifyManager;
+}(); // SINGLETON
+
+
+var notifyManager = new NotifyManager();
+exports.notifyManager = notifyManager;
+},{"./utils":"node_modules/react-query/es/core/utils.js"}],"node_modules/react-query/es/core/logger.js":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.getLogger = getLogger;
+exports.setLogger = setLogger;
+
+var _utils = require("./utils");
+
+// TYPES
+// FUNCTIONS
+var logger = console || {
+  error: _utils.noop,
+  warn: _utils.noop,
+  log: _utils.noop
+};
+
+function getLogger() {
+  return logger;
+}
+
+function setLogger(newLogger) {
+  logger = newLogger;
+}
+},{"./utils":"node_modules/react-query/es/core/utils.js"}],"node_modules/react-query/es/core/subscribable.js":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.Subscribable = void 0;
+
+var Subscribable = /*#__PURE__*/function () {
+  function Subscribable() {
+    this.listeners = [];
+  }
+
+  var _proto = Subscribable.prototype;
+
+  _proto.subscribe = function subscribe(listener) {
+    var _this = this;
+
+    var callback = listener || function () {
+      return undefined;
+    };
+
+    this.listeners.push(callback);
+    this.onSubscribe();
+    return function () {
+      _this.listeners = _this.listeners.filter(function (x) {
+        return x !== callback;
+      });
+
+      _this.onUnsubscribe();
+    };
+  };
+
+  _proto.hasListeners = function hasListeners() {
+    return this.listeners.length > 0;
+  };
+
+  _proto.onSubscribe = function onSubscribe() {// Do nothing
+  };
+
+  _proto.onUnsubscribe = function onUnsubscribe() {// Do nothing
+  };
+
+  return Subscribable;
+}();
+
+exports.Subscribable = Subscribable;
+},{}],"node_modules/react-query/es/core/focusManager.js":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.focusManager = void 0;
+
+var _inheritsLoose2 = _interopRequireDefault(require("@babel/runtime/helpers/esm/inheritsLoose"));
+
+var _subscribable = require("./subscribable");
+
+var _utils = require("./utils");
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+var FocusManager = /*#__PURE__*/function (_Subscribable) {
+  (0, _inheritsLoose2.default)(FocusManager, _Subscribable);
+
+  function FocusManager() {
+    return _Subscribable.apply(this, arguments) || this;
+  }
+
+  var _proto = FocusManager.prototype;
+
+  _proto.onSubscribe = function onSubscribe() {
+    if (!this.removeEventListener) {
+      this.setDefaultEventListener();
+    }
+  };
+
+  _proto.setEventListener = function setEventListener(setup) {
+    var _this = this;
+
+    if (this.removeEventListener) {
+      this.removeEventListener();
+    }
+
+    this.removeEventListener = setup(function (focused) {
+      if (typeof focused === 'boolean') {
+        _this.setFocused(focused);
+      } else {
+        _this.onFocus();
+      }
+    });
+  };
+
+  _proto.setFocused = function setFocused(focused) {
+    this.focused = focused;
+
+    if (focused) {
+      this.onFocus();
+    }
+  };
+
+  _proto.onFocus = function onFocus() {
+    this.listeners.forEach(function (listener) {
+      listener();
+    });
+  };
+
+  _proto.isFocused = function isFocused() {
+    if (typeof this.focused === 'boolean') {
+      return this.focused;
+    } // document global can be unavailable in react native
+
+
+    if (typeof document === 'undefined') {
+      return true;
+    }
+
+    return [undefined, 'visible', 'prerender'].includes(document.visibilityState);
+  };
+
+  _proto.setDefaultEventListener = function setDefaultEventListener() {
+    var _window;
+
+    if (!_utils.isServer && ((_window = window) == null ? void 0 : _window.addEventListener)) {
+      this.setEventListener(function (onFocus) {
+        // Listen to visibillitychange and focus
+        window.addEventListener('visibilitychange', onFocus, false);
+        window.addEventListener('focus', onFocus, false);
+        return function () {
+          // Be sure to unsubscribe if a new handler is set
+          window.removeEventListener('visibilitychange', onFocus);
+          window.removeEventListener('focus', onFocus);
+        };
+      });
+    }
+  };
+
+  return FocusManager;
+}(_subscribable.Subscribable);
+
+var focusManager = new FocusManager();
+exports.focusManager = focusManager;
+},{"@babel/runtime/helpers/esm/inheritsLoose":"node_modules/@babel/runtime/helpers/esm/inheritsLoose.js","./subscribable":"node_modules/react-query/es/core/subscribable.js","./utils":"node_modules/react-query/es/core/utils.js"}],"node_modules/react-query/es/core/onlineManager.js":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.onlineManager = void 0;
+
+var _inheritsLoose2 = _interopRequireDefault(require("@babel/runtime/helpers/esm/inheritsLoose"));
+
+var _subscribable = require("./subscribable");
+
+var _utils = require("./utils");
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+var OnlineManager = /*#__PURE__*/function (_Subscribable) {
+  (0, _inheritsLoose2.default)(OnlineManager, _Subscribable);
+
+  function OnlineManager() {
+    return _Subscribable.apply(this, arguments) || this;
+  }
+
+  var _proto = OnlineManager.prototype;
+
+  _proto.onSubscribe = function onSubscribe() {
+    if (!this.removeEventListener) {
+      this.setDefaultEventListener();
+    }
+  };
+
+  _proto.setEventListener = function setEventListener(setup) {
+    var _this = this;
+
+    if (this.removeEventListener) {
+      this.removeEventListener();
+    }
+
+    this.removeEventListener = setup(function (online) {
+      if (typeof online === 'boolean') {
+        _this.setOnline(online);
+      } else {
+        _this.onOnline();
+      }
+    });
+  };
+
+  _proto.setOnline = function setOnline(online) {
+    this.online = online;
+
+    if (online) {
+      this.onOnline();
+    }
+  };
+
+  _proto.onOnline = function onOnline() {
+    this.listeners.forEach(function (listener) {
+      listener();
+    });
+  };
+
+  _proto.isOnline = function isOnline() {
+    if (typeof this.online === 'boolean') {
+      return this.online;
+    }
+
+    return navigator.onLine === undefined || navigator.onLine;
+  };
+
+  _proto.setDefaultEventListener = function setDefaultEventListener() {
+    var _window;
+
+    if (!_utils.isServer && ((_window = window) == null ? void 0 : _window.addEventListener)) {
+      this.setEventListener(function (onOnline) {
+        // Listen to online
+        window.addEventListener('online', onOnline, false);
+        return function () {
+          // Be sure to unsubscribe if a new handler is set
+          window.removeEventListener('online', onOnline);
+        };
+      });
+    }
+  };
+
+  return OnlineManager;
+}(_subscribable.Subscribable);
+
+var onlineManager = new OnlineManager();
+exports.onlineManager = onlineManager;
+},{"@babel/runtime/helpers/esm/inheritsLoose":"node_modules/@babel/runtime/helpers/esm/inheritsLoose.js","./subscribable":"node_modules/react-query/es/core/subscribable.js","./utils":"node_modules/react-query/es/core/utils.js"}],"node_modules/react-query/es/core/retryer.js":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.isCancelable = isCancelable;
+exports.isCancelledError = isCancelledError;
+exports.Retryer = exports.CancelledError = void 0;
+
+var _focusManager = require("./focusManager");
+
+var _onlineManager = require("./onlineManager");
+
+var _utils = require("./utils");
+
+// TYPES
+function defaultRetryDelay(failureCount) {
+  return Math.min(1000 * Math.pow(2, failureCount), 30000);
+}
+
+function isCancelable(value) {
+  return typeof (value == null ? void 0 : value.cancel) === 'function';
+}
+
+var CancelledError = function CancelledError(options) {
+  this.revert = options == null ? void 0 : options.revert;
+  this.silent = options == null ? void 0 : options.silent;
+};
+
+exports.CancelledError = CancelledError;
+
+function isCancelledError(value) {
+  return value instanceof CancelledError;
+} // CLASS
+
+
+var Retryer = function Retryer(config) {
+  var _this = this;
+
+  var cancelRetry = false;
+  var cancelFn;
+  var continueFn;
+  var promiseResolve;
+  var promiseReject;
+
+  this.cancel = function (cancelOptions) {
+    return cancelFn == null ? void 0 : cancelFn(cancelOptions);
+  };
+
+  this.cancelRetry = function () {
+    cancelRetry = true;
+  };
+
+  this.continue = function () {
+    return continueFn == null ? void 0 : continueFn();
+  };
+
+  this.failureCount = 0;
+  this.isPaused = false;
+  this.isResolved = false;
+  this.isTransportCancelable = false;
+  this.promise = new Promise(function (outerResolve, outerReject) {
+    promiseResolve = outerResolve;
+    promiseReject = outerReject;
+  });
+
+  var resolve = function resolve(value) {
+    _this.isResolved = true;
+    continueFn == null ? void 0 : continueFn();
+    promiseResolve(value);
+  };
+
+  var reject = function reject(value) {
+    _this.isResolved = true;
+    continueFn == null ? void 0 : continueFn();
+    promiseReject(value);
+  };
+
+  var pause = function pause() {
+    return new Promise(function (continueResolve) {
+      continueFn = continueResolve;
+      _this.isPaused = true;
+      config.onPause == null ? void 0 : config.onPause();
+    }).then(function () {
+      continueFn = undefined;
+      _this.isPaused = false;
+      config.onContinue == null ? void 0 : config.onContinue();
+    });
+  }; // Create loop function
+
+
+  var run = function run() {
+    // Do nothing if already resolved
+    if (_this.isResolved) {
+      return;
+    }
+
+    var promiseOrValue; // Execute query
+
+    try {
+      promiseOrValue = config.fn();
+    } catch (error) {
+      promiseOrValue = Promise.reject(error);
+    } // Create callback to cancel this fetch
+
+
+    cancelFn = function cancelFn(cancelOptions) {
+      reject(new CancelledError(cancelOptions)); // Cancel transport if supported
+
+      if (isCancelable(promiseOrValue)) {
+        try {
+          promiseOrValue.cancel();
+        } catch (_unused) {}
+      }
+    }; // Check if the transport layer support cancellation
+
+
+    _this.isTransportCancelable = isCancelable(promiseOrValue);
+    Promise.resolve(promiseOrValue).then(resolve).catch(function (error) {
+      var _config$retry, _config$retryDelay; // Stop if the fetch is already resolved
+
+
+      if (_this.isResolved) {
+        return;
+      } // Do we need to retry the request?
+
+
+      var retry = (_config$retry = config.retry) != null ? _config$retry : 3;
+      var retryDelay = (_config$retryDelay = config.retryDelay) != null ? _config$retryDelay : defaultRetryDelay;
+      var delay = (0, _utils.functionalUpdate)(retryDelay, _this.failureCount) || 0;
+      var shouldRetry = retry === true || typeof retry === 'number' && _this.failureCount < retry || typeof retry === 'function' && retry(_this.failureCount, error);
+
+      if (cancelRetry || !shouldRetry) {
+        // We are done if the query does not need to be retried
+        reject(error);
+        return;
+      }
+
+      _this.failureCount++; // Notify on fail
+
+      config.onFail == null ? void 0 : config.onFail(_this.failureCount, error); // Delay
+
+      (0, _utils.sleep)(delay) // Pause if the document is not visible or when the device is offline
+      .then(function () {
+        if (!_focusManager.focusManager.isFocused() || !_onlineManager.onlineManager.isOnline()) {
+          return pause();
+        }
+      }).then(function () {
+        if (cancelRetry) {
+          reject(error);
+        } else {
+          run();
+        }
+      });
+    });
+  }; // Start loop
+
+
+  run();
+};
+
+exports.Retryer = Retryer;
+},{"./focusManager":"node_modules/react-query/es/core/focusManager.js","./onlineManager":"node_modules/react-query/es/core/onlineManager.js","./utils":"node_modules/react-query/es/core/utils.js"}],"node_modules/react-query/es/core/query.js":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.Query = void 0;
+
+var _extends2 = _interopRequireDefault(require("@babel/runtime/helpers/esm/extends"));
+
+var _utils = require("./utils");
+
+var _notifyManager = require("./notifyManager");
+
+var _logger = require("./logger");
+
+var _retryer = require("./retryer");
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+// TYPES
+// CLASS
+var Query = /*#__PURE__*/function () {
+  function Query(config) {
+    this.defaultOptions = config.defaultOptions;
+    this.setOptions(config.options);
+    this.observers = [];
+    this.cache = config.cache;
+    this.queryKey = config.queryKey;
+    this.queryHash = config.queryHash;
+    this.initialState = config.state || this.getDefaultState(this.options);
+    this.state = this.initialState;
+    this.scheduleGc();
+  }
+
+  var _proto = Query.prototype;
+
+  _proto.setOptions = function setOptions(options) {
+    var _this$options$cacheTi;
+
+    this.options = (0, _extends2.default)({}, this.defaultOptions, options); // Default to 5 minutes if not cache time is set
+
+    this.cacheTime = Math.max(this.cacheTime || 0, (_this$options$cacheTi = this.options.cacheTime) != null ? _this$options$cacheTi : 5 * 60 * 1000);
+  };
+
+  _proto.setDefaultOptions = function setDefaultOptions(options) {
+    this.defaultOptions = options;
+  };
+
+  _proto.scheduleGc = function scheduleGc() {
+    var _this = this;
+
+    this.clearGcTimeout();
+
+    if ((0, _utils.isValidTimeout)(this.cacheTime)) {
+      this.gcTimeout = setTimeout(function () {
+        _this.optionalRemove();
+      }, this.cacheTime);
+    }
+  };
+
+  _proto.clearGcTimeout = function clearGcTimeout() {
+    clearTimeout(this.gcTimeout);
+    this.gcTimeout = undefined;
+  };
+
+  _proto.optionalRemove = function optionalRemove() {
+    if (!this.observers.length && !this.state.isFetching) {
+      this.cache.remove(this);
+    }
+  };
+
+  _proto.setData = function setData(updater, options) {
+    var _this$options$isDataE, _this$options;
+
+    var prevData = this.state.data; // Get the new data
+
+    var data = (0, _utils.functionalUpdate)(updater, prevData); // Use prev data if an isDataEqual function is defined and returns `true`
+
+    if ((_this$options$isDataE = (_this$options = this.options).isDataEqual) == null ? void 0 : _this$options$isDataE.call(_this$options, prevData, data)) {
+      data = prevData;
+    } else if (this.options.structuralSharing !== false) {
+      // Structurally share data between prev and new data if needed
+      data = (0, _utils.replaceEqualDeep)(prevData, data);
+    } // Set data and mark it as cached
+
+
+    this.dispatch({
+      data: data,
+      type: 'success',
+      dataUpdatedAt: options == null ? void 0 : options.updatedAt
+    });
+    return data;
+  };
+
+  _proto.setState = function setState(state) {
+    this.dispatch({
+      type: 'setState',
+      state: state
+    });
+  };
+
+  _proto.cancel = function cancel(options) {
+    var _this$retryer;
+
+    var promise = this.promise;
+    (_this$retryer = this.retryer) == null ? void 0 : _this$retryer.cancel(options);
+    return promise ? promise.then(_utils.noop).catch(_utils.noop) : Promise.resolve();
+  };
+
+  _proto.destroy = function destroy() {
+    this.clearGcTimeout();
+    this.cancel();
+  };
+
+  _proto.reset = function reset() {
+    this.destroy();
+    this.setState(this.initialState);
+  };
+
+  _proto.isActive = function isActive() {
+    return this.observers.some(function (observer) {
+      return observer.options.enabled !== false;
+    });
+  };
+
+  _proto.isFetching = function isFetching() {
+    return this.state.isFetching;
+  };
+
+  _proto.isStale = function isStale() {
+    return this.state.isInvalidated || !this.state.dataUpdatedAt || this.observers.some(function (observer) {
+      return observer.getCurrentResult().isStale;
+    });
+  };
+
+  _proto.isStaleByTime = function isStaleByTime(staleTime) {
+    if (staleTime === void 0) {
+      staleTime = 0;
+    }
+
+    return this.state.isInvalidated || !this.state.dataUpdatedAt || !(0, _utils.timeUntilStale)(this.state.dataUpdatedAt, staleTime);
+  };
+
+  _proto.onFocus = function onFocus() {
+    var _this$retryer2;
+
+    var observer = this.observers.find(function (x) {
+      return x.willFetchOnWindowFocus();
+    });
+
+    if (observer) {
+      observer.refetch();
+    } // Continue fetch if currently paused
+
+
+    (_this$retryer2 = this.retryer) == null ? void 0 : _this$retryer2.continue();
+  };
+
+  _proto.onOnline = function onOnline() {
+    var _this$retryer3;
+
+    var observer = this.observers.find(function (x) {
+      return x.willFetchOnReconnect();
+    });
+
+    if (observer) {
+      observer.refetch();
+    } // Continue fetch if currently paused
+
+
+    (_this$retryer3 = this.retryer) == null ? void 0 : _this$retryer3.continue();
+  };
+
+  _proto.addObserver = function addObserver(observer) {
+    if (this.observers.indexOf(observer) === -1) {
+      this.observers.push(observer); // Stop the query from being garbage collected
+
+      this.clearGcTimeout();
+      this.cache.notify(this);
+    }
+  };
+
+  _proto.removeObserver = function removeObserver(observer) {
+    if (this.observers.indexOf(observer) !== -1) {
+      this.observers = this.observers.filter(function (x) {
+        return x !== observer;
+      });
+
+      if (!this.observers.length) {
+        // If the transport layer does not support cancellation
+        // we'll let the query continue so the result can be cached
+        if (this.retryer) {
+          if (this.retryer.isTransportCancelable) {
+            this.retryer.cancel();
+          } else {
+            this.retryer.cancelRetry();
+          }
+        }
+
+        if (this.cacheTime) {
+          this.scheduleGc();
+        } else {
+          this.cache.remove(this);
+        }
+      }
+
+      this.cache.notify(this);
+    }
+  };
+
+  _proto.invalidate = function invalidate() {
+    if (!this.state.isInvalidated) {
+      this.dispatch({
+        type: 'invalidate'
+      });
+    }
+  };
+
+  _proto.fetch = function fetch(options, fetchOptions) {
+    var _this2 = this,
+        _this$options$behavio,
+        _context$fetchOptions;
+
+    if (this.state.isFetching) if (this.state.dataUpdatedAt && (fetchOptions == null ? void 0 : fetchOptions.cancelRefetch)) {
+      // Silently cancel current fetch if the user wants to cancel refetches
+      this.cancel({
+        silent: true
+      });
+    } else if (this.promise) {
+      // Return current promise if we are already fetching
+      return this.promise;
+    } // Update config if passed, otherwise the config from the last execution is used
+
+    if (options) {
+      this.setOptions(options);
+    } // Use the options from the first observer with a query function if no function is found.
+    // This can happen when the query is hydrated or created with setQueryData.
+
+
+    if (!this.options.queryFn) {
+      var observer = this.observers.find(function (x) {
+        return x.options.queryFn;
+      });
+
+      if (observer) {
+        this.setOptions(observer.options);
+      }
+    } // Create query function context
+
+
+    var queryKey = (0, _utils.ensureArray)(this.queryKey);
+    var queryFnContext = {
+      queryKey: queryKey,
+      pageParam: undefined
+    }; // Create fetch function
+
+    var fetchFn = function fetchFn() {
+      return _this2.options.queryFn ? _this2.options.queryFn(queryFnContext) : Promise.reject('Missing queryFn');
+    }; // Trigger behavior hook
+
+
+    var context = {
+      fetchOptions: fetchOptions,
+      options: this.options,
+      queryKey: queryKey,
+      state: this.state,
+      fetchFn: fetchFn
+    };
+
+    if ((_this$options$behavio = this.options.behavior) == null ? void 0 : _this$options$behavio.onFetch) {
+      var _this$options$behavio2;
+
+      (_this$options$behavio2 = this.options.behavior) == null ? void 0 : _this$options$behavio2.onFetch(context);
+    } // Set to fetching state if not already in it
+
+
+    if (!this.state.isFetching || this.state.fetchMeta !== ((_context$fetchOptions = context.fetchOptions) == null ? void 0 : _context$fetchOptions.meta)) {
+      var _context$fetchOptions2;
+
+      this.dispatch({
+        type: 'fetch',
+        meta: (_context$fetchOptions2 = context.fetchOptions) == null ? void 0 : _context$fetchOptions2.meta
+      });
+    } // Try to fetch the data
+
+
+    this.retryer = new _retryer.Retryer({
+      fn: context.fetchFn,
+      onFail: function onFail() {
+        _this2.dispatch({
+          type: 'failed'
+        });
+      },
+      onPause: function onPause() {
+        _this2.dispatch({
+          type: 'pause'
+        });
+      },
+      onContinue: function onContinue() {
+        _this2.dispatch({
+          type: 'continue'
+        });
+      },
+      retry: context.options.retry,
+      retryDelay: context.options.retryDelay
+    });
+    this.promise = this.retryer.promise.then(function (data) {
+      return _this2.setData(data);
+    }).catch(function (error) {
+      // Set error state if needed
+      if (!((0, _retryer.isCancelledError)(error) && error.silent)) {
+        _this2.dispatch({
+          type: 'error',
+          error: error
+        });
+      }
+
+      if (!(0, _retryer.isCancelledError)(error)) {
+        // Notify cache callback
+        if (_this2.cache.config.onError) {
+          _this2.cache.config.onError(error, _this2);
+        } // Log error
+
+
+        (0, _logger.getLogger)().error(error);
+      } // Remove query after fetching if cache time is 0
+
+
+      if (_this2.cacheTime === 0) {
+        _this2.optionalRemove();
+      } // Propagate error
+
+
+      throw error;
+    }).then(function (data) {
+      // Remove query after fetching if cache time is 0
+      if (_this2.cacheTime === 0) {
+        _this2.optionalRemove();
+      }
+
+      return data;
+    });
+    return this.promise;
+  };
+
+  _proto.dispatch = function dispatch(action) {
+    var _this3 = this;
+
+    this.state = this.reducer(this.state, action);
+
+    _notifyManager.notifyManager.batch(function () {
+      _this3.observers.forEach(function (observer) {
+        observer.onQueryUpdate(action);
+      });
+
+      _this3.cache.notify(_this3);
+    });
+  };
+
+  _proto.getDefaultState = function getDefaultState(options) {
+    var data = typeof options.initialData === 'function' ? options.initialData() : options.initialData;
+    var hasInitialData = typeof options.initialData !== 'undefined';
+    var initialDataUpdatedAt = hasInitialData && (typeof options.initialDataUpdatedAt === 'function' ? options.initialDataUpdatedAt() : options.initialDataUpdatedAt);
+    var hasData = typeof data !== 'undefined';
+    return {
+      data: data,
+      dataUpdateCount: 0,
+      dataUpdatedAt: hasData ? initialDataUpdatedAt || Date.now() : 0,
+      error: null,
+      errorUpdateCount: 0,
+      errorUpdatedAt: 0,
+      fetchFailureCount: 0,
+      fetchMeta: null,
+      isFetching: false,
+      isInvalidated: false,
+      isPaused: false,
+      status: hasData ? 'success' : 'idle'
+    };
+  };
+
+  _proto.reducer = function reducer(state, action) {
+    var _action$meta, _action$dataUpdatedAt;
+
+    switch (action.type) {
+      case 'failed':
+        return (0, _extends2.default)({}, state, {
+          fetchFailureCount: state.fetchFailureCount + 1
+        });
+
+      case 'pause':
+        return (0, _extends2.default)({}, state, {
+          isPaused: true
+        });
+
+      case 'continue':
+        return (0, _extends2.default)({}, state, {
+          isPaused: false
+        });
+
+      case 'fetch':
+        return (0, _extends2.default)({}, state, {
+          fetchFailureCount: 0,
+          fetchMeta: (_action$meta = action.meta) != null ? _action$meta : null,
+          isFetching: true,
+          isPaused: false,
+          status: !state.dataUpdatedAt ? 'loading' : state.status
+        });
+
+      case 'success':
+        return (0, _extends2.default)({}, state, {
+          data: action.data,
+          dataUpdateCount: state.dataUpdateCount + 1,
+          dataUpdatedAt: (_action$dataUpdatedAt = action.dataUpdatedAt) != null ? _action$dataUpdatedAt : Date.now(),
+          error: null,
+          fetchFailureCount: 0,
+          isFetching: false,
+          isInvalidated: false,
+          isPaused: false,
+          status: 'success'
+        });
+
+      case 'error':
+        var error = action.error;
+
+        if ((0, _retryer.isCancelledError)(error) && error.revert) {
+          var previousStatus;
+
+          if (!state.dataUpdatedAt && !state.errorUpdatedAt) {
+            previousStatus = 'idle';
+          } else if (state.dataUpdatedAt > state.errorUpdatedAt) {
+            previousStatus = 'success';
+          } else {
+            previousStatus = 'error';
+          }
+
+          return (0, _extends2.default)({}, state, {
+            fetchFailureCount: 0,
+            isFetching: false,
+            isPaused: false,
+            status: previousStatus
+          });
+        }
+
+        return (0, _extends2.default)({}, state, {
+          error: error,
+          errorUpdateCount: state.errorUpdateCount + 1,
+          errorUpdatedAt: Date.now(),
+          fetchFailureCount: state.fetchFailureCount + 1,
+          isFetching: false,
+          isPaused: false,
+          status: 'error'
+        });
+
+      case 'invalidate':
+        return (0, _extends2.default)({}, state, {
+          isInvalidated: true
+        });
+
+      case 'setState':
+        return (0, _extends2.default)({}, state, action.state);
+
+      default:
+        return state;
+    }
+  };
+
+  return Query;
+}();
+
+exports.Query = Query;
+},{"@babel/runtime/helpers/esm/extends":"node_modules/@babel/runtime/helpers/esm/extends.js","./utils":"node_modules/react-query/es/core/utils.js","./notifyManager":"node_modules/react-query/es/core/notifyManager.js","./logger":"node_modules/react-query/es/core/logger.js","./retryer":"node_modules/react-query/es/core/retryer.js"}],"node_modules/react-query/es/core/queryCache.js":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.QueryCache = void 0;
+
+var _inheritsLoose2 = _interopRequireDefault(require("@babel/runtime/helpers/esm/inheritsLoose"));
+
+var _utils = require("./utils");
+
+var _query = require("./query");
+
+var _notifyManager = require("./notifyManager");
+
+var _subscribable = require("./subscribable");
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+// TYPES
+// CLASS
+var QueryCache = /*#__PURE__*/function (_Subscribable) {
+  (0, _inheritsLoose2.default)(QueryCache, _Subscribable);
+
+  function QueryCache(config) {
+    var _this;
+
+    _this = _Subscribable.call(this) || this;
+    _this.config = config || {};
+    _this.queries = [];
+    _this.queriesMap = {};
+    return _this;
+  }
+
+  var _proto = QueryCache.prototype;
+
+  _proto.build = function build(client, options, state) {
+    var _options$queryHash;
+
+    var hashFn = (0, _utils.getQueryKeyHashFn)(options);
+    var queryKey = options.queryKey;
+    var queryHash = (_options$queryHash = options.queryHash) != null ? _options$queryHash : hashFn(queryKey);
+    var query = this.get(queryHash);
+
+    if (!query) {
+      query = new _query.Query({
+        cache: this,
+        queryKey: queryKey,
+        queryHash: queryHash,
+        options: client.defaultQueryOptions(options),
+        state: state,
+        defaultOptions: client.getQueryDefaults(queryKey)
+      });
+      this.add(query);
+    }
+
+    return query;
+  };
+
+  _proto.add = function add(query) {
+    if (!this.queriesMap[query.queryHash]) {
+      this.queriesMap[query.queryHash] = query;
+      this.queries.push(query);
+      this.notify(query);
+    }
+  };
+
+  _proto.remove = function remove(query) {
+    var queryInMap = this.queriesMap[query.queryHash];
+
+    if (queryInMap) {
+      query.destroy();
+      this.queries = this.queries.filter(function (x) {
+        return x !== query;
+      });
+
+      if (queryInMap === query) {
+        delete this.queriesMap[query.queryHash];
+      }
+
+      this.notify(query);
+    }
+  };
+
+  _proto.clear = function clear() {
+    var _this2 = this;
+
+    _notifyManager.notifyManager.batch(function () {
+      _this2.queries.forEach(function (query) {
+        _this2.remove(query);
+      });
+    });
+  };
+
+  _proto.get = function get(queryHash) {
+    return this.queriesMap[queryHash];
+  };
+
+  _proto.getAll = function getAll() {
+    return this.queries;
+  };
+
+  _proto.find = function find(arg1, arg2) {
+    var _parseFilterArgs = (0, _utils.parseFilterArgs)(arg1, arg2),
+        filters = _parseFilterArgs[0];
+
+    return this.queries.find(function (query) {
+      return (0, _utils.matchQuery)(filters, query);
+    });
+  };
+
+  _proto.findAll = function findAll(arg1, arg2) {
+    var _parseFilterArgs2 = (0, _utils.parseFilterArgs)(arg1, arg2),
+        filters = _parseFilterArgs2[0];
+
+    return filters ? this.queries.filter(function (query) {
+      return (0, _utils.matchQuery)(filters, query);
+    }) : this.queries;
+  };
+
+  _proto.notify = function notify(query) {
+    var _this3 = this;
+
+    _notifyManager.notifyManager.batch(function () {
+      _this3.listeners.forEach(function (listener) {
+        listener(query);
+      });
+    });
+  };
+
+  _proto.onFocus = function onFocus() {
+    var _this4 = this;
+
+    _notifyManager.notifyManager.batch(function () {
+      _this4.queries.forEach(function (query) {
+        query.onFocus();
+      });
+    });
+  };
+
+  _proto.onOnline = function onOnline() {
+    var _this5 = this;
+
+    _notifyManager.notifyManager.batch(function () {
+      _this5.queries.forEach(function (query) {
+        query.onOnline();
+      });
+    });
+  };
+
+  return QueryCache;
+}(_subscribable.Subscribable);
+
+exports.QueryCache = QueryCache;
+},{"@babel/runtime/helpers/esm/inheritsLoose":"node_modules/@babel/runtime/helpers/esm/inheritsLoose.js","./utils":"node_modules/react-query/es/core/utils.js","./query":"node_modules/react-query/es/core/query.js","./notifyManager":"node_modules/react-query/es/core/notifyManager.js","./subscribable":"node_modules/react-query/es/core/subscribable.js"}],"node_modules/react-query/es/core/mutation.js":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.getDefaultState = getDefaultState;
+exports.Mutation = void 0;
+
+var _extends2 = _interopRequireDefault(require("@babel/runtime/helpers/esm/extends"));
+
+var _logger = require("./logger");
+
+var _notifyManager = require("./notifyManager");
+
+var _retryer = require("./retryer");
+
+var _utils = require("./utils");
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+// TYPES
+// CLASS
+var Mutation = /*#__PURE__*/function () {
+  function Mutation(config) {
+    this.options = (0, _extends2.default)({}, config.defaultOptions, config.options);
+    this.mutationId = config.mutationId;
+    this.mutationCache = config.mutationCache;
+    this.observers = [];
+    this.state = config.state || getDefaultState();
+  }
+
+  var _proto = Mutation.prototype;
+
+  _proto.setState = function setState(state) {
+    this.dispatch({
+      type: 'setState',
+      state: state
+    });
+  };
+
+  _proto.addObserver = function addObserver(observer) {
+    if (this.observers.indexOf(observer) === -1) {
+      this.observers.push(observer);
+    }
+  };
+
+  _proto.removeObserver = function removeObserver(observer) {
+    this.observers = this.observers.filter(function (x) {
+      return x !== observer;
+    });
+  };
+
+  _proto.cancel = function cancel() {
+    if (this.retryer) {
+      this.retryer.cancel();
+      return this.retryer.promise.then(_utils.noop).catch(_utils.noop);
+    }
+
+    return Promise.resolve();
+  };
+
+  _proto.continue = function _continue() {
+    if (this.retryer) {
+      this.retryer.continue();
+      return this.retryer.promise;
+    }
+
+    return this.execute();
+  };
+
+  _proto.execute = function execute() {
+    var _this = this;
+
+    var data;
+    var restored = this.state.status === 'loading';
+    var promise = Promise.resolve();
+
+    if (!restored) {
+      this.dispatch({
+        type: 'loading',
+        variables: this.options.variables
+      });
+      promise = promise.then(function () {
+        return _this.options.onMutate == null ? void 0 : _this.options.onMutate(_this.state.variables);
+      }).then(function (context) {
+        if (context !== _this.state.context) {
+          _this.dispatch({
+            type: 'loading',
+            context: context,
+            variables: _this.state.variables
+          });
+        }
+      });
+    }
+
+    return promise.then(function () {
+      return _this.executeMutation();
+    }).then(function (result) {
+      data = result;
+    }).then(function () {
+      return _this.options.onSuccess == null ? void 0 : _this.options.onSuccess(data, _this.state.variables, _this.state.context);
+    }).then(function () {
+      return _this.options.onSettled == null ? void 0 : _this.options.onSettled(data, null, _this.state.variables, _this.state.context);
+    }).then(function () {
+      _this.dispatch({
+        type: 'success',
+        data: data
+      });
+
+      return data;
+    }).catch(function (error) {
+      // Notify cache callback
+      if (_this.mutationCache.config.onError) {
+        _this.mutationCache.config.onError(error, _this.state.variables, _this.state.context, _this);
+      } // Log error
+
+
+      (0, _logger.getLogger)().error(error);
+      return Promise.resolve().then(function () {
+        return _this.options.onError == null ? void 0 : _this.options.onError(error, _this.state.variables, _this.state.context);
+      }).then(function () {
+        return _this.options.onSettled == null ? void 0 : _this.options.onSettled(undefined, error, _this.state.variables, _this.state.context);
+      }).then(function () {
+        _this.dispatch({
+          type: 'error',
+          error: error
+        });
+
+        throw error;
+      });
+    });
+  };
+
+  _proto.executeMutation = function executeMutation() {
+    var _this2 = this,
+        _this$options$retry;
+
+    this.retryer = new _retryer.Retryer({
+      fn: function fn() {
+        if (!_this2.options.mutationFn) {
+          return Promise.reject('No mutationFn found');
+        }
+
+        return _this2.options.mutationFn(_this2.state.variables);
+      },
+      onFail: function onFail() {
+        _this2.dispatch({
+          type: 'failed'
+        });
+      },
+      onPause: function onPause() {
+        _this2.dispatch({
+          type: 'pause'
+        });
+      },
+      onContinue: function onContinue() {
+        _this2.dispatch({
+          type: 'continue'
+        });
+      },
+      retry: (_this$options$retry = this.options.retry) != null ? _this$options$retry : 0,
+      retryDelay: this.options.retryDelay
+    });
+    return this.retryer.promise;
+  };
+
+  _proto.dispatch = function dispatch(action) {
+    var _this3 = this;
+
+    this.state = reducer(this.state, action);
+
+    _notifyManager.notifyManager.batch(function () {
+      _this3.observers.forEach(function (observer) {
+        observer.onMutationUpdate(action);
+      });
+
+      _this3.mutationCache.notify(_this3);
+    });
+  };
+
+  return Mutation;
+}();
+
+exports.Mutation = Mutation;
+
+function getDefaultState() {
+  return {
+    context: undefined,
+    data: undefined,
+    error: null,
+    failureCount: 0,
+    isPaused: false,
+    status: 'idle',
+    variables: undefined
+  };
+}
+
+function reducer(state, action) {
+  switch (action.type) {
+    case 'failed':
+      return (0, _extends2.default)({}, state, {
+        failureCount: state.failureCount + 1
+      });
+
+    case 'pause':
+      return (0, _extends2.default)({}, state, {
+        isPaused: true
+      });
+
+    case 'continue':
+      return (0, _extends2.default)({}, state, {
+        isPaused: false
+      });
+
+    case 'loading':
+      return (0, _extends2.default)({}, state, {
+        context: action.context,
+        data: undefined,
+        error: null,
+        isPaused: false,
+        status: 'loading',
+        variables: action.variables
+      });
+
+    case 'success':
+      return (0, _extends2.default)({}, state, {
+        data: action.data,
+        error: null,
+        status: 'success',
+        isPaused: false
+      });
+
+    case 'error':
+      return (0, _extends2.default)({}, state, {
+        data: undefined,
+        error: action.error,
+        failureCount: state.failureCount + 1,
+        isPaused: false,
+        status: 'error'
+      });
+
+    case 'setState':
+      return (0, _extends2.default)({}, state, action.state);
+
+    default:
+      return state;
+  }
+}
+},{"@babel/runtime/helpers/esm/extends":"node_modules/@babel/runtime/helpers/esm/extends.js","./logger":"node_modules/react-query/es/core/logger.js","./notifyManager":"node_modules/react-query/es/core/notifyManager.js","./retryer":"node_modules/react-query/es/core/retryer.js","./utils":"node_modules/react-query/es/core/utils.js"}],"node_modules/react-query/es/core/mutationCache.js":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.MutationCache = void 0;
+
+var _inheritsLoose2 = _interopRequireDefault(require("@babel/runtime/helpers/esm/inheritsLoose"));
+
+var _notifyManager = require("./notifyManager");
+
+var _mutation = require("./mutation");
+
+var _utils = require("./utils");
+
+var _subscribable = require("./subscribable");
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+// TYPES
+// CLASS
+var MutationCache = /*#__PURE__*/function (_Subscribable) {
+  (0, _inheritsLoose2.default)(MutationCache, _Subscribable);
+
+  function MutationCache(config) {
+    var _this;
+
+    _this = _Subscribable.call(this) || this;
+    _this.config = config || {};
+    _this.mutations = [];
+    _this.mutationId = 0;
+    return _this;
+  }
+
+  var _proto = MutationCache.prototype;
+
+  _proto.build = function build(client, options, state) {
+    var mutation = new _mutation.Mutation({
+      mutationCache: this,
+      mutationId: ++this.mutationId,
+      options: client.defaultMutationOptions(options),
+      state: state,
+      defaultOptions: options.mutationKey ? client.getMutationDefaults(options.mutationKey) : undefined
+    });
+    this.add(mutation);
+    return mutation;
+  };
+
+  _proto.add = function add(mutation) {
+    this.mutations.push(mutation);
+    this.notify(mutation);
+  };
+
+  _proto.remove = function remove(mutation) {
+    this.mutations = this.mutations.filter(function (x) {
+      return x !== mutation;
+    });
+    mutation.cancel();
+    this.notify(mutation);
+  };
+
+  _proto.clear = function clear() {
+    var _this2 = this;
+
+    _notifyManager.notifyManager.batch(function () {
+      _this2.mutations.forEach(function (mutation) {
+        _this2.remove(mutation);
+      });
+    });
+  };
+
+  _proto.getAll = function getAll() {
+    return this.mutations;
+  };
+
+  _proto.notify = function notify(mutation) {
+    var _this3 = this;
+
+    _notifyManager.notifyManager.batch(function () {
+      _this3.listeners.forEach(function (listener) {
+        listener(mutation);
+      });
+    });
+  };
+
+  _proto.onFocus = function onFocus() {
+    this.resumePausedMutations();
+  };
+
+  _proto.onOnline = function onOnline() {
+    this.resumePausedMutations();
+  };
+
+  _proto.resumePausedMutations = function resumePausedMutations() {
+    var pausedMutations = this.mutations.filter(function (x) {
+      return x.state.isPaused;
+    });
+    return _notifyManager.notifyManager.batch(function () {
+      return pausedMutations.reduce(function (promise, mutation) {
+        return promise.then(function () {
+          return mutation.continue().catch(_utils.noop);
+        });
+      }, Promise.resolve());
+    });
+  };
+
+  return MutationCache;
+}(_subscribable.Subscribable);
+
+exports.MutationCache = MutationCache;
+},{"@babel/runtime/helpers/esm/inheritsLoose":"node_modules/@babel/runtime/helpers/esm/inheritsLoose.js","./notifyManager":"node_modules/react-query/es/core/notifyManager.js","./mutation":"node_modules/react-query/es/core/mutation.js","./utils":"node_modules/react-query/es/core/utils.js","./subscribable":"node_modules/react-query/es/core/subscribable.js"}],"node_modules/react-query/es/core/infiniteQueryBehavior.js":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.infiniteQueryBehavior = infiniteQueryBehavior;
+exports.getNextPageParam = getNextPageParam;
+exports.getPreviousPageParam = getPreviousPageParam;
+exports.hasNextPage = hasNextPage;
+exports.hasPreviousPage = hasPreviousPage;
+
+var _retryer = require("./retryer");
+
+function infiniteQueryBehavior() {
+  return {
+    onFetch: function onFetch(context) {
+      context.fetchFn = function () {
+        var _context$fetchOptions, _context$fetchOptions2, _context$state$data, _context$state$data2;
+
+        var fetchMore = (_context$fetchOptions = context.fetchOptions) == null ? void 0 : (_context$fetchOptions2 = _context$fetchOptions.meta) == null ? void 0 : _context$fetchOptions2.fetchMore;
+        var pageParam = fetchMore == null ? void 0 : fetchMore.pageParam;
+        var isFetchingNextPage = (fetchMore == null ? void 0 : fetchMore.direction) === 'forward';
+        var isFetchingPreviousPage = (fetchMore == null ? void 0 : fetchMore.direction) === 'backward';
+        var oldPages = ((_context$state$data = context.state.data) == null ? void 0 : _context$state$data.pages) || [];
+        var oldPageParams = ((_context$state$data2 = context.state.data) == null ? void 0 : _context$state$data2.pageParams) || [];
+        var newPageParams = oldPageParams; // Get query function
+
+        var queryFn = context.options.queryFn || function () {
+          return Promise.reject('Missing queryFn');
+        }; // Create function to fetch a page
+
+
+        var fetchPage = function fetchPage(pages, manual, param, previous) {
+          if (typeof param === 'undefined' && !manual && pages.length) {
+            return Promise.resolve(pages);
+          }
+
+          var queryFnContext = {
+            queryKey: context.queryKey,
+            pageParam: param
+          };
+          var cancelFn;
+          var queryFnResult = queryFn(queryFnContext);
+
+          if (queryFnResult.cancel) {
+            cancelFn = queryFnResult.cancel;
+          }
+
+          var promise = Promise.resolve(queryFnResult).then(function (page) {
+            newPageParams = previous ? [param].concat(newPageParams) : [].concat(newPageParams, [param]);
+            return previous ? [page].concat(pages) : [].concat(pages, [page]);
+          });
+
+          if (cancelFn) {
+            var promiseAsAny = promise;
+            promiseAsAny.cancel = cancelFn;
+          }
+
+          return promise;
+        };
+
+        var promise; // Fetch first page?
+
+        if (!oldPages.length) {
+          promise = fetchPage([]);
+        } // Fetch next page?
+        else if (isFetchingNextPage) {
+            var manual = typeof pageParam !== 'undefined';
+            var param = manual ? pageParam : getNextPageParam(context.options, oldPages);
+            promise = fetchPage(oldPages, manual, param);
+          } // Fetch previous page?
+          else if (isFetchingPreviousPage) {
+              var _manual = typeof pageParam !== 'undefined';
+
+              var _param = _manual ? pageParam : getPreviousPageParam(context.options, oldPages);
+
+              promise = fetchPage(oldPages, _manual, _param, true);
+            } // Refetch pages
+            else {
+                (function () {
+                  newPageParams = [];
+                  var manual = typeof context.options.getNextPageParam === 'undefined'; // Fetch first page
+
+                  promise = fetchPage([], manual, oldPageParams[0]); // Fetch remaining pages
+
+                  var _loop = function _loop(i) {
+                    promise = promise.then(function (pages) {
+                      var param = manual ? oldPageParams[i] : getNextPageParam(context.options, pages);
+                      return fetchPage(pages, manual, param);
+                    });
+                  };
+
+                  for (var i = 1; i < oldPages.length; i++) {
+                    _loop(i);
+                  }
+                })();
+              }
+
+        var finalPromise = promise.then(function (pages) {
+          return {
+            pages: pages,
+            pageParams: newPageParams
+          };
+        });
+
+        if ((0, _retryer.isCancelable)(promise)) {
+          var finalPromiseAsAny = finalPromise;
+          finalPromiseAsAny.cancel = promise.cancel;
+        }
+
+        return finalPromise;
+      };
+    }
+  };
+}
+
+function getNextPageParam(options, pages) {
+  return options.getNextPageParam == null ? void 0 : options.getNextPageParam(pages[pages.length - 1], pages);
+}
+
+function getPreviousPageParam(options, pages) {
+  return options.getPreviousPageParam == null ? void 0 : options.getPreviousPageParam(pages[0], pages);
+}
+/**
+ * Checks if there is a next page.
+ * Returns `undefined` if it cannot be determined.
+ */
+
+
+function hasNextPage(options, pages) {
+  if (options.getNextPageParam && Array.isArray(pages)) {
+    var nextPageParam = getNextPageParam(options, pages);
+    return typeof nextPageParam !== 'undefined' && nextPageParam !== null && nextPageParam !== false;
+  }
+}
+/**
+ * Checks if there is a previous page.
+ * Returns `undefined` if it cannot be determined.
+ */
+
+
+function hasPreviousPage(options, pages) {
+  if (options.getPreviousPageParam && Array.isArray(pages)) {
+    var previousPageParam = getPreviousPageParam(options, pages);
+    return typeof previousPageParam !== 'undefined' && previousPageParam !== null && previousPageParam !== false;
+  }
+}
+},{"./retryer":"node_modules/react-query/es/core/retryer.js"}],"node_modules/react-query/es/core/queryClient.js":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.QueryClient = void 0;
+
+var _extends2 = _interopRequireDefault(require("@babel/runtime/helpers/esm/extends"));
+
+var _utils = require("./utils");
+
+var _queryCache = require("./queryCache");
+
+var _mutationCache = require("./mutationCache");
+
+var _focusManager = require("./focusManager");
+
+var _onlineManager = require("./onlineManager");
+
+var _notifyManager = require("./notifyManager");
+
+var _infiniteQueryBehavior = require("./infiniteQueryBehavior");
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+// TYPES
+// CLASS
+var QueryClient = /*#__PURE__*/function () {
+  function QueryClient(config) {
+    if (config === void 0) {
+      config = {};
+    }
+
+    this.queryCache = config.queryCache || new _queryCache.QueryCache();
+    this.mutationCache = config.mutationCache || new _mutationCache.MutationCache();
+    this.defaultOptions = config.defaultOptions || {};
+    this.queryDefaults = [];
+    this.mutationDefaults = [];
+  }
+
+  var _proto = QueryClient.prototype;
+
+  _proto.mount = function mount() {
+    var _this = this;
+
+    this.unsubscribeFocus = _focusManager.focusManager.subscribe(function () {
+      if (_focusManager.focusManager.isFocused() && _onlineManager.onlineManager.isOnline()) {
+        _this.mutationCache.onFocus();
+
+        _this.queryCache.onFocus();
+      }
+    });
+    this.unsubscribeOnline = _onlineManager.onlineManager.subscribe(function () {
+      if (_focusManager.focusManager.isFocused() && _onlineManager.onlineManager.isOnline()) {
+        _this.mutationCache.onOnline();
+
+        _this.queryCache.onOnline();
+      }
+    });
+  };
+
+  _proto.unmount = function unmount() {
+    var _this$unsubscribeFocu, _this$unsubscribeOnli;
+
+    (_this$unsubscribeFocu = this.unsubscribeFocus) == null ? void 0 : _this$unsubscribeFocu.call(this);
+    (_this$unsubscribeOnli = this.unsubscribeOnline) == null ? void 0 : _this$unsubscribeOnli.call(this);
+  };
+
+  _proto.isFetching = function isFetching(arg1, arg2) {
+    var _parseFilterArgs = (0, _utils.parseFilterArgs)(arg1, arg2),
+        filters = _parseFilterArgs[0];
+
+    filters.fetching = true;
+    return this.queryCache.findAll(filters).length;
+  };
+
+  _proto.getQueryData = function getQueryData(queryKey, filters) {
+    var _this$queryCache$find;
+
+    return (_this$queryCache$find = this.queryCache.find(queryKey, filters)) == null ? void 0 : _this$queryCache$find.state.data;
+  };
+
+  _proto.setQueryData = function setQueryData(queryKey, updater, options) {
+    var parsedOptions = (0, _utils.parseQueryArgs)(queryKey);
+    var defaultedOptions = this.defaultQueryOptions(parsedOptions);
+    return this.queryCache.build(this, defaultedOptions).setData(updater, options);
+  };
+
+  _proto.getQueryState = function getQueryState(queryKey, filters) {
+    var _this$queryCache$find2;
+
+    return (_this$queryCache$find2 = this.queryCache.find(queryKey, filters)) == null ? void 0 : _this$queryCache$find2.state;
+  };
+
+  _proto.removeQueries = function removeQueries(arg1, arg2) {
+    var _parseFilterArgs2 = (0, _utils.parseFilterArgs)(arg1, arg2),
+        filters = _parseFilterArgs2[0];
+
+    var queryCache = this.queryCache;
+
+    _notifyManager.notifyManager.batch(function () {
+      queryCache.findAll(filters).forEach(function (query) {
+        queryCache.remove(query);
+      });
+    });
+  };
+
+  _proto.resetQueries = function resetQueries(arg1, arg2, arg3) {
+    var _this2 = this;
+
+    var _parseFilterArgs3 = (0, _utils.parseFilterArgs)(arg1, arg2, arg3),
+        filters = _parseFilterArgs3[0],
+        options = _parseFilterArgs3[1];
+
+    var queryCache = this.queryCache;
+    var refetchFilters = (0, _extends2.default)({}, filters, {
+      active: true
+    });
+    return _notifyManager.notifyManager.batch(function () {
+      queryCache.findAll(filters).forEach(function (query) {
+        query.reset();
+      });
+      return _this2.refetchQueries(refetchFilters, options);
+    });
+  };
+
+  _proto.cancelQueries = function cancelQueries(arg1, arg2, arg3) {
+    var _this3 = this;
+
+    var _parseFilterArgs4 = (0, _utils.parseFilterArgs)(arg1, arg2, arg3),
+        filters = _parseFilterArgs4[0],
+        _parseFilterArgs4$ = _parseFilterArgs4[1],
+        cancelOptions = _parseFilterArgs4$ === void 0 ? {} : _parseFilterArgs4$;
+
+    if (typeof cancelOptions.revert === 'undefined') {
+      cancelOptions.revert = true;
+    }
+
+    var promises = _notifyManager.notifyManager.batch(function () {
+      return _this3.queryCache.findAll(filters).map(function (query) {
+        return query.cancel(cancelOptions);
+      });
+    });
+
+    return Promise.all(promises).then(_utils.noop).catch(_utils.noop);
+  };
+
+  _proto.invalidateQueries = function invalidateQueries(arg1, arg2, arg3) {
+    var _filters$refetchActiv,
+        _filters$refetchInact,
+        _this4 = this;
+
+    var _parseFilterArgs5 = (0, _utils.parseFilterArgs)(arg1, arg2, arg3),
+        filters = _parseFilterArgs5[0],
+        options = _parseFilterArgs5[1];
+
+    var refetchFilters = (0, _extends2.default)({}, filters, {
+      active: (_filters$refetchActiv = filters.refetchActive) != null ? _filters$refetchActiv : true,
+      inactive: (_filters$refetchInact = filters.refetchInactive) != null ? _filters$refetchInact : false
+    });
+    return _notifyManager.notifyManager.batch(function () {
+      _this4.queryCache.findAll(filters).forEach(function (query) {
+        query.invalidate();
+      });
+
+      return _this4.refetchQueries(refetchFilters, options);
+    });
+  };
+
+  _proto.refetchQueries = function refetchQueries(arg1, arg2, arg3) {
+    var _this5 = this;
+
+    var _parseFilterArgs6 = (0, _utils.parseFilterArgs)(arg1, arg2, arg3),
+        filters = _parseFilterArgs6[0],
+        options = _parseFilterArgs6[1];
+
+    var promises = _notifyManager.notifyManager.batch(function () {
+      return _this5.queryCache.findAll(filters).map(function (query) {
+        return query.fetch();
+      });
+    });
+
+    var promise = Promise.all(promises).then(_utils.noop);
+
+    if (!(options == null ? void 0 : options.throwOnError)) {
+      promise = promise.catch(_utils.noop);
+    }
+
+    return promise;
+  };
+
+  _proto.fetchQuery = function fetchQuery(arg1, arg2, arg3) {
+    var parsedOptions = (0, _utils.parseQueryArgs)(arg1, arg2, arg3);
+    var defaultedOptions = this.defaultQueryOptions(parsedOptions); // https://github.com/tannerlinsley/react-query/issues/652
+
+    if (typeof defaultedOptions.retry === 'undefined') {
+      defaultedOptions.retry = false;
+    }
+
+    var query = this.queryCache.build(this, defaultedOptions);
+    return query.isStaleByTime(defaultedOptions.staleTime) ? query.fetch(defaultedOptions) : Promise.resolve(query.state.data);
+  };
+
+  _proto.prefetchQuery = function prefetchQuery(arg1, arg2, arg3) {
+    return this.fetchQuery(arg1, arg2, arg3).then(_utils.noop).catch(_utils.noop);
+  };
+
+  _proto.fetchInfiniteQuery = function fetchInfiniteQuery(arg1, arg2, arg3) {
+    var parsedOptions = (0, _utils.parseQueryArgs)(arg1, arg2, arg3);
+    parsedOptions.behavior = (0, _infiniteQueryBehavior.infiniteQueryBehavior)();
+    return this.fetchQuery(parsedOptions);
+  };
+
+  _proto.prefetchInfiniteQuery = function prefetchInfiniteQuery(arg1, arg2, arg3) {
+    return this.fetchInfiniteQuery(arg1, arg2, arg3).then(_utils.noop).catch(_utils.noop);
+  };
+
+  _proto.cancelMutations = function cancelMutations() {
+    var _this6 = this;
+
+    var promises = _notifyManager.notifyManager.batch(function () {
+      return _this6.mutationCache.getAll().map(function (mutation) {
+        return mutation.cancel();
+      });
+    });
+
+    return Promise.all(promises).then(_utils.noop).catch(_utils.noop);
+  };
+
+  _proto.resumePausedMutations = function resumePausedMutations() {
+    return this.getMutationCache().resumePausedMutations();
+  };
+
+  _proto.executeMutation = function executeMutation(options) {
+    return this.mutationCache.build(this, options).execute();
+  };
+
+  _proto.getQueryCache = function getQueryCache() {
+    return this.queryCache;
+  };
+
+  _proto.getMutationCache = function getMutationCache() {
+    return this.mutationCache;
+  };
+
+  _proto.getDefaultOptions = function getDefaultOptions() {
+    return this.defaultOptions;
+  };
+
+  _proto.setDefaultOptions = function setDefaultOptions(options) {
+    this.defaultOptions = options;
+  };
+
+  _proto.setQueryDefaults = function setQueryDefaults(queryKey, options) {
+    var result = this.queryDefaults.find(function (x) {
+      return (0, _utils.hashQueryKey)(queryKey) === (0, _utils.hashQueryKey)(x.queryKey);
+    });
+
+    if (result) {
+      result.defaultOptions = options;
+    } else {
+      this.queryDefaults.push({
+        queryKey: queryKey,
+        defaultOptions: options
+      });
+    }
+  };
+
+  _proto.getQueryDefaults = function getQueryDefaults(queryKey) {
+    var _this$queryDefaults$f;
+
+    return queryKey ? (_this$queryDefaults$f = this.queryDefaults.find(function (x) {
+      return (0, _utils.partialMatchKey)(queryKey, x.queryKey);
+    })) == null ? void 0 : _this$queryDefaults$f.defaultOptions : undefined;
+  };
+
+  _proto.setMutationDefaults = function setMutationDefaults(mutationKey, options) {
+    var result = this.mutationDefaults.find(function (x) {
+      return (0, _utils.hashQueryKey)(mutationKey) === (0, _utils.hashQueryKey)(x.mutationKey);
+    });
+
+    if (result) {
+      result.defaultOptions = options;
+    } else {
+      this.mutationDefaults.push({
+        mutationKey: mutationKey,
+        defaultOptions: options
+      });
+    }
+  };
+
+  _proto.getMutationDefaults = function getMutationDefaults(mutationKey) {
+    var _this$mutationDefault;
+
+    return mutationKey ? (_this$mutationDefault = this.mutationDefaults.find(function (x) {
+      return (0, _utils.partialMatchKey)(mutationKey, x.mutationKey);
+    })) == null ? void 0 : _this$mutationDefault.defaultOptions : undefined;
+  };
+
+  _proto.defaultQueryOptions = function defaultQueryOptions(options) {
+    if (options == null ? void 0 : options._defaulted) {
+      return options;
+    }
+
+    return (0, _extends2.default)({}, this.defaultOptions.queries, this.getQueryDefaults(options == null ? void 0 : options.queryKey), options, {
+      _defaulted: true
+    });
+  };
+
+  _proto.defaultQueryObserverOptions = function defaultQueryObserverOptions(options) {
+    return this.defaultQueryOptions(options);
+  };
+
+  _proto.defaultMutationOptions = function defaultMutationOptions(options) {
+    if (options == null ? void 0 : options._defaulted) {
+      return options;
+    }
+
+    return (0, _extends2.default)({}, this.defaultOptions.mutations, this.getMutationDefaults(options == null ? void 0 : options.mutationKey), options, {
+      _defaulted: true
+    });
+  };
+
+  _proto.clear = function clear() {
+    this.queryCache.clear();
+    this.mutationCache.clear();
+  };
+
+  return QueryClient;
+}();
+
+exports.QueryClient = QueryClient;
+},{"@babel/runtime/helpers/esm/extends":"node_modules/@babel/runtime/helpers/esm/extends.js","./utils":"node_modules/react-query/es/core/utils.js","./queryCache":"node_modules/react-query/es/core/queryCache.js","./mutationCache":"node_modules/react-query/es/core/mutationCache.js","./focusManager":"node_modules/react-query/es/core/focusManager.js","./onlineManager":"node_modules/react-query/es/core/onlineManager.js","./notifyManager":"node_modules/react-query/es/core/notifyManager.js","./infiniteQueryBehavior":"node_modules/react-query/es/core/infiniteQueryBehavior.js"}],"node_modules/react-query/es/core/queryObserver.js":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.QueryObserver = void 0;
+
+var _extends2 = _interopRequireDefault(require("@babel/runtime/helpers/esm/extends"));
+
+var _inheritsLoose2 = _interopRequireDefault(require("@babel/runtime/helpers/esm/inheritsLoose"));
+
+var _utils = require("./utils");
+
+var _notifyManager = require("./notifyManager");
+
+var _focusManager = require("./focusManager");
+
+var _subscribable = require("./subscribable");
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+var QueryObserver = /*#__PURE__*/function (_Subscribable) {
+  (0, _inheritsLoose2.default)(QueryObserver, _Subscribable);
+
+  function QueryObserver(client, options) {
+    var _this;
+
+    _this = _Subscribable.call(this) || this;
+    _this.client = client;
+    _this.options = options;
+    _this.initialDataUpdateCount = 0;
+    _this.initialErrorUpdateCount = 0;
+
+    _this.bindMethods();
+
+    _this.setOptions(options);
+
+    return _this;
+  }
+
+  var _proto = QueryObserver.prototype;
+
+  _proto.bindMethods = function bindMethods() {
+    this.remove = this.remove.bind(this);
+    this.refetch = this.refetch.bind(this);
+  };
+
+  _proto.onSubscribe = function onSubscribe() {
+    if (this.listeners.length === 1) {
+      this.updateQuery();
+      this.currentQuery.addObserver(this);
+
+      if (this.willFetchOnMount()) {
+        this.executeFetch();
+      }
+
+      this.updateTimers();
+    }
+  };
+
+  _proto.onUnsubscribe = function onUnsubscribe() {
+    if (!this.listeners.length) {
+      this.destroy();
+    }
+  };
+
+  _proto.willLoadOnMount = function willLoadOnMount() {
+    return this.options.enabled !== false && !this.currentQuery.state.dataUpdatedAt && !(this.currentQuery.state.status === 'error' && this.options.retryOnMount === false);
+  };
+
+  _proto.willRefetchOnMount = function willRefetchOnMount() {
+    return this.options.enabled !== false && this.currentQuery.state.dataUpdatedAt > 0 && (this.options.refetchOnMount === 'always' || this.options.refetchOnMount !== false && this.isStale());
+  };
+
+  _proto.willFetchOnMount = function willFetchOnMount() {
+    return this.willLoadOnMount() || this.willRefetchOnMount();
+  };
+
+  _proto.willFetchOnReconnect = function willFetchOnReconnect() {
+    return this.options.enabled !== false && (this.options.refetchOnReconnect === 'always' || this.options.refetchOnReconnect !== false && this.isStale());
+  };
+
+  _proto.willFetchOnWindowFocus = function willFetchOnWindowFocus() {
+    return this.options.enabled !== false && (this.options.refetchOnWindowFocus === 'always' || this.options.refetchOnWindowFocus !== false && this.isStale());
+  };
+
+  _proto.willFetchOptionally = function willFetchOptionally() {
+    return this.options.enabled !== false && this.isStale();
+  };
+
+  _proto.isStale = function isStale() {
+    return this.currentQuery.isStaleByTime(this.options.staleTime);
+  };
+
+  _proto.destroy = function destroy() {
+    this.listeners = [];
+    this.clearTimers();
+    this.currentQuery.removeObserver(this);
+  };
+
+  _proto.setOptions = function setOptions(options) {
+    var prevOptions = this.options;
+    var prevQuery = this.currentQuery;
+    this.options = this.client.defaultQueryObserverOptions(options);
+
+    if (typeof this.options.enabled !== 'undefined' && typeof this.options.enabled !== 'boolean') {
+      throw new Error('Expected enabled to be a boolean');
+    } // Keep previous query key if the user does not supply one
+
+
+    if (!this.options.queryKey) {
+      this.options.queryKey = prevOptions.queryKey;
+    }
+
+    this.updateQuery(); // Take no further actions if there are no subscribers
+
+    if (!this.listeners.length) {
+      return;
+    } // If we subscribed to a new query, optionally fetch and update refetch
+
+
+    if (this.currentQuery !== prevQuery) {
+      this.optionalFetch();
+      this.updateTimers();
+      return;
+    } // Optionally fetch if the query became enabled
+
+
+    if (this.options.enabled !== false && prevOptions.enabled === false) {
+      this.optionalFetch();
+    } // Update stale interval if needed
+
+
+    if (this.options.enabled !== prevOptions.enabled || this.options.staleTime !== prevOptions.staleTime) {
+      this.updateStaleTimeout();
+    } // Update refetch interval if needed
+
+
+    if (this.options.enabled !== prevOptions.enabled || this.options.refetchInterval !== prevOptions.refetchInterval) {
+      this.updateRefetchInterval();
+    }
+  };
+
+  _proto.getCurrentResult = function getCurrentResult() {
+    return this.currentResult;
+  };
+
+  _proto.getNextResult = function getNextResult(options) {
+    var _this2 = this;
+
+    return new Promise(function (resolve, reject) {
+      var unsubscribe = _this2.subscribe(function (result) {
+        if (!result.isFetching) {
+          unsubscribe();
+
+          if (result.isError && (options == null ? void 0 : options.throwOnError)) {
+            reject(result.error);
+          } else {
+            resolve(result);
+          }
+        }
+      });
+    });
+  };
+
+  _proto.getCurrentQuery = function getCurrentQuery() {
+    return this.currentQuery;
+  };
+
+  _proto.remove = function remove() {
+    this.client.getQueryCache().remove(this.currentQuery);
+  };
+
+  _proto.refetch = function refetch(options) {
+    return this.fetch(options);
+  };
+
+  _proto.fetch = function fetch(fetchOptions) {
+    var _this3 = this;
+
+    return this.executeFetch(fetchOptions).then(function () {
+      _this3.updateResult();
+
+      return _this3.currentResult;
+    });
+  };
+
+  _proto.optionalFetch = function optionalFetch() {
+    if (this.willFetchOptionally()) {
+      this.executeFetch();
+    }
+  };
+
+  _proto.executeFetch = function executeFetch(fetchOptions) {
+    // Make sure we reference the latest query as the current one might have been removed
+    this.updateQuery(); // Fetch
+
+    var promise = this.currentQuery.fetch(this.options, fetchOptions);
+
+    if (!(fetchOptions == null ? void 0 : fetchOptions.throwOnError)) {
+      promise = promise.catch(_utils.noop);
+    }
+
+    return promise;
+  };
+
+  _proto.updateStaleTimeout = function updateStaleTimeout() {
+    var _this4 = this;
+
+    this.clearStaleTimeout();
+
+    if (_utils.isServer || this.currentResult.isStale || !(0, _utils.isValidTimeout)(this.options.staleTime)) {
+      return;
+    }
+
+    var time = (0, _utils.timeUntilStale)(this.currentResult.dataUpdatedAt, this.options.staleTime); // The timeout is sometimes triggered 1 ms before the stale time expiration.
+    // To mitigate this issue we always add 1 ms to the timeout.
+
+    var timeout = time + 1;
+    this.staleTimeoutId = setTimeout(function () {
+      if (!_this4.currentResult.isStale) {
+        var prevResult = _this4.currentResult;
+
+        _this4.updateResult();
+
+        _this4.notify({
+          listeners: _this4.shouldNotifyListeners(prevResult, _this4.currentResult),
+          cache: true
+        });
+      }
+    }, timeout);
+  };
+
+  _proto.updateRefetchInterval = function updateRefetchInterval() {
+    var _this5 = this;
+
+    this.clearRefetchInterval();
+
+    if (_utils.isServer || this.options.enabled === false || !(0, _utils.isValidTimeout)(this.options.refetchInterval)) {
+      return;
+    }
+
+    this.refetchIntervalId = setInterval(function () {
+      if (_this5.options.refetchIntervalInBackground || _focusManager.focusManager.isFocused()) {
+        _this5.executeFetch();
+      }
+    }, this.options.refetchInterval);
+  };
+
+  _proto.updateTimers = function updateTimers() {
+    this.updateStaleTimeout();
+    this.updateRefetchInterval();
+  };
+
+  _proto.clearTimers = function clearTimers() {
+    this.clearStaleTimeout();
+    this.clearRefetchInterval();
+  };
+
+  _proto.clearStaleTimeout = function clearStaleTimeout() {
+    clearTimeout(this.staleTimeoutId);
+    this.staleTimeoutId = undefined;
+  };
+
+  _proto.clearRefetchInterval = function clearRefetchInterval() {
+    clearInterval(this.refetchIntervalId);
+    this.refetchIntervalId = undefined;
+  };
+
+  _proto.getNewResult = function getNewResult(willFetch) {
+    var _this$previousQueryRe;
+
+    var state = this.currentQuery.state;
+    var isFetching = state.isFetching,
+        status = state.status;
+    var isPreviousData = false;
+    var isPlaceholderData = false;
+    var data;
+    var dataUpdatedAt = state.dataUpdatedAt; // Optimistically set status to loading if we will start fetching
+
+    if (willFetch) {
+      isFetching = true;
+
+      if (!dataUpdatedAt) {
+        status = 'loading';
+      }
+    } // Keep previous data if needed
+
+
+    if (this.options.keepPreviousData && !state.dataUpdateCount && ((_this$previousQueryRe = this.previousQueryResult) == null ? void 0 : _this$previousQueryRe.isSuccess)) {
+      data = this.previousQueryResult.data;
+      dataUpdatedAt = this.previousQueryResult.dataUpdatedAt;
+      status = this.previousQueryResult.status;
+      isPreviousData = true;
+    } // Select data if needed
+    else if (this.options.select && typeof state.data !== 'undefined') {
+        var _this$currentResultSt; // Use the previous select result if the query data did not change
+
+
+        if (this.currentResult && state.data === ((_this$currentResultSt = this.currentResultState) == null ? void 0 : _this$currentResultSt.data)) {
+          data = this.currentResult.data;
+        } else {
+          data = this.options.select(state.data);
+
+          if (this.options.structuralSharing !== false) {
+            var _this$currentResult;
+
+            data = (0, _utils.replaceEqualDeep)((_this$currentResult = this.currentResult) == null ? void 0 : _this$currentResult.data, data);
+          }
+        }
+      } // Use query data
+      else {
+          data = state.data;
+        } // Show placeholder data if needed
+
+
+    if (typeof this.options.placeholderData !== 'undefined' && typeof data === 'undefined' && status === 'loading') {
+      var placeholderData = typeof this.options.placeholderData === 'function' ? this.options.placeholderData() : this.options.placeholderData;
+
+      if (typeof placeholderData !== 'undefined') {
+        status = 'success';
+        data = placeholderData;
+        isPlaceholderData = true;
+      }
+    }
+
+    var result = (0, _extends2.default)({}, (0, _utils.getStatusProps)(status), {
+      data: data,
+      dataUpdatedAt: dataUpdatedAt,
+      error: state.error,
+      errorUpdatedAt: state.errorUpdatedAt,
+      failureCount: state.fetchFailureCount,
+      isFetched: state.dataUpdateCount > 0 || state.errorUpdateCount > 0,
+      isFetchedAfterMount: state.dataUpdateCount > this.initialDataUpdateCount || state.errorUpdateCount > this.initialErrorUpdateCount,
+      isFetching: isFetching,
+      isLoadingError: status === 'error' && state.dataUpdatedAt === 0,
+      isPlaceholderData: isPlaceholderData,
+      isPreviousData: isPreviousData,
+      isRefetchError: status === 'error' && state.dataUpdatedAt !== 0,
+      isStale: this.isStale(),
+      refetch: this.refetch,
+      remove: this.remove
+    });
+    return result;
+  };
+
+  _proto.shouldNotifyListeners = function shouldNotifyListeners(prevResult, result) {
+    var _this$options = this.options,
+        notifyOnChangeProps = _this$options.notifyOnChangeProps,
+        notifyOnChangePropsExclusions = _this$options.notifyOnChangePropsExclusions;
+
+    if (prevResult === result) {
+      return false;
+    }
+
+    if (!notifyOnChangeProps && !notifyOnChangePropsExclusions) {
+      return true;
+    }
+
+    var keys = Object.keys(result);
+
+    var _loop = function _loop(i) {
+      var key = keys[i];
+      var changed = prevResult[key] !== result[key];
+      var isIncluded = notifyOnChangeProps == null ? void 0 : notifyOnChangeProps.some(function (x) {
+        return x === key;
+      });
+      var isExcluded = notifyOnChangePropsExclusions == null ? void 0 : notifyOnChangePropsExclusions.some(function (x) {
+        return x === key;
+      });
+
+      if (changed) {
+        if (notifyOnChangePropsExclusions && isExcluded) {
+          return "continue";
+        }
+
+        if (!notifyOnChangeProps || isIncluded) {
+          return {
+            v: true
+          };
+        }
+      }
+    };
+
+    for (var i = 0; i < keys.length; i++) {
+      var _ret = _loop(i);
+
+      if (_ret === "continue") continue;
+      if (typeof _ret === "object") return _ret.v;
+    }
+
+    return false;
+  };
+
+  _proto.updateResult = function updateResult(willFetch) {
+    var result = this.getNewResult(willFetch); // Keep reference to the current state on which the current result is based on
+
+    this.currentResultState = this.currentQuery.state; // Only update if something has changed
+
+    if (!(0, _utils.shallowEqualObjects)(result, this.currentResult)) {
+      this.currentResult = result;
+    }
+  };
+
+  _proto.updateQuery = function updateQuery() {
+    var prevQuery = this.currentQuery;
+    var query = this.client.getQueryCache().build(this.client, this.options);
+
+    if (query === prevQuery) {
+      return;
+    }
+
+    this.previousQueryResult = this.currentResult;
+    this.currentQuery = query;
+    this.initialDataUpdateCount = query.state.dataUpdateCount;
+    this.initialErrorUpdateCount = query.state.errorUpdateCount;
+    var willFetch = prevQuery ? this.willFetchOptionally() : this.willFetchOnMount();
+    this.updateResult(willFetch);
+
+    if (!this.hasListeners()) {
+      return;
+    }
+
+    prevQuery == null ? void 0 : prevQuery.removeObserver(this);
+    this.currentQuery.addObserver(this);
+
+    if (this.shouldNotifyListeners(this.previousQueryResult, this.currentResult)) {
+      this.notify({
+        listeners: true
+      });
+    }
+  };
+
+  _proto.onQueryUpdate = function onQueryUpdate(action) {
+    // Store current result and get new result
+    var prevResult = this.currentResult;
+    this.updateResult();
+    var currentResult = this.currentResult; // Update timers
+
+    this.updateTimers(); // Do not notify if the nothing has changed
+
+    if (prevResult === currentResult) {
+      return;
+    } // Determine which callbacks to trigger
+
+
+    var notifyOptions = {};
+
+    if (action.type === 'success') {
+      notifyOptions.onSuccess = true;
+    } else if (action.type === 'error') {
+      notifyOptions.onError = true;
+    }
+
+    if (this.shouldNotifyListeners(prevResult, currentResult)) {
+      notifyOptions.listeners = true;
+    }
+
+    this.notify(notifyOptions);
+  };
+
+  _proto.notify = function notify(notifyOptions) {
+    var _this6 = this;
+
+    _notifyManager.notifyManager.batch(function () {
+      // First trigger the configuration callbacks
+      if (notifyOptions.onSuccess) {
+        _this6.options.onSuccess == null ? void 0 : _this6.options.onSuccess(_this6.currentResult.data);
+        _this6.options.onSettled == null ? void 0 : _this6.options.onSettled(_this6.currentResult.data, null);
+      } else if (notifyOptions.onError) {
+        _this6.options.onError == null ? void 0 : _this6.options.onError(_this6.currentResult.error);
+        _this6.options.onSettled == null ? void 0 : _this6.options.onSettled(undefined, _this6.currentResult.error);
+      } // Then trigger the listeners
+
+
+      if (notifyOptions.listeners) {
+        _this6.listeners.forEach(function (listener) {
+          listener(_this6.currentResult);
+        });
+      } // Then the cache listeners
+
+
+      if (notifyOptions.cache) {
+        _this6.client.getQueryCache().notify(_this6.currentQuery);
+      }
+    });
+  };
+
+  return QueryObserver;
+}(_subscribable.Subscribable);
+
+exports.QueryObserver = QueryObserver;
+},{"@babel/runtime/helpers/esm/extends":"node_modules/@babel/runtime/helpers/esm/extends.js","@babel/runtime/helpers/esm/inheritsLoose":"node_modules/@babel/runtime/helpers/esm/inheritsLoose.js","./utils":"node_modules/react-query/es/core/utils.js","./notifyManager":"node_modules/react-query/es/core/notifyManager.js","./focusManager":"node_modules/react-query/es/core/focusManager.js","./subscribable":"node_modules/react-query/es/core/subscribable.js"}],"node_modules/react-query/es/core/queriesObserver.js":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.QueriesObserver = void 0;
+
+var _inheritsLoose2 = _interopRequireDefault(require("@babel/runtime/helpers/esm/inheritsLoose"));
+
+var _utils = require("./utils");
+
+var _notifyManager = require("./notifyManager");
+
+var _queryObserver = require("./queryObserver");
+
+var _subscribable = require("./subscribable");
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+var QueriesObserver = /*#__PURE__*/function (_Subscribable) {
+  (0, _inheritsLoose2.default)(QueriesObserver, _Subscribable);
+
+  function QueriesObserver(client, queries) {
+    var _this;
+
+    _this = _Subscribable.call(this) || this;
+    _this.client = client;
+    _this.queries = queries || [];
+    _this.result = [];
+    _this.observers = []; // Subscribe to queries
+
+    _this.updateObservers();
+
+    return _this;
+  }
+
+  var _proto = QueriesObserver.prototype;
+
+  _proto.onSubscribe = function onSubscribe() {
+    var _this2 = this;
+
+    if (this.listeners.length === 1) {
+      this.observers.forEach(function (observer) {
+        observer.subscribe(function (result) {
+          _this2.onUpdate(observer, result);
+        });
+      });
+    }
+  };
+
+  _proto.onUnsubscribe = function onUnsubscribe() {
+    if (!this.listeners.length) {
+      this.destroy();
+    }
+  };
+
+  _proto.destroy = function destroy() {
+    this.listeners = [];
+    this.observers.forEach(function (observer) {
+      observer.destroy();
+    });
+  };
+
+  _proto.setQueries = function setQueries(queries) {
+    this.queries = queries;
+    this.updateObservers();
+  };
+
+  _proto.getCurrentResult = function getCurrentResult() {
+    return this.result;
+  };
+
+  _proto.updateObservers = function updateObservers() {
+    var _this3 = this;
+
+    var hasIndexChange = false;
+    var prevObservers = this.observers;
+    var newObservers = this.queries.map(function (options, i) {
+      var observer = prevObservers[i];
+
+      var defaultedOptions = _this3.client.defaultQueryObserverOptions(options);
+
+      var hashFn = (0, _utils.getQueryKeyHashFn)(defaultedOptions);
+      defaultedOptions.queryHash = hashFn(defaultedOptions.queryKey);
+
+      if (!observer || observer.getCurrentQuery().queryHash !== defaultedOptions.queryHash) {
+        hasIndexChange = true;
+        observer = prevObservers.find(function (x) {
+          return x.getCurrentQuery().queryHash === defaultedOptions.queryHash;
+        });
+      }
+
+      if (observer) {
+        observer.setOptions(defaultedOptions);
+        return observer;
+      }
+
+      return new _queryObserver.QueryObserver(_this3.client, defaultedOptions);
+    });
+
+    if (prevObservers.length === newObservers.length && !hasIndexChange) {
+      return;
+    }
+
+    this.observers = newObservers;
+    this.result = newObservers.map(function (observer) {
+      return observer.getCurrentResult();
+    });
+
+    if (!this.listeners.length) {
+      return;
+    }
+
+    (0, _utils.difference)(prevObservers, newObservers).forEach(function (observer) {
+      observer.destroy();
+    });
+    (0, _utils.difference)(newObservers, prevObservers).forEach(function (observer) {
+      observer.subscribe(function (result) {
+        _this3.onUpdate(observer, result);
+      });
+    });
+    this.notify();
+  };
+
+  _proto.onUpdate = function onUpdate(observer, result) {
+    var index = this.observers.indexOf(observer);
+
+    if (index !== -1) {
+      this.result = (0, _utils.replaceAt)(this.result, index, result);
+      this.notify();
+    }
+  };
+
+  _proto.notify = function notify() {
+    var _this4 = this;
+
+    _notifyManager.notifyManager.batch(function () {
+      _this4.listeners.forEach(function (listener) {
+        listener(_this4.result);
+      });
+    });
+  };
+
+  return QueriesObserver;
+}(_subscribable.Subscribable);
+
+exports.QueriesObserver = QueriesObserver;
+},{"@babel/runtime/helpers/esm/inheritsLoose":"node_modules/@babel/runtime/helpers/esm/inheritsLoose.js","./utils":"node_modules/react-query/es/core/utils.js","./notifyManager":"node_modules/react-query/es/core/notifyManager.js","./queryObserver":"node_modules/react-query/es/core/queryObserver.js","./subscribable":"node_modules/react-query/es/core/subscribable.js"}],"node_modules/react-query/es/core/infiniteQueryObserver.js":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.InfiniteQueryObserver = void 0;
+
+var _extends2 = _interopRequireDefault(require("@babel/runtime/helpers/esm/extends"));
+
+var _inheritsLoose2 = _interopRequireDefault(require("@babel/runtime/helpers/esm/inheritsLoose"));
+
+var _queryObserver = require("./queryObserver");
+
+var _infiniteQueryBehavior = require("./infiniteQueryBehavior");
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+var InfiniteQueryObserver = /*#__PURE__*/function (_QueryObserver) {
+  (0, _inheritsLoose2.default)(InfiniteQueryObserver, _QueryObserver); // Type override
+  // Type override
+  // Type override
+  // eslint-disable-next-line @typescript-eslint/no-useless-constructor
+
+  function InfiniteQueryObserver(client, options) {
+    return _QueryObserver.call(this, client, options) || this;
+  }
+
+  var _proto = InfiniteQueryObserver.prototype;
+
+  _proto.bindMethods = function bindMethods() {
+    _QueryObserver.prototype.bindMethods.call(this);
+
+    this.fetchNextPage = this.fetchNextPage.bind(this);
+    this.fetchPreviousPage = this.fetchPreviousPage.bind(this);
+  };
+
+  _proto.setOptions = function setOptions(options) {
+    _QueryObserver.prototype.setOptions.call(this, (0, _extends2.default)({}, options, {
+      behavior: (0, _infiniteQueryBehavior.infiniteQueryBehavior)()
+    }));
+  };
+
+  _proto.fetchNextPage = function fetchNextPage(options) {
+    return this.fetch({
+      cancelRefetch: true,
+      throwOnError: options == null ? void 0 : options.throwOnError,
+      meta: {
+        fetchMore: {
+          direction: 'forward',
+          pageParam: options == null ? void 0 : options.pageParam
+        }
+      }
+    });
+  };
+
+  _proto.fetchPreviousPage = function fetchPreviousPage(options) {
+    return this.fetch({
+      cancelRefetch: true,
+      throwOnError: options == null ? void 0 : options.throwOnError,
+      meta: {
+        fetchMore: {
+          direction: 'backward',
+          pageParam: options == null ? void 0 : options.pageParam
+        }
+      }
+    });
+  };
+
+  _proto.getNewResult = function getNewResult(willFetch) {
+    var _state$data, _state$data2, _state$fetchMeta, _state$fetchMeta$fetc, _state$fetchMeta2, _state$fetchMeta2$fet;
+
+    var _this$getCurrentQuery = this.getCurrentQuery(),
+        state = _this$getCurrentQuery.state;
+
+    var result = _QueryObserver.prototype.getNewResult.call(this, willFetch);
+
+    return (0, _extends2.default)({}, result, {
+      fetchNextPage: this.fetchNextPage,
+      fetchPreviousPage: this.fetchPreviousPage,
+      hasNextPage: (0, _infiniteQueryBehavior.hasNextPage)(this.options, (_state$data = state.data) == null ? void 0 : _state$data.pages),
+      hasPreviousPage: (0, _infiniteQueryBehavior.hasPreviousPage)(this.options, (_state$data2 = state.data) == null ? void 0 : _state$data2.pages),
+      isFetchingNextPage: state.isFetching && ((_state$fetchMeta = state.fetchMeta) == null ? void 0 : (_state$fetchMeta$fetc = _state$fetchMeta.fetchMore) == null ? void 0 : _state$fetchMeta$fetc.direction) === 'forward',
+      isFetchingPreviousPage: state.isFetching && ((_state$fetchMeta2 = state.fetchMeta) == null ? void 0 : (_state$fetchMeta2$fet = _state$fetchMeta2.fetchMore) == null ? void 0 : _state$fetchMeta2$fet.direction) === 'backward'
+    });
+  };
+
+  return InfiniteQueryObserver;
+}(_queryObserver.QueryObserver);
+
+exports.InfiniteQueryObserver = InfiniteQueryObserver;
+},{"@babel/runtime/helpers/esm/extends":"node_modules/@babel/runtime/helpers/esm/extends.js","@babel/runtime/helpers/esm/inheritsLoose":"node_modules/@babel/runtime/helpers/esm/inheritsLoose.js","./queryObserver":"node_modules/react-query/es/core/queryObserver.js","./infiniteQueryBehavior":"node_modules/react-query/es/core/infiniteQueryBehavior.js"}],"node_modules/react-query/es/core/mutationObserver.js":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.MutationObserver = void 0;
+
+var _extends2 = _interopRequireDefault(require("@babel/runtime/helpers/esm/extends"));
+
+var _inheritsLoose2 = _interopRequireDefault(require("@babel/runtime/helpers/esm/inheritsLoose"));
+
+var _mutation = require("./mutation");
+
+var _notifyManager = require("./notifyManager");
+
+var _subscribable = require("./subscribable");
+
+var _utils = require("./utils");
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+// TYPES
+// CLASS
+var MutationObserver = /*#__PURE__*/function (_Subscribable) {
+  (0, _inheritsLoose2.default)(MutationObserver, _Subscribable);
+
+  function MutationObserver(client, options) {
+    var _this;
+
+    _this = _Subscribable.call(this) || this;
+    _this.client = client;
+
+    _this.setOptions(options);
+
+    _this.bindMethods();
+
+    _this.updateResult();
+
+    return _this;
+  }
+
+  var _proto = MutationObserver.prototype;
+
+  _proto.bindMethods = function bindMethods() {
+    this.mutate = this.mutate.bind(this);
+    this.reset = this.reset.bind(this);
+  };
+
+  _proto.setOptions = function setOptions(options) {
+    this.options = this.client.defaultMutationOptions(options);
+  };
+
+  _proto.onUnsubscribe = function onUnsubscribe() {
+    if (!this.listeners.length) {
+      var _this$currentMutation;
+
+      (_this$currentMutation = this.currentMutation) == null ? void 0 : _this$currentMutation.removeObserver(this);
+    }
+  };
+
+  _proto.onMutationUpdate = function onMutationUpdate(action) {
+    this.updateResult(); // Determine which callbacks to trigger
+
+    var notifyOptions = {
+      listeners: true
+    };
+
+    if (action.type === 'success') {
+      notifyOptions.onSuccess = true;
+    } else if (action.type === 'error') {
+      notifyOptions.onError = true;
+    }
+
+    this.notify(notifyOptions);
+  };
+
+  _proto.getCurrentResult = function getCurrentResult() {
+    return this.currentResult;
+  };
+
+  _proto.reset = function reset() {
+    this.currentMutation = undefined;
+    this.updateResult();
+    this.notify({
+      listeners: true
+    });
+  };
+
+  _proto.mutate = function mutate(variables, options) {
+    this.mutateOptions = options;
+
+    if (this.currentMutation) {
+      this.currentMutation.removeObserver(this);
+    }
+
+    this.currentMutation = this.client.getMutationCache().build(this.client, (0, _extends2.default)({}, this.options, {
+      variables: variables != null ? variables : this.options.variables
+    }));
+    this.currentMutation.addObserver(this);
+    return this.currentMutation.execute();
+  };
+
+  _proto.updateResult = function updateResult() {
+    var state = this.currentMutation ? this.currentMutation.state : (0, _mutation.getDefaultState)();
+    this.currentResult = (0, _extends2.default)({}, state, (0, _utils.getStatusProps)(state.status), {
+      mutate: this.mutate,
+      reset: this.reset
+    });
+  };
+
+  _proto.notify = function notify(options) {
+    var _this2 = this;
+
+    _notifyManager.notifyManager.batch(function () {
+      // First trigger the mutate callbacks
+      if (_this2.mutateOptions) {
+        if (options.onSuccess) {
+          _this2.mutateOptions.onSuccess == null ? void 0 : _this2.mutateOptions.onSuccess(_this2.currentResult.data, _this2.currentResult.variables, _this2.currentResult.context);
+          _this2.mutateOptions.onSettled == null ? void 0 : _this2.mutateOptions.onSettled(_this2.currentResult.data, null, _this2.currentResult.variables, _this2.currentResult.context);
+        } else if (options.onError) {
+          _this2.mutateOptions.onError == null ? void 0 : _this2.mutateOptions.onError(_this2.currentResult.error, _this2.currentResult.variables, _this2.currentResult.context);
+          _this2.mutateOptions.onSettled == null ? void 0 : _this2.mutateOptions.onSettled(undefined, _this2.currentResult.error, _this2.currentResult.variables, _this2.currentResult.context);
+        }
+      } // Then trigger the listeners
+
+
+      if (options.listeners) {
+        _this2.listeners.forEach(function (listener) {
+          listener(_this2.currentResult);
+        });
+      }
+    });
+  };
+
+  return MutationObserver;
+}(_subscribable.Subscribable);
+
+exports.MutationObserver = MutationObserver;
+},{"@babel/runtime/helpers/esm/extends":"node_modules/@babel/runtime/helpers/esm/extends.js","@babel/runtime/helpers/esm/inheritsLoose":"node_modules/@babel/runtime/helpers/esm/inheritsLoose.js","./mutation":"node_modules/react-query/es/core/mutation.js","./notifyManager":"node_modules/react-query/es/core/notifyManager.js","./subscribable":"node_modules/react-query/es/core/subscribable.js","./utils":"node_modules/react-query/es/core/utils.js"}],"node_modules/react-query/es/core/types.js":[function(require,module,exports) {
+
+},{}],"node_modules/react-query/es/core/index.js":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+var _exportNames = {
+  QueryCache: true,
+  QueryClient: true,
+  QueryObserver: true,
+  QueriesObserver: true,
+  InfiniteQueryObserver: true,
+  MutationCache: true,
+  MutationObserver: true,
+  setLogger: true,
+  notifyManager: true,
+  focusManager: true,
+  onlineManager: true,
+  hashQueryKey: true,
+  isError: true,
+  isCancelledError: true
+};
+Object.defineProperty(exports, "QueryCache", {
+  enumerable: true,
+  get: function () {
+    return _queryCache.QueryCache;
+  }
+});
+Object.defineProperty(exports, "QueryClient", {
+  enumerable: true,
+  get: function () {
+    return _queryClient.QueryClient;
+  }
+});
+Object.defineProperty(exports, "QueryObserver", {
+  enumerable: true,
+  get: function () {
+    return _queryObserver.QueryObserver;
+  }
+});
+Object.defineProperty(exports, "QueriesObserver", {
+  enumerable: true,
+  get: function () {
+    return _queriesObserver.QueriesObserver;
+  }
+});
+Object.defineProperty(exports, "InfiniteQueryObserver", {
+  enumerable: true,
+  get: function () {
+    return _infiniteQueryObserver.InfiniteQueryObserver;
+  }
+});
+Object.defineProperty(exports, "MutationCache", {
+  enumerable: true,
+  get: function () {
+    return _mutationCache.MutationCache;
+  }
+});
+Object.defineProperty(exports, "MutationObserver", {
+  enumerable: true,
+  get: function () {
+    return _mutationObserver.MutationObserver;
+  }
+});
+Object.defineProperty(exports, "setLogger", {
+  enumerable: true,
+  get: function () {
+    return _logger.setLogger;
+  }
+});
+Object.defineProperty(exports, "notifyManager", {
+  enumerable: true,
+  get: function () {
+    return _notifyManager.notifyManager;
+  }
+});
+Object.defineProperty(exports, "focusManager", {
+  enumerable: true,
+  get: function () {
+    return _focusManager.focusManager;
+  }
+});
+Object.defineProperty(exports, "onlineManager", {
+  enumerable: true,
+  get: function () {
+    return _onlineManager.onlineManager;
+  }
+});
+Object.defineProperty(exports, "hashQueryKey", {
+  enumerable: true,
+  get: function () {
+    return _utils.hashQueryKey;
+  }
+});
+Object.defineProperty(exports, "isError", {
+  enumerable: true,
+  get: function () {
+    return _utils.isError;
+  }
+});
+Object.defineProperty(exports, "isCancelledError", {
+  enumerable: true,
+  get: function () {
+    return _retryer.isCancelledError;
+  }
+});
+
+var _queryCache = require("./queryCache");
+
+var _queryClient = require("./queryClient");
+
+var _queryObserver = require("./queryObserver");
+
+var _queriesObserver = require("./queriesObserver");
+
+var _infiniteQueryObserver = require("./infiniteQueryObserver");
+
+var _mutationCache = require("./mutationCache");
+
+var _mutationObserver = require("./mutationObserver");
+
+var _logger = require("./logger");
+
+var _notifyManager = require("./notifyManager");
+
+var _focusManager = require("./focusManager");
+
+var _onlineManager = require("./onlineManager");
+
+var _utils = require("./utils");
+
+var _retryer = require("./retryer");
+
+var _types = require("./types");
+
+Object.keys(_types).forEach(function (key) {
+  if (key === "default" || key === "__esModule") return;
+  if (Object.prototype.hasOwnProperty.call(_exportNames, key)) return;
+  if (key in exports && exports[key] === _types[key]) return;
+  Object.defineProperty(exports, key, {
+    enumerable: true,
+    get: function () {
+      return _types[key];
+    }
+  });
+});
+},{"./queryCache":"node_modules/react-query/es/core/queryCache.js","./queryClient":"node_modules/react-query/es/core/queryClient.js","./queryObserver":"node_modules/react-query/es/core/queryObserver.js","./queriesObserver":"node_modules/react-query/es/core/queriesObserver.js","./infiniteQueryObserver":"node_modules/react-query/es/core/infiniteQueryObserver.js","./mutationCache":"node_modules/react-query/es/core/mutationCache.js","./mutationObserver":"node_modules/react-query/es/core/mutationObserver.js","./logger":"node_modules/react-query/es/core/logger.js","./notifyManager":"node_modules/react-query/es/core/notifyManager.js","./focusManager":"node_modules/react-query/es/core/focusManager.js","./onlineManager":"node_modules/react-query/es/core/onlineManager.js","./utils":"node_modules/react-query/es/core/utils.js","./retryer":"node_modules/react-query/es/core/retryer.js","./types":"node_modules/react-query/es/core/types.js"}],"node_modules/react-query/es/react/reactBatchedUpdates.js":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.unstable_batchedUpdates = void 0;
+
+var _reactDom = _interopRequireDefault(require("react-dom"));
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+var unstable_batchedUpdates = _reactDom.default.unstable_batchedUpdates;
+exports.unstable_batchedUpdates = unstable_batchedUpdates;
+},{"react-dom":"node_modules/react-dom/index.js"}],"node_modules/react-query/es/react/setBatchUpdatesFn.js":[function(require,module,exports) {
+"use strict";
+
+var _core = require("../core");
+
+var _reactBatchedUpdates = require("./reactBatchedUpdates");
+
+_core.notifyManager.setBatchNotifyFunction(_reactBatchedUpdates.unstable_batchedUpdates);
+},{"../core":"node_modules/react-query/es/core/index.js","./reactBatchedUpdates":"node_modules/react-query/es/react/reactBatchedUpdates.js"}],"node_modules/react-query/es/react/logger.js":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.logger = void 0;
+var logger = console;
+exports.logger = logger;
+},{}],"node_modules/react-query/es/react/setLogger.js":[function(require,module,exports) {
+"use strict";
+
+var _core = require("../core");
+
+var _logger = require("./logger");
+
+if (_logger.logger) {
+  (0, _core.setLogger)(_logger.logger);
+}
+},{"../core":"node_modules/react-query/es/core/index.js","./logger":"node_modules/react-query/es/react/logger.js"}],"node_modules/react-query/es/react/QueryClientProvider.js":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.QueryClientProvider = exports.useQueryClient = void 0;
+
+var _react = _interopRequireDefault(require("react"));
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+var QueryClientContext = function () {
+  var context = /*#__PURE__*/_react.default.createContext(undefined);
+
+  if (typeof window !== 'undefined') {
+    // @ts-ignore
+    window.ReactQueryClientContext = context;
+  }
+
+  return context;
+}();
+
+function getQueryClientContext() {
+  var _ref;
+
+  return typeof window !== 'undefined' ? // @ts-ignore
+  (_ref = window.ReactQueryClientContext) != null ? _ref : QueryClientContext : QueryClientContext;
+}
+
+var useQueryClient = function useQueryClient() {
+  var queryClient = _react.default.useContext(getQueryClientContext());
+
+  if (!queryClient) {
+    throw new Error('No QueryClient set, use QueryClientProvider to set one');
+  }
+
+  return queryClient;
+};
+
+exports.useQueryClient = useQueryClient;
+
+var QueryClientProvider = function QueryClientProvider(_ref2) {
+  var client = _ref2.client,
+      children = _ref2.children;
+
+  _react.default.useEffect(function () {
+    client.mount();
+    return function () {
+      client.unmount();
+    };
+  }, [client]);
+
+  var Context = getQueryClientContext();
+  return /*#__PURE__*/_react.default.createElement(Context.Provider, {
+    value: client
+  }, children);
+};
+
+exports.QueryClientProvider = QueryClientProvider;
+},{"react":"node_modules/react/index.js"}],"node_modules/react-query/es/react/QueryErrorResetBoundary.js":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.QueryErrorResetBoundary = exports.useQueryErrorResetBoundary = void 0;
+
+var _react = _interopRequireDefault(require("react"));
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+// CONTEXT
+function createValue() {
+  var _isReset = false;
+  return {
+    clearReset: function clearReset() {
+      _isReset = false;
+    },
+    reset: function reset() {
+      _isReset = true;
+    },
+    isReset: function isReset() {
+      return _isReset;
+    }
+  };
+}
+
+var QueryErrorResetBoundaryContext = /*#__PURE__*/_react.default.createContext(createValue()); // HOOK
+
+
+var useQueryErrorResetBoundary = function useQueryErrorResetBoundary() {
+  return _react.default.useContext(QueryErrorResetBoundaryContext);
+}; // COMPONENT
+
+
+exports.useQueryErrorResetBoundary = useQueryErrorResetBoundary;
+
+var QueryErrorResetBoundary = function QueryErrorResetBoundary(_ref) {
+  var children = _ref.children;
+
+  var value = _react.default.useMemo(function () {
+    return createValue();
+  }, []);
+
+  return /*#__PURE__*/_react.default.createElement(QueryErrorResetBoundaryContext.Provider, {
+    value: value
+  }, typeof children === 'function' ? children(value) : children);
+};
+
+exports.QueryErrorResetBoundary = QueryErrorResetBoundary;
+},{"react":"node_modules/react/index.js"}],"node_modules/react-query/es/react/useIsFetching.js":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.useIsFetching = useIsFetching;
+
+var _react = _interopRequireDefault(require("react"));
+
+var _notifyManager = require("../core/notifyManager");
+
+var _utils = require("../core/utils");
+
+var _QueryClientProvider = require("./QueryClientProvider");
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function useIsFetching(arg1, arg2) {
+  var queryClient = (0, _QueryClientProvider.useQueryClient)();
+
+  var _parseFilterArgs = (0, _utils.parseFilterArgs)(arg1, arg2),
+      filters = _parseFilterArgs[0];
+
+  var _React$useState = _react.default.useState(queryClient.isFetching(filters)),
+      isFetching = _React$useState[0],
+      setIsFetching = _React$useState[1];
+
+  var filtersRef = _react.default.useRef(filters);
+
+  filtersRef.current = filters;
+
+  var isFetchingRef = _react.default.useRef(isFetching);
+
+  isFetchingRef.current = isFetching;
+
+  _react.default.useEffect(function () {
+    return queryClient.getQueryCache().subscribe(_notifyManager.notifyManager.batchCalls(function () {
+      var newIsFetching = queryClient.isFetching(filtersRef.current);
+
+      if (isFetchingRef.current !== newIsFetching) {
+        setIsFetching(newIsFetching);
+      }
+    }));
+  }, [queryClient]);
+
+  return isFetching;
+}
+},{"react":"node_modules/react/index.js","../core/notifyManager":"node_modules/react-query/es/core/notifyManager.js","../core/utils":"node_modules/react-query/es/core/utils.js","./QueryClientProvider":"node_modules/react-query/es/react/QueryClientProvider.js"}],"node_modules/react-query/es/react/useMutation.js":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.useMutation = useMutation;
+
+var _extends2 = _interopRequireDefault(require("@babel/runtime/helpers/esm/extends"));
+
+var _react = _interopRequireDefault(require("react"));
+
+var _notifyManager = require("../core/notifyManager");
+
+var _utils = require("../core/utils");
+
+var _mutationObserver = require("../core/mutationObserver");
+
+var _QueryClientProvider = require("./QueryClientProvider");
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function useMutation(arg1, arg2, arg3) {
+  var options = (0, _utils.parseMutationArgs)(arg1, arg2, arg3);
+  var queryClient = (0, _QueryClientProvider.useQueryClient)(); // Create mutation observer
+
+  var observerRef = _react.default.useRef();
+
+  var observer = observerRef.current || new _mutationObserver.MutationObserver(queryClient, options);
+  observerRef.current = observer; // Update options
+
+  if (observer.hasListeners()) {
+    observer.setOptions(options);
+  }
+
+  var _React$useState = _react.default.useState(function () {
+    return observer.getCurrentResult();
+  }),
+      currentResult = _React$useState[0],
+      setCurrentResult = _React$useState[1]; // Subscribe to the observer
+
+
+  _react.default.useEffect(function () {
+    return observer.subscribe(_notifyManager.notifyManager.batchCalls(function (result) {
+      // Check if the component is still mounted
+      if (observer.hasListeners()) {
+        setCurrentResult(result);
+      }
+    }));
+  }, [observer]);
+
+  var mutate = _react.default.useCallback(function (variables, mutateOptions) {
+    observer.mutate(variables, mutateOptions).catch(_utils.noop);
+  }, [observer]);
+
+  if (currentResult.error && observer.options.useErrorBoundary) {
+    throw currentResult.error;
+  }
+
+  return (0, _extends2.default)({}, currentResult, {
+    mutate: mutate,
+    mutateAsync: currentResult.mutate
+  });
+}
+},{"@babel/runtime/helpers/esm/extends":"node_modules/@babel/runtime/helpers/esm/extends.js","react":"node_modules/react/index.js","../core/notifyManager":"node_modules/react-query/es/core/notifyManager.js","../core/utils":"node_modules/react-query/es/core/utils.js","../core/mutationObserver":"node_modules/react-query/es/core/mutationObserver.js","./QueryClientProvider":"node_modules/react-query/es/react/QueryClientProvider.js"}],"node_modules/react-query/es/react/useBaseQuery.js":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.useBaseQuery = useBaseQuery;
+
+var _react = _interopRequireDefault(require("react"));
+
+var _notifyManager = require("../core/notifyManager");
+
+var _QueryErrorResetBoundary = require("./QueryErrorResetBoundary");
+
+var _QueryClientProvider = require("./QueryClientProvider");
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function useBaseQuery(options, Observer) {
+  var queryClient = (0, _QueryClientProvider.useQueryClient)();
+  var errorResetBoundary = (0, _QueryErrorResetBoundary.useQueryErrorResetBoundary)();
+  var defaultedOptions = queryClient.defaultQueryObserverOptions(options); // Include callbacks in batch renders
+
+  if (defaultedOptions.onError) {
+    defaultedOptions.onError = _notifyManager.notifyManager.batchCalls(defaultedOptions.onError);
+  }
+
+  if (defaultedOptions.onSuccess) {
+    defaultedOptions.onSuccess = _notifyManager.notifyManager.batchCalls(defaultedOptions.onSuccess);
+  }
+
+  if (defaultedOptions.onSettled) {
+    defaultedOptions.onSettled = _notifyManager.notifyManager.batchCalls(defaultedOptions.onSettled);
+  }
+
+  if (defaultedOptions.suspense) {
+    // Always set stale time when using suspense to prevent
+    // fetching again when directly re-mounting after suspense
+    if (typeof defaultedOptions.staleTime !== 'number') {
+      defaultedOptions.staleTime = 1000;
+    } // Prevent retrying failed query if the error boundary has not been reset yet
+
+
+    if (!errorResetBoundary.isReset()) {
+      defaultedOptions.retryOnMount = false;
+    }
+  } // Create query observer
+
+
+  var observerRef = _react.default.useRef();
+
+  var observer = observerRef.current || new Observer(queryClient, defaultedOptions);
+  observerRef.current = observer; // Update options
+
+  if (observer.hasListeners()) {
+    observer.setOptions(defaultedOptions);
+  }
+
+  var currentResult = observer.getCurrentResult(); // Remember latest result to prevent redundant renders
+
+  var latestResultRef = _react.default.useRef(currentResult);
+
+  latestResultRef.current = currentResult;
+
+  var _React$useState = _react.default.useState({}),
+      rerender = _React$useState[1]; // Subscribe to the observer
+
+
+  _react.default.useEffect(function () {
+    errorResetBoundary.clearReset();
+    return observer.subscribe(_notifyManager.notifyManager.batchCalls(function (result) {
+      if (result !== latestResultRef.current) {
+        rerender({});
+      }
+    }));
+  }, [observer, errorResetBoundary]); // Handle suspense
+
+
+  if (observer.options.suspense || observer.options.useErrorBoundary) {
+    if (observer.options.suspense && currentResult.isLoading) {
+      errorResetBoundary.clearReset();
+      var unsubscribe = observer.subscribe();
+      throw observer.refetch().finally(unsubscribe);
+    }
+
+    if (currentResult.isError) {
+      throw currentResult.error;
+    }
+  }
+
+  return currentResult;
+}
+},{"react":"node_modules/react/index.js","../core/notifyManager":"node_modules/react-query/es/core/notifyManager.js","./QueryErrorResetBoundary":"node_modules/react-query/es/react/QueryErrorResetBoundary.js","./QueryClientProvider":"node_modules/react-query/es/react/QueryClientProvider.js"}],"node_modules/react-query/es/react/useQuery.js":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.useQuery = useQuery;
+
+var _core = require("../core");
+
+var _utils = require("../core/utils");
+
+var _useBaseQuery = require("./useBaseQuery");
+
+// HOOK
+function useQuery(arg1, arg2, arg3) {
+  var parsedOptions = (0, _utils.parseQueryArgs)(arg1, arg2, arg3);
+  return (0, _useBaseQuery.useBaseQuery)(parsedOptions, _core.QueryObserver);
+}
+},{"../core":"node_modules/react-query/es/core/index.js","../core/utils":"node_modules/react-query/es/core/utils.js","./useBaseQuery":"node_modules/react-query/es/react/useBaseQuery.js"}],"node_modules/react-query/es/react/useQueries.js":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.useQueries = useQueries;
+
+var _react = _interopRequireDefault(require("react"));
+
+var _notifyManager = require("../core/notifyManager");
+
+var _queriesObserver = require("../core/queriesObserver");
+
+var _QueryClientProvider = require("./QueryClientProvider");
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function useQueries(queries) {
+  var queryClient = (0, _QueryClientProvider.useQueryClient)(); // Create queries observer
+
+  var observerRef = _react.default.useRef();
+
+  var observer = observerRef.current || new _queriesObserver.QueriesObserver(queryClient, queries);
+  observerRef.current = observer; // Update queries
+
+  if (observer.hasListeners()) {
+    observer.setQueries(queries);
+  }
+
+  var _React$useState = _react.default.useState(function () {
+    return observer.getCurrentResult();
+  }),
+      currentResult = _React$useState[0],
+      setCurrentResult = _React$useState[1]; // Subscribe to the observer
+
+
+  _react.default.useEffect(function () {
+    return observer.subscribe(_notifyManager.notifyManager.batchCalls(setCurrentResult));
+  }, [observer]);
+
+  return currentResult;
+}
+},{"react":"node_modules/react/index.js","../core/notifyManager":"node_modules/react-query/es/core/notifyManager.js","../core/queriesObserver":"node_modules/react-query/es/core/queriesObserver.js","./QueryClientProvider":"node_modules/react-query/es/react/QueryClientProvider.js"}],"node_modules/react-query/es/react/useInfiniteQuery.js":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.useInfiniteQuery = useInfiniteQuery;
+
+var _infiniteQueryObserver = require("../core/infiniteQueryObserver");
+
+var _utils = require("../core/utils");
+
+var _useBaseQuery = require("./useBaseQuery");
+
+// HOOK
+function useInfiniteQuery(arg1, arg2, arg3) {
+  var options = (0, _utils.parseQueryArgs)(arg1, arg2, arg3);
+  return (0, _useBaseQuery.useBaseQuery)(options, _infiniteQueryObserver.InfiniteQueryObserver);
+}
+},{"../core/infiniteQueryObserver":"node_modules/react-query/es/core/infiniteQueryObserver.js","../core/utils":"node_modules/react-query/es/core/utils.js","./useBaseQuery":"node_modules/react-query/es/react/useBaseQuery.js"}],"node_modules/react-query/es/react/types.js":[function(require,module,exports) {
+
+},{}],"node_modules/react-query/es/react/index.js":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+var _exportNames = {
+  QueryClientProvider: true,
+  useQueryClient: true,
+  QueryErrorResetBoundary: true,
+  useQueryErrorResetBoundary: true,
+  useIsFetching: true,
+  useMutation: true,
+  useQuery: true,
+  useQueries: true,
+  useInfiniteQuery: true
+};
+Object.defineProperty(exports, "QueryClientProvider", {
+  enumerable: true,
+  get: function () {
+    return _QueryClientProvider.QueryClientProvider;
+  }
+});
+Object.defineProperty(exports, "useQueryClient", {
+  enumerable: true,
+  get: function () {
+    return _QueryClientProvider.useQueryClient;
+  }
+});
+Object.defineProperty(exports, "QueryErrorResetBoundary", {
+  enumerable: true,
+  get: function () {
+    return _QueryErrorResetBoundary.QueryErrorResetBoundary;
+  }
+});
+Object.defineProperty(exports, "useQueryErrorResetBoundary", {
+  enumerable: true,
+  get: function () {
+    return _QueryErrorResetBoundary.useQueryErrorResetBoundary;
+  }
+});
+Object.defineProperty(exports, "useIsFetching", {
+  enumerable: true,
+  get: function () {
+    return _useIsFetching.useIsFetching;
+  }
+});
+Object.defineProperty(exports, "useMutation", {
+  enumerable: true,
+  get: function () {
+    return _useMutation.useMutation;
+  }
+});
+Object.defineProperty(exports, "useQuery", {
+  enumerable: true,
+  get: function () {
+    return _useQuery.useQuery;
+  }
+});
+Object.defineProperty(exports, "useQueries", {
+  enumerable: true,
+  get: function () {
+    return _useQueries.useQueries;
+  }
+});
+Object.defineProperty(exports, "useInfiniteQuery", {
+  enumerable: true,
+  get: function () {
+    return _useInfiniteQuery.useInfiniteQuery;
+  }
+});
+
+require("./setBatchUpdatesFn");
+
+require("./setLogger");
+
+var _QueryClientProvider = require("./QueryClientProvider");
+
+var _QueryErrorResetBoundary = require("./QueryErrorResetBoundary");
+
+var _useIsFetching = require("./useIsFetching");
+
+var _useMutation = require("./useMutation");
+
+var _useQuery = require("./useQuery");
+
+var _useQueries = require("./useQueries");
+
+var _useInfiniteQuery = require("./useInfiniteQuery");
+
+var _types = require("./types");
+
+Object.keys(_types).forEach(function (key) {
+  if (key === "default" || key === "__esModule") return;
+  if (Object.prototype.hasOwnProperty.call(_exportNames, key)) return;
+  if (key in exports && exports[key] === _types[key]) return;
+  Object.defineProperty(exports, key, {
+    enumerable: true,
+    get: function () {
+      return _types[key];
+    }
+  });
+});
+},{"./setBatchUpdatesFn":"node_modules/react-query/es/react/setBatchUpdatesFn.js","./setLogger":"node_modules/react-query/es/react/setLogger.js","./QueryClientProvider":"node_modules/react-query/es/react/QueryClientProvider.js","./QueryErrorResetBoundary":"node_modules/react-query/es/react/QueryErrorResetBoundary.js","./useIsFetching":"node_modules/react-query/es/react/useIsFetching.js","./useMutation":"node_modules/react-query/es/react/useMutation.js","./useQuery":"node_modules/react-query/es/react/useQuery.js","./useQueries":"node_modules/react-query/es/react/useQueries.js","./useInfiniteQuery":"node_modules/react-query/es/react/useInfiniteQuery.js","./types":"node_modules/react-query/es/react/types.js"}],"node_modules/react-query/es/index.js":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _core = require("./core");
+
+Object.keys(_core).forEach(function (key) {
+  if (key === "default" || key === "__esModule") return;
+  if (key in exports && exports[key] === _core[key]) return;
+  Object.defineProperty(exports, key, {
+    enumerable: true,
+    get: function () {
+      return _core[key];
+    }
+  });
+});
+
+var _react = require("./react");
+
+Object.keys(_react).forEach(function (key) {
+  if (key === "default" || key === "__esModule") return;
+  if (key in exports && exports[key] === _react[key]) return;
+  Object.defineProperty(exports, key, {
+    enumerable: true,
+    get: function () {
+      return _react[key];
+    }
+  });
+});
+},{"./core":"node_modules/react-query/es/core/index.js","./react":"node_modules/react-query/es/react/index.js"}],"node_modules/@babel/runtime/node_modules/regenerator-runtime/runtime.js":[function(require,module,exports) {
+var define;
+/**
+ * Copyright (c) 2014-present, Facebook, Inc.
+ *
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
+ */
+
+var runtime = (function (exports) {
+  "use strict";
+
+  var Op = Object.prototype;
+  var hasOwn = Op.hasOwnProperty;
+  var undefined; // More compressible than void 0.
+  var $Symbol = typeof Symbol === "function" ? Symbol : {};
+  var iteratorSymbol = $Symbol.iterator || "@@iterator";
+  var asyncIteratorSymbol = $Symbol.asyncIterator || "@@asyncIterator";
+  var toStringTagSymbol = $Symbol.toStringTag || "@@toStringTag";
+
+  function define(obj, key, value) {
+    Object.defineProperty(obj, key, {
+      value: value,
+      enumerable: true,
+      configurable: true,
+      writable: true
+    });
+    return obj[key];
+  }
+  try {
+    // IE 8 has a broken Object.defineProperty that only works on DOM objects.
+    define({}, "");
+  } catch (err) {
+    define = function(obj, key, value) {
+      return obj[key] = value;
+    };
+  }
+
+  function wrap(innerFn, outerFn, self, tryLocsList) {
+    // If outerFn provided and outerFn.prototype is a Generator, then outerFn.prototype instanceof Generator.
+    var protoGenerator = outerFn && outerFn.prototype instanceof Generator ? outerFn : Generator;
+    var generator = Object.create(protoGenerator.prototype);
+    var context = new Context(tryLocsList || []);
+
+    // The ._invoke method unifies the implementations of the .next,
+    // .throw, and .return methods.
+    generator._invoke = makeInvokeMethod(innerFn, self, context);
+
+    return generator;
+  }
+  exports.wrap = wrap;
+
+  // Try/catch helper to minimize deoptimizations. Returns a completion
+  // record like context.tryEntries[i].completion. This interface could
+  // have been (and was previously) designed to take a closure to be
+  // invoked without arguments, but in all the cases we care about we
+  // already have an existing method we want to call, so there's no need
+  // to create a new function object. We can even get away with assuming
+  // the method takes exactly one argument, since that happens to be true
+  // in every case, so we don't have to touch the arguments object. The
+  // only additional allocation required is the completion record, which
+  // has a stable shape and so hopefully should be cheap to allocate.
+  function tryCatch(fn, obj, arg) {
+    try {
+      return { type: "normal", arg: fn.call(obj, arg) };
+    } catch (err) {
+      return { type: "throw", arg: err };
+    }
+  }
+
+  var GenStateSuspendedStart = "suspendedStart";
+  var GenStateSuspendedYield = "suspendedYield";
+  var GenStateExecuting = "executing";
+  var GenStateCompleted = "completed";
+
+  // Returning this object from the innerFn has the same effect as
+  // breaking out of the dispatch switch statement.
+  var ContinueSentinel = {};
+
+  // Dummy constructor functions that we use as the .constructor and
+  // .constructor.prototype properties for functions that return Generator
+  // objects. For full spec compliance, you may wish to configure your
+  // minifier not to mangle the names of these two functions.
+  function Generator() {}
+  function GeneratorFunction() {}
+  function GeneratorFunctionPrototype() {}
+
+  // This is a polyfill for %IteratorPrototype% for environments that
+  // don't natively support it.
+  var IteratorPrototype = {};
+  IteratorPrototype[iteratorSymbol] = function () {
+    return this;
+  };
+
+  var getProto = Object.getPrototypeOf;
+  var NativeIteratorPrototype = getProto && getProto(getProto(values([])));
+  if (NativeIteratorPrototype &&
+      NativeIteratorPrototype !== Op &&
+      hasOwn.call(NativeIteratorPrototype, iteratorSymbol)) {
+    // This environment has a native %IteratorPrototype%; use it instead
+    // of the polyfill.
+    IteratorPrototype = NativeIteratorPrototype;
+  }
+
+  var Gp = GeneratorFunctionPrototype.prototype =
+    Generator.prototype = Object.create(IteratorPrototype);
+  GeneratorFunction.prototype = Gp.constructor = GeneratorFunctionPrototype;
+  GeneratorFunctionPrototype.constructor = GeneratorFunction;
+  GeneratorFunction.displayName = define(
+    GeneratorFunctionPrototype,
+    toStringTagSymbol,
+    "GeneratorFunction"
+  );
+
+  // Helper for defining the .next, .throw, and .return methods of the
+  // Iterator interface in terms of a single ._invoke method.
+  function defineIteratorMethods(prototype) {
+    ["next", "throw", "return"].forEach(function(method) {
+      define(prototype, method, function(arg) {
+        return this._invoke(method, arg);
+      });
+    });
+  }
+
+  exports.isGeneratorFunction = function(genFun) {
+    var ctor = typeof genFun === "function" && genFun.constructor;
+    return ctor
+      ? ctor === GeneratorFunction ||
+        // For the native GeneratorFunction constructor, the best we can
+        // do is to check its .name property.
+        (ctor.displayName || ctor.name) === "GeneratorFunction"
+      : false;
+  };
+
+  exports.mark = function(genFun) {
+    if (Object.setPrototypeOf) {
+      Object.setPrototypeOf(genFun, GeneratorFunctionPrototype);
+    } else {
+      genFun.__proto__ = GeneratorFunctionPrototype;
+      define(genFun, toStringTagSymbol, "GeneratorFunction");
+    }
+    genFun.prototype = Object.create(Gp);
+    return genFun;
+  };
+
+  // Within the body of any async function, `await x` is transformed to
+  // `yield regeneratorRuntime.awrap(x)`, so that the runtime can test
+  // `hasOwn.call(value, "__await")` to determine if the yielded value is
+  // meant to be awaited.
+  exports.awrap = function(arg) {
+    return { __await: arg };
+  };
+
+  function AsyncIterator(generator, PromiseImpl) {
+    function invoke(method, arg, resolve, reject) {
+      var record = tryCatch(generator[method], generator, arg);
+      if (record.type === "throw") {
+        reject(record.arg);
+      } else {
+        var result = record.arg;
+        var value = result.value;
+        if (value &&
+            typeof value === "object" &&
+            hasOwn.call(value, "__await")) {
+          return PromiseImpl.resolve(value.__await).then(function(value) {
+            invoke("next", value, resolve, reject);
+          }, function(err) {
+            invoke("throw", err, resolve, reject);
+          });
+        }
+
+        return PromiseImpl.resolve(value).then(function(unwrapped) {
+          // When a yielded Promise is resolved, its final value becomes
+          // the .value of the Promise<{value,done}> result for the
+          // current iteration.
+          result.value = unwrapped;
+          resolve(result);
+        }, function(error) {
+          // If a rejected Promise was yielded, throw the rejection back
+          // into the async generator function so it can be handled there.
+          return invoke("throw", error, resolve, reject);
+        });
+      }
+    }
+
+    var previousPromise;
+
+    function enqueue(method, arg) {
+      function callInvokeWithMethodAndArg() {
+        return new PromiseImpl(function(resolve, reject) {
+          invoke(method, arg, resolve, reject);
+        });
+      }
+
+      return previousPromise =
+        // If enqueue has been called before, then we want to wait until
+        // all previous Promises have been resolved before calling invoke,
+        // so that results are always delivered in the correct order. If
+        // enqueue has not been called before, then it is important to
+        // call invoke immediately, without waiting on a callback to fire,
+        // so that the async generator function has the opportunity to do
+        // any necessary setup in a predictable way. This predictability
+        // is why the Promise constructor synchronously invokes its
+        // executor callback, and why async functions synchronously
+        // execute code before the first await. Since we implement simple
+        // async functions in terms of async generators, it is especially
+        // important to get this right, even though it requires care.
+        previousPromise ? previousPromise.then(
+          callInvokeWithMethodAndArg,
+          // Avoid propagating failures to Promises returned by later
+          // invocations of the iterator.
+          callInvokeWithMethodAndArg
+        ) : callInvokeWithMethodAndArg();
+    }
+
+    // Define the unified helper method that is used to implement .next,
+    // .throw, and .return (see defineIteratorMethods).
+    this._invoke = enqueue;
+  }
+
+  defineIteratorMethods(AsyncIterator.prototype);
+  AsyncIterator.prototype[asyncIteratorSymbol] = function () {
+    return this;
+  };
+  exports.AsyncIterator = AsyncIterator;
+
+  // Note that simple async functions are implemented on top of
+  // AsyncIterator objects; they just return a Promise for the value of
+  // the final result produced by the iterator.
+  exports.async = function(innerFn, outerFn, self, tryLocsList, PromiseImpl) {
+    if (PromiseImpl === void 0) PromiseImpl = Promise;
+
+    var iter = new AsyncIterator(
+      wrap(innerFn, outerFn, self, tryLocsList),
+      PromiseImpl
+    );
+
+    return exports.isGeneratorFunction(outerFn)
+      ? iter // If outerFn is a generator, return the full iterator.
+      : iter.next().then(function(result) {
+          return result.done ? result.value : iter.next();
+        });
+  };
+
+  function makeInvokeMethod(innerFn, self, context) {
+    var state = GenStateSuspendedStart;
+
+    return function invoke(method, arg) {
+      if (state === GenStateExecuting) {
+        throw new Error("Generator is already running");
+      }
+
+      if (state === GenStateCompleted) {
+        if (method === "throw") {
+          throw arg;
+        }
+
+        // Be forgiving, per 25.3.3.3.3 of the spec:
+        // https://people.mozilla.org/~jorendorff/es6-draft.html#sec-generatorresume
+        return doneResult();
+      }
+
+      context.method = method;
+      context.arg = arg;
+
+      while (true) {
+        var delegate = context.delegate;
+        if (delegate) {
+          var delegateResult = maybeInvokeDelegate(delegate, context);
+          if (delegateResult) {
+            if (delegateResult === ContinueSentinel) continue;
+            return delegateResult;
+          }
+        }
+
+        if (context.method === "next") {
+          // Setting context._sent for legacy support of Babel's
+          // function.sent implementation.
+          context.sent = context._sent = context.arg;
+
+        } else if (context.method === "throw") {
+          if (state === GenStateSuspendedStart) {
+            state = GenStateCompleted;
+            throw context.arg;
+          }
+
+          context.dispatchException(context.arg);
+
+        } else if (context.method === "return") {
+          context.abrupt("return", context.arg);
+        }
+
+        state = GenStateExecuting;
+
+        var record = tryCatch(innerFn, self, context);
+        if (record.type === "normal") {
+          // If an exception is thrown from innerFn, we leave state ===
+          // GenStateExecuting and loop back for another invocation.
+          state = context.done
+            ? GenStateCompleted
+            : GenStateSuspendedYield;
+
+          if (record.arg === ContinueSentinel) {
+            continue;
+          }
+
+          return {
+            value: record.arg,
+            done: context.done
+          };
+
+        } else if (record.type === "throw") {
+          state = GenStateCompleted;
+          // Dispatch the exception by looping back around to the
+          // context.dispatchException(context.arg) call above.
+          context.method = "throw";
+          context.arg = record.arg;
+        }
+      }
+    };
+  }
+
+  // Call delegate.iterator[context.method](context.arg) and handle the
+  // result, either by returning a { value, done } result from the
+  // delegate iterator, or by modifying context.method and context.arg,
+  // setting context.delegate to null, and returning the ContinueSentinel.
+  function maybeInvokeDelegate(delegate, context) {
+    var method = delegate.iterator[context.method];
+    if (method === undefined) {
+      // A .throw or .return when the delegate iterator has no .throw
+      // method always terminates the yield* loop.
+      context.delegate = null;
+
+      if (context.method === "throw") {
+        // Note: ["return"] must be used for ES3 parsing compatibility.
+        if (delegate.iterator["return"]) {
+          // If the delegate iterator has a return method, give it a
+          // chance to clean up.
+          context.method = "return";
+          context.arg = undefined;
+          maybeInvokeDelegate(delegate, context);
+
+          if (context.method === "throw") {
+            // If maybeInvokeDelegate(context) changed context.method from
+            // "return" to "throw", let that override the TypeError below.
+            return ContinueSentinel;
+          }
+        }
+
+        context.method = "throw";
+        context.arg = new TypeError(
+          "The iterator does not provide a 'throw' method");
+      }
+
+      return ContinueSentinel;
+    }
+
+    var record = tryCatch(method, delegate.iterator, context.arg);
+
+    if (record.type === "throw") {
+      context.method = "throw";
+      context.arg = record.arg;
+      context.delegate = null;
+      return ContinueSentinel;
+    }
+
+    var info = record.arg;
+
+    if (! info) {
+      context.method = "throw";
+      context.arg = new TypeError("iterator result is not an object");
+      context.delegate = null;
+      return ContinueSentinel;
+    }
+
+    if (info.done) {
+      // Assign the result of the finished delegate to the temporary
+      // variable specified by delegate.resultName (see delegateYield).
+      context[delegate.resultName] = info.value;
+
+      // Resume execution at the desired location (see delegateYield).
+      context.next = delegate.nextLoc;
+
+      // If context.method was "throw" but the delegate handled the
+      // exception, let the outer generator proceed normally. If
+      // context.method was "next", forget context.arg since it has been
+      // "consumed" by the delegate iterator. If context.method was
+      // "return", allow the original .return call to continue in the
+      // outer generator.
+      if (context.method !== "return") {
+        context.method = "next";
+        context.arg = undefined;
+      }
+
+    } else {
+      // Re-yield the result returned by the delegate method.
+      return info;
+    }
+
+    // The delegate iterator is finished, so forget it and continue with
+    // the outer generator.
+    context.delegate = null;
+    return ContinueSentinel;
+  }
+
+  // Define Generator.prototype.{next,throw,return} in terms of the
+  // unified ._invoke helper method.
+  defineIteratorMethods(Gp);
+
+  define(Gp, toStringTagSymbol, "Generator");
+
+  // A Generator should always return itself as the iterator object when the
+  // @@iterator function is called on it. Some browsers' implementations of the
+  // iterator prototype chain incorrectly implement this, causing the Generator
+  // object to not be returned from this call. This ensures that doesn't happen.
+  // See https://github.com/facebook/regenerator/issues/274 for more details.
+  Gp[iteratorSymbol] = function() {
+    return this;
+  };
+
+  Gp.toString = function() {
+    return "[object Generator]";
+  };
+
+  function pushTryEntry(locs) {
+    var entry = { tryLoc: locs[0] };
+
+    if (1 in locs) {
+      entry.catchLoc = locs[1];
+    }
+
+    if (2 in locs) {
+      entry.finallyLoc = locs[2];
+      entry.afterLoc = locs[3];
+    }
+
+    this.tryEntries.push(entry);
+  }
+
+  function resetTryEntry(entry) {
+    var record = entry.completion || {};
+    record.type = "normal";
+    delete record.arg;
+    entry.completion = record;
+  }
+
+  function Context(tryLocsList) {
+    // The root entry object (effectively a try statement without a catch
+    // or a finally block) gives us a place to store values thrown from
+    // locations where there is no enclosing try statement.
+    this.tryEntries = [{ tryLoc: "root" }];
+    tryLocsList.forEach(pushTryEntry, this);
+    this.reset(true);
+  }
+
+  exports.keys = function(object) {
+    var keys = [];
+    for (var key in object) {
+      keys.push(key);
+    }
+    keys.reverse();
+
+    // Rather than returning an object with a next method, we keep
+    // things simple and return the next function itself.
+    return function next() {
+      while (keys.length) {
+        var key = keys.pop();
+        if (key in object) {
+          next.value = key;
+          next.done = false;
+          return next;
+        }
+      }
+
+      // To avoid creating an additional object, we just hang the .value
+      // and .done properties off the next function object itself. This
+      // also ensures that the minifier will not anonymize the function.
+      next.done = true;
+      return next;
+    };
+  };
+
+  function values(iterable) {
+    if (iterable) {
+      var iteratorMethod = iterable[iteratorSymbol];
+      if (iteratorMethod) {
+        return iteratorMethod.call(iterable);
+      }
+
+      if (typeof iterable.next === "function") {
+        return iterable;
+      }
+
+      if (!isNaN(iterable.length)) {
+        var i = -1, next = function next() {
+          while (++i < iterable.length) {
+            if (hasOwn.call(iterable, i)) {
+              next.value = iterable[i];
+              next.done = false;
+              return next;
+            }
+          }
+
+          next.value = undefined;
+          next.done = true;
+
+          return next;
+        };
+
+        return next.next = next;
+      }
+    }
+
+    // Return an iterator with no values.
+    return { next: doneResult };
+  }
+  exports.values = values;
+
+  function doneResult() {
+    return { value: undefined, done: true };
+  }
+
+  Context.prototype = {
+    constructor: Context,
+
+    reset: function(skipTempReset) {
+      this.prev = 0;
+      this.next = 0;
+      // Resetting context._sent for legacy support of Babel's
+      // function.sent implementation.
+      this.sent = this._sent = undefined;
+      this.done = false;
+      this.delegate = null;
+
+      this.method = "next";
+      this.arg = undefined;
+
+      this.tryEntries.forEach(resetTryEntry);
+
+      if (!skipTempReset) {
+        for (var name in this) {
+          // Not sure about the optimal order of these conditions:
+          if (name.charAt(0) === "t" &&
+              hasOwn.call(this, name) &&
+              !isNaN(+name.slice(1))) {
+            this[name] = undefined;
+          }
+        }
+      }
+    },
+
+    stop: function() {
+      this.done = true;
+
+      var rootEntry = this.tryEntries[0];
+      var rootRecord = rootEntry.completion;
+      if (rootRecord.type === "throw") {
+        throw rootRecord.arg;
+      }
+
+      return this.rval;
+    },
+
+    dispatchException: function(exception) {
+      if (this.done) {
+        throw exception;
+      }
+
+      var context = this;
+      function handle(loc, caught) {
+        record.type = "throw";
+        record.arg = exception;
+        context.next = loc;
+
+        if (caught) {
+          // If the dispatched exception was caught by a catch block,
+          // then let that catch block handle the exception normally.
+          context.method = "next";
+          context.arg = undefined;
+        }
+
+        return !! caught;
+      }
+
+      for (var i = this.tryEntries.length - 1; i >= 0; --i) {
+        var entry = this.tryEntries[i];
+        var record = entry.completion;
+
+        if (entry.tryLoc === "root") {
+          // Exception thrown outside of any try block that could handle
+          // it, so set the completion value of the entire function to
+          // throw the exception.
+          return handle("end");
+        }
+
+        if (entry.tryLoc <= this.prev) {
+          var hasCatch = hasOwn.call(entry, "catchLoc");
+          var hasFinally = hasOwn.call(entry, "finallyLoc");
+
+          if (hasCatch && hasFinally) {
+            if (this.prev < entry.catchLoc) {
+              return handle(entry.catchLoc, true);
+            } else if (this.prev < entry.finallyLoc) {
+              return handle(entry.finallyLoc);
+            }
+
+          } else if (hasCatch) {
+            if (this.prev < entry.catchLoc) {
+              return handle(entry.catchLoc, true);
+            }
+
+          } else if (hasFinally) {
+            if (this.prev < entry.finallyLoc) {
+              return handle(entry.finallyLoc);
+            }
+
+          } else {
+            throw new Error("try statement without catch or finally");
+          }
+        }
+      }
+    },
+
+    abrupt: function(type, arg) {
+      for (var i = this.tryEntries.length - 1; i >= 0; --i) {
+        var entry = this.tryEntries[i];
+        if (entry.tryLoc <= this.prev &&
+            hasOwn.call(entry, "finallyLoc") &&
+            this.prev < entry.finallyLoc) {
+          var finallyEntry = entry;
+          break;
+        }
+      }
+
+      if (finallyEntry &&
+          (type === "break" ||
+           type === "continue") &&
+          finallyEntry.tryLoc <= arg &&
+          arg <= finallyEntry.finallyLoc) {
+        // Ignore the finally entry if control is not jumping to a
+        // location outside the try/catch block.
+        finallyEntry = null;
+      }
+
+      var record = finallyEntry ? finallyEntry.completion : {};
+      record.type = type;
+      record.arg = arg;
+
+      if (finallyEntry) {
+        this.method = "next";
+        this.next = finallyEntry.finallyLoc;
+        return ContinueSentinel;
+      }
+
+      return this.complete(record);
+    },
+
+    complete: function(record, afterLoc) {
+      if (record.type === "throw") {
+        throw record.arg;
+      }
+
+      if (record.type === "break" ||
+          record.type === "continue") {
+        this.next = record.arg;
+      } else if (record.type === "return") {
+        this.rval = this.arg = record.arg;
+        this.method = "return";
+        this.next = "end";
+      } else if (record.type === "normal" && afterLoc) {
+        this.next = afterLoc;
+      }
+
+      return ContinueSentinel;
+    },
+
+    finish: function(finallyLoc) {
+      for (var i = this.tryEntries.length - 1; i >= 0; --i) {
+        var entry = this.tryEntries[i];
+        if (entry.finallyLoc === finallyLoc) {
+          this.complete(entry.completion, entry.afterLoc);
+          resetTryEntry(entry);
+          return ContinueSentinel;
+        }
+      }
+    },
+
+    "catch": function(tryLoc) {
+      for (var i = this.tryEntries.length - 1; i >= 0; --i) {
+        var entry = this.tryEntries[i];
+        if (entry.tryLoc === tryLoc) {
+          var record = entry.completion;
+          if (record.type === "throw") {
+            var thrown = record.arg;
+            resetTryEntry(entry);
+          }
+          return thrown;
+        }
+      }
+
+      // The context.catch method must only be called with a location
+      // argument that corresponds to a known catch block.
+      throw new Error("illegal catch attempt");
+    },
+
+    delegateYield: function(iterable, resultName, nextLoc) {
+      this.delegate = {
+        iterator: values(iterable),
+        resultName: resultName,
+        nextLoc: nextLoc
+      };
+
+      if (this.method === "next") {
+        // Deliberately forget the last sent value so that we don't
+        // accidentally pass it on to the delegate.
+        this.arg = undefined;
+      }
+
+      return ContinueSentinel;
+    }
+  };
+
+  // Regardless of whether this script is executing as a CommonJS module
+  // or not, return the runtime object so that we can declare the variable
+  // regeneratorRuntime in the outer scope, which allows this module to be
+  // injected easily by `bin/regenerator --include-runtime script.js`.
+  return exports;
+
+}(
+  // If this script is executing as a CommonJS module, use module.exports
+  // as the regeneratorRuntime namespace. Otherwise create a new empty
+  // object. Either way, the resulting object will be used to initialize
+  // the regeneratorRuntime variable at the top of this file.
+  typeof module === "object" ? module.exports : {}
+));
+
+try {
+  regeneratorRuntime = runtime;
+} catch (accidentalStrictMode) {
+  // This module should not be running in strict mode, so the above
+  // assignment should always work unless something is misconfigured. Just
+  // in case runtime.js accidentally runs in strict mode, we can escape
+  // strict mode using a global Function call. This could conceivably fail
+  // if a Content Security Policy forbids using Function, but in that case
+  // the proper solution is to fix the accidental strict mode problem. If
+  // you've misconfigured your bundler to force strict mode and applied a
+  // CSP to forbid Function, and you're not willing to fix either of those
+  // problems, please detail your unique predicament in a GitHub issue.
+  Function("r", "regeneratorRuntime = r")(runtime);
+}
+
+},{}],"node_modules/@babel/runtime/regenerator/index.js":[function(require,module,exports) {
+module.exports = require("regenerator-runtime");
+
+},{"regenerator-runtime":"node_modules/@babel/runtime/node_modules/regenerator-runtime/runtime.js"}],"node_modules/@babel/runtime/helpers/esm/asyncToGenerator.js":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = _asyncToGenerator;
+
+function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) {
+  try {
+    var info = gen[key](arg);
+    var value = info.value;
+  } catch (error) {
+    reject(error);
+    return;
+  }
+
+  if (info.done) {
+    resolve(value);
+  } else {
+    Promise.resolve(value).then(_next, _throw);
+  }
+}
+
+function _asyncToGenerator(fn) {
+  return function () {
+    var self = this,
+        args = arguments;
+    return new Promise(function (resolve, reject) {
+      var gen = fn.apply(self, args);
+
+      function _next(value) {
+        asyncGeneratorStep(gen, resolve, reject, _next, _throw, "next", value);
+      }
+
+      function _throw(err) {
+        asyncGeneratorStep(gen, resolve, reject, _next, _throw, "throw", err);
+      }
+
+      _next(undefined);
+    });
+  };
+}
+},{}],"node_modules/lru-cache/node_modules/yallist/iterator.js":[function(require,module,exports) {
+'use strict'
+module.exports = function (Yallist) {
+  Yallist.prototype[Symbol.iterator] = function* () {
+    for (let walker = this.head; walker; walker = walker.next) {
+      yield walker.value
+    }
+  }
+}
+
+},{}],"node_modules/lru-cache/node_modules/yallist/yallist.js":[function(require,module,exports) {
+'use strict'
+module.exports = Yallist
+
+Yallist.Node = Node
+Yallist.create = Yallist
+
+function Yallist (list) {
+  var self = this
+  if (!(self instanceof Yallist)) {
+    self = new Yallist()
+  }
+
+  self.tail = null
+  self.head = null
+  self.length = 0
+
+  if (list && typeof list.forEach === 'function') {
+    list.forEach(function (item) {
+      self.push(item)
+    })
+  } else if (arguments.length > 0) {
+    for (var i = 0, l = arguments.length; i < l; i++) {
+      self.push(arguments[i])
+    }
+  }
+
+  return self
+}
+
+Yallist.prototype.removeNode = function (node) {
+  if (node.list !== this) {
+    throw new Error('removing node which does not belong to this list')
+  }
+
+  var next = node.next
+  var prev = node.prev
+
+  if (next) {
+    next.prev = prev
+  }
+
+  if (prev) {
+    prev.next = next
+  }
+
+  if (node === this.head) {
+    this.head = next
+  }
+  if (node === this.tail) {
+    this.tail = prev
+  }
+
+  node.list.length--
+  node.next = null
+  node.prev = null
+  node.list = null
+
+  return next
+}
+
+Yallist.prototype.unshiftNode = function (node) {
+  if (node === this.head) {
+    return
+  }
+
+  if (node.list) {
+    node.list.removeNode(node)
+  }
+
+  var head = this.head
+  node.list = this
+  node.next = head
+  if (head) {
+    head.prev = node
+  }
+
+  this.head = node
+  if (!this.tail) {
+    this.tail = node
+  }
+  this.length++
+}
+
+Yallist.prototype.pushNode = function (node) {
+  if (node === this.tail) {
+    return
+  }
+
+  if (node.list) {
+    node.list.removeNode(node)
+  }
+
+  var tail = this.tail
+  node.list = this
+  node.prev = tail
+  if (tail) {
+    tail.next = node
+  }
+
+  this.tail = node
+  if (!this.head) {
+    this.head = node
+  }
+  this.length++
+}
+
+Yallist.prototype.push = function () {
+  for (var i = 0, l = arguments.length; i < l; i++) {
+    push(this, arguments[i])
+  }
+  return this.length
+}
+
+Yallist.prototype.unshift = function () {
+  for (var i = 0, l = arguments.length; i < l; i++) {
+    unshift(this, arguments[i])
+  }
+  return this.length
+}
+
+Yallist.prototype.pop = function () {
+  if (!this.tail) {
+    return undefined
+  }
+
+  var res = this.tail.value
+  this.tail = this.tail.prev
+  if (this.tail) {
+    this.tail.next = null
+  } else {
+    this.head = null
+  }
+  this.length--
+  return res
+}
+
+Yallist.prototype.shift = function () {
+  if (!this.head) {
+    return undefined
+  }
+
+  var res = this.head.value
+  this.head = this.head.next
+  if (this.head) {
+    this.head.prev = null
+  } else {
+    this.tail = null
+  }
+  this.length--
+  return res
+}
+
+Yallist.prototype.forEach = function (fn, thisp) {
+  thisp = thisp || this
+  for (var walker = this.head, i = 0; walker !== null; i++) {
+    fn.call(thisp, walker.value, i, this)
+    walker = walker.next
+  }
+}
+
+Yallist.prototype.forEachReverse = function (fn, thisp) {
+  thisp = thisp || this
+  for (var walker = this.tail, i = this.length - 1; walker !== null; i--) {
+    fn.call(thisp, walker.value, i, this)
+    walker = walker.prev
+  }
+}
+
+Yallist.prototype.get = function (n) {
+  for (var i = 0, walker = this.head; walker !== null && i < n; i++) {
+    // abort out of the list early if we hit a cycle
+    walker = walker.next
+  }
+  if (i === n && walker !== null) {
+    return walker.value
+  }
+}
+
+Yallist.prototype.getReverse = function (n) {
+  for (var i = 0, walker = this.tail; walker !== null && i < n; i++) {
+    // abort out of the list early if we hit a cycle
+    walker = walker.prev
+  }
+  if (i === n && walker !== null) {
+    return walker.value
+  }
+}
+
+Yallist.prototype.map = function (fn, thisp) {
+  thisp = thisp || this
+  var res = new Yallist()
+  for (var walker = this.head; walker !== null;) {
+    res.push(fn.call(thisp, walker.value, this))
+    walker = walker.next
+  }
+  return res
+}
+
+Yallist.prototype.mapReverse = function (fn, thisp) {
+  thisp = thisp || this
+  var res = new Yallist()
+  for (var walker = this.tail; walker !== null;) {
+    res.push(fn.call(thisp, walker.value, this))
+    walker = walker.prev
+  }
+  return res
+}
+
+Yallist.prototype.reduce = function (fn, initial) {
+  var acc
+  var walker = this.head
+  if (arguments.length > 1) {
+    acc = initial
+  } else if (this.head) {
+    walker = this.head.next
+    acc = this.head.value
+  } else {
+    throw new TypeError('Reduce of empty list with no initial value')
+  }
+
+  for (var i = 0; walker !== null; i++) {
+    acc = fn(acc, walker.value, i)
+    walker = walker.next
+  }
+
+  return acc
+}
+
+Yallist.prototype.reduceReverse = function (fn, initial) {
+  var acc
+  var walker = this.tail
+  if (arguments.length > 1) {
+    acc = initial
+  } else if (this.tail) {
+    walker = this.tail.prev
+    acc = this.tail.value
+  } else {
+    throw new TypeError('Reduce of empty list with no initial value')
+  }
+
+  for (var i = this.length - 1; walker !== null; i--) {
+    acc = fn(acc, walker.value, i)
+    walker = walker.prev
+  }
+
+  return acc
+}
+
+Yallist.prototype.toArray = function () {
+  var arr = new Array(this.length)
+  for (var i = 0, walker = this.head; walker !== null; i++) {
+    arr[i] = walker.value
+    walker = walker.next
+  }
+  return arr
+}
+
+Yallist.prototype.toArrayReverse = function () {
+  var arr = new Array(this.length)
+  for (var i = 0, walker = this.tail; walker !== null; i++) {
+    arr[i] = walker.value
+    walker = walker.prev
+  }
+  return arr
+}
+
+Yallist.prototype.slice = function (from, to) {
+  to = to || this.length
+  if (to < 0) {
+    to += this.length
+  }
+  from = from || 0
+  if (from < 0) {
+    from += this.length
+  }
+  var ret = new Yallist()
+  if (to < from || to < 0) {
+    return ret
+  }
+  if (from < 0) {
+    from = 0
+  }
+  if (to > this.length) {
+    to = this.length
+  }
+  for (var i = 0, walker = this.head; walker !== null && i < from; i++) {
+    walker = walker.next
+  }
+  for (; walker !== null && i < to; i++, walker = walker.next) {
+    ret.push(walker.value)
+  }
+  return ret
+}
+
+Yallist.prototype.sliceReverse = function (from, to) {
+  to = to || this.length
+  if (to < 0) {
+    to += this.length
+  }
+  from = from || 0
+  if (from < 0) {
+    from += this.length
+  }
+  var ret = new Yallist()
+  if (to < from || to < 0) {
+    return ret
+  }
+  if (from < 0) {
+    from = 0
+  }
+  if (to > this.length) {
+    to = this.length
+  }
+  for (var i = this.length, walker = this.tail; walker !== null && i > to; i--) {
+    walker = walker.prev
+  }
+  for (; walker !== null && i > from; i--, walker = walker.prev) {
+    ret.push(walker.value)
+  }
+  return ret
+}
+
+Yallist.prototype.splice = function (start, deleteCount, ...nodes) {
+  if (start > this.length) {
+    start = this.length - 1
+  }
+  if (start < 0) {
+    start = this.length + start;
+  }
+
+  for (var i = 0, walker = this.head; walker !== null && i < start; i++) {
+    walker = walker.next
+  }
+
+  var ret = []
+  for (var i = 0; walker && i < deleteCount; i++) {
+    ret.push(walker.value)
+    walker = this.removeNode(walker)
+  }
+  if (walker === null) {
+    walker = this.tail
+  }
+
+  if (walker !== this.head && walker !== this.tail) {
+    walker = walker.prev
+  }
+
+  for (var i = 0; i < nodes.length; i++) {
+    walker = insert(this, walker, nodes[i])
+  }
+  return ret;
+}
+
+Yallist.prototype.reverse = function () {
+  var head = this.head
+  var tail = this.tail
+  for (var walker = head; walker !== null; walker = walker.prev) {
+    var p = walker.prev
+    walker.prev = walker.next
+    walker.next = p
+  }
+  this.head = tail
+  this.tail = head
+  return this
+}
+
+function insert (self, node, value) {
+  var inserted = node === self.head ?
+    new Node(value, null, node, self) :
+    new Node(value, node, node.next, self)
+
+  if (inserted.next === null) {
+    self.tail = inserted
+  }
+  if (inserted.prev === null) {
+    self.head = inserted
+  }
+
+  self.length++
+
+  return inserted
+}
+
+function push (self, item) {
+  self.tail = new Node(item, self.tail, null, self)
+  if (!self.head) {
+    self.head = self.tail
+  }
+  self.length++
+}
+
+function unshift (self, item) {
+  self.head = new Node(item, null, self.head, self)
+  if (!self.tail) {
+    self.tail = self.head
+  }
+  self.length++
+}
+
+function Node (value, prev, next, list) {
+  if (!(this instanceof Node)) {
+    return new Node(value, prev, next, list)
+  }
+
+  this.list = list
+  this.value = value
+
+  if (prev) {
+    prev.next = this
+    this.prev = prev
+  } else {
+    this.prev = null
+  }
+
+  if (next) {
+    next.prev = this
+    this.next = next
+  } else {
+    this.next = null
+  }
+}
+
+try {
+  // add if support for Symbol.iterator is present
+  require('./iterator.js')(Yallist)
+} catch (er) {}
+
+},{"./iterator.js":"node_modules/lru-cache/node_modules/yallist/iterator.js"}],"node_modules/lru-cache/index.js":[function(require,module,exports) {
+'use strict'; // A linked list to keep track of recently-used-ness
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
+
+function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
+
+var Yallist = require('yallist');
+
+var MAX = Symbol('max');
+var LENGTH = Symbol('length');
+var LENGTH_CALCULATOR = Symbol('lengthCalculator');
+var ALLOW_STALE = Symbol('allowStale');
+var MAX_AGE = Symbol('maxAge');
+var DISPOSE = Symbol('dispose');
+var NO_DISPOSE_ON_SET = Symbol('noDisposeOnSet');
+var LRU_LIST = Symbol('lruList');
+var CACHE = Symbol('cache');
+var UPDATE_AGE_ON_GET = Symbol('updateAgeOnGet');
+
+var naiveLength = function naiveLength() {
+  return 1;
+}; // lruList is a yallist where the head is the youngest
+// item, and the tail is the oldest.  the list contains the Hit
+// objects as the entries.
+// Each Hit object has a reference to its Yallist.Node.  This
+// never changes.
+//
+// cache is a Map (or PseudoMap) that matches the keys to
+// the Yallist.Node object.
+
+
+var LRUCache = /*#__PURE__*/function () {
+  function LRUCache(options) {
+    _classCallCheck(this, LRUCache);
+
+    if (typeof options === 'number') options = {
+      max: options
+    };
+    if (!options) options = {};
+    if (options.max && (typeof options.max !== 'number' || options.max < 0)) throw new TypeError('max must be a non-negative number'); // Kind of weird to have a default max of Infinity, but oh well.
+
+    var max = this[MAX] = options.max || Infinity;
+    var lc = options.length || naiveLength;
+    this[LENGTH_CALCULATOR] = typeof lc !== 'function' ? naiveLength : lc;
+    this[ALLOW_STALE] = options.stale || false;
+    if (options.maxAge && typeof options.maxAge !== 'number') throw new TypeError('maxAge must be a number');
+    this[MAX_AGE] = options.maxAge || 0;
+    this[DISPOSE] = options.dispose;
+    this[NO_DISPOSE_ON_SET] = options.noDisposeOnSet || false;
+    this[UPDATE_AGE_ON_GET] = options.updateAgeOnGet || false;
+    this.reset();
+  } // resize the cache when the max changes.
+
+
+  _createClass(LRUCache, [{
+    key: "rforEach",
+    value: function rforEach(fn, thisp) {
+      thisp = thisp || this;
+
+      for (var walker = this[LRU_LIST].tail; walker !== null;) {
+        var prev = walker.prev;
+        forEachStep(this, fn, walker, thisp);
+        walker = prev;
+      }
+    }
+  }, {
+    key: "forEach",
+    value: function forEach(fn, thisp) {
+      thisp = thisp || this;
+
+      for (var walker = this[LRU_LIST].head; walker !== null;) {
+        var next = walker.next;
+        forEachStep(this, fn, walker, thisp);
+        walker = next;
+      }
+    }
+  }, {
+    key: "keys",
+    value: function keys() {
+      return this[LRU_LIST].toArray().map(function (k) {
+        return k.key;
+      });
+    }
+  }, {
+    key: "values",
+    value: function values() {
+      return this[LRU_LIST].toArray().map(function (k) {
+        return k.value;
+      });
+    }
+  }, {
+    key: "reset",
+    value: function reset() {
+      var _this = this;
+
+      if (this[DISPOSE] && this[LRU_LIST] && this[LRU_LIST].length) {
+        this[LRU_LIST].forEach(function (hit) {
+          return _this[DISPOSE](hit.key, hit.value);
+        });
+      }
+
+      this[CACHE] = new Map(); // hash of items by key
+
+      this[LRU_LIST] = new Yallist(); // list of items in order of use recency
+
+      this[LENGTH] = 0; // length of items in the list
+    }
+  }, {
+    key: "dump",
+    value: function dump() {
+      var _this2 = this;
+
+      return this[LRU_LIST].map(function (hit) {
+        return isStale(_this2, hit) ? false : {
+          k: hit.key,
+          v: hit.value,
+          e: hit.now + (hit.maxAge || 0)
+        };
+      }).toArray().filter(function (h) {
+        return h;
+      });
+    }
+  }, {
+    key: "dumpLru",
+    value: function dumpLru() {
+      return this[LRU_LIST];
+    }
+  }, {
+    key: "set",
+    value: function set(key, value, maxAge) {
+      maxAge = maxAge || this[MAX_AGE];
+      if (maxAge && typeof maxAge !== 'number') throw new TypeError('maxAge must be a number');
+      var now = maxAge ? Date.now() : 0;
+      var len = this[LENGTH_CALCULATOR](value, key);
+
+      if (this[CACHE].has(key)) {
+        if (len > this[MAX]) {
+          _del(this, this[CACHE].get(key));
+
+          return false;
+        }
+
+        var node = this[CACHE].get(key);
+        var item = node.value; // dispose of the old one before overwriting
+        // split out into 2 ifs for better coverage tracking
+
+        if (this[DISPOSE]) {
+          if (!this[NO_DISPOSE_ON_SET]) this[DISPOSE](key, item.value);
+        }
+
+        item.now = now;
+        item.maxAge = maxAge;
+        item.value = value;
+        this[LENGTH] += len - item.length;
+        item.length = len;
+        this.get(key);
+        trim(this);
+        return true;
+      }
+
+      var hit = new Entry(key, value, len, now, maxAge); // oversized objects fall out of cache automatically.
+
+      if (hit.length > this[MAX]) {
+        if (this[DISPOSE]) this[DISPOSE](key, value);
+        return false;
+      }
+
+      this[LENGTH] += hit.length;
+      this[LRU_LIST].unshift(hit);
+      this[CACHE].set(key, this[LRU_LIST].head);
+      trim(this);
+      return true;
+    }
+  }, {
+    key: "has",
+    value: function has(key) {
+      if (!this[CACHE].has(key)) return false;
+      var hit = this[CACHE].get(key).value;
+      return !isStale(this, hit);
+    }
+  }, {
+    key: "get",
+    value: function get(key) {
+      return _get(this, key, true);
+    }
+  }, {
+    key: "peek",
+    value: function peek(key) {
+      return _get(this, key, false);
+    }
+  }, {
+    key: "pop",
+    value: function pop() {
+      var node = this[LRU_LIST].tail;
+      if (!node) return null;
+
+      _del(this, node);
+
+      return node.value;
+    }
+  }, {
+    key: "del",
+    value: function del(key) {
+      _del(this, this[CACHE].get(key));
+    }
+  }, {
+    key: "load",
+    value: function load(arr) {
+      // reset the cache
+      this.reset();
+      var now = Date.now(); // A previous serialized cache has the most recent items first
+
+      for (var l = arr.length - 1; l >= 0; l--) {
+        var hit = arr[l];
+        var expiresAt = hit.e || 0;
+        if (expiresAt === 0) // the item was created without expiration in a non aged cache
+          this.set(hit.k, hit.v);else {
+          var maxAge = expiresAt - now; // dont add already expired items
+
+          if (maxAge > 0) {
+            this.set(hit.k, hit.v, maxAge);
+          }
+        }
+      }
+    }
+  }, {
+    key: "prune",
+    value: function prune() {
+      var _this3 = this;
+
+      this[CACHE].forEach(function (value, key) {
+        return _get(_this3, key, false);
+      });
+    }
+  }, {
+    key: "max",
+    set: function set(mL) {
+      if (typeof mL !== 'number' || mL < 0) throw new TypeError('max must be a non-negative number');
+      this[MAX] = mL || Infinity;
+      trim(this);
+    },
+    get: function get() {
+      return this[MAX];
+    }
+  }, {
+    key: "allowStale",
+    set: function set(allowStale) {
+      this[ALLOW_STALE] = !!allowStale;
+    },
+    get: function get() {
+      return this[ALLOW_STALE];
+    }
+  }, {
+    key: "maxAge",
+    set: function set(mA) {
+      if (typeof mA !== 'number') throw new TypeError('maxAge must be a non-negative number');
+      this[MAX_AGE] = mA;
+      trim(this);
+    },
+    get: function get() {
+      return this[MAX_AGE];
+    } // resize the cache when the lengthCalculator changes.
+
+  }, {
+    key: "lengthCalculator",
+    set: function set(lC) {
+      var _this4 = this;
+
+      if (typeof lC !== 'function') lC = naiveLength;
+
+      if (lC !== this[LENGTH_CALCULATOR]) {
+        this[LENGTH_CALCULATOR] = lC;
+        this[LENGTH] = 0;
+        this[LRU_LIST].forEach(function (hit) {
+          hit.length = _this4[LENGTH_CALCULATOR](hit.value, hit.key);
+          _this4[LENGTH] += hit.length;
+        });
+      }
+
+      trim(this);
+    },
+    get: function get() {
+      return this[LENGTH_CALCULATOR];
+    }
+  }, {
+    key: "length",
+    get: function get() {
+      return this[LENGTH];
+    }
+  }, {
+    key: "itemCount",
+    get: function get() {
+      return this[LRU_LIST].length;
+    }
+  }]);
+
+  return LRUCache;
+}();
+
+var _get = function _get(self, key, doUse) {
+  var node = self[CACHE].get(key);
+
+  if (node) {
+    var hit = node.value;
+
+    if (isStale(self, hit)) {
+      _del(self, node);
+
+      if (!self[ALLOW_STALE]) return undefined;
+    } else {
+      if (doUse) {
+        if (self[UPDATE_AGE_ON_GET]) node.value.now = Date.now();
+        self[LRU_LIST].unshiftNode(node);
+      }
+    }
+
+    return hit.value;
+  }
+};
+
+var isStale = function isStale(self, hit) {
+  if (!hit || !hit.maxAge && !self[MAX_AGE]) return false;
+  var diff = Date.now() - hit.now;
+  return hit.maxAge ? diff > hit.maxAge : self[MAX_AGE] && diff > self[MAX_AGE];
+};
+
+var trim = function trim(self) {
+  if (self[LENGTH] > self[MAX]) {
+    for (var walker = self[LRU_LIST].tail; self[LENGTH] > self[MAX] && walker !== null;) {
+      // We know that we're about to delete this one, and also
+      // what the next least recently used key will be, so just
+      // go ahead and set it now.
+      var prev = walker.prev;
+
+      _del(self, walker);
+
+      walker = prev;
+    }
+  }
+};
+
+var _del = function _del(self, node) {
+  if (node) {
+    var hit = node.value;
+    if (self[DISPOSE]) self[DISPOSE](hit.key, hit.value);
+    self[LENGTH] -= hit.length;
+    self[CACHE].delete(hit.key);
+    self[LRU_LIST].removeNode(node);
+  }
+};
+
+var Entry = function Entry(key, value, length, now, maxAge) {
+  _classCallCheck(this, Entry);
+
+  this.key = key;
+  this.value = value;
+  this.length = length;
+  this.now = now;
+  this.maxAge = maxAge || 0;
+};
+
+var forEachStep = function forEachStep(self, fn, node, thisp) {
+  var hit = node.value;
+
+  if (isStale(self, hit)) {
+    _del(self, node);
+
+    if (!self[ALLOW_STALE]) hit = undefined;
+  }
+
+  if (hit) fn.call(thisp, hit.value, hit.key, self);
+};
+
+module.exports = LRUCache;
+},{"yallist":"node_modules/lru-cache/node_modules/yallist/yallist.js"}],"node_modules/axios-hooks/es/index.js":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.makeUseAxios = makeUseAxios;
+exports.clearCache = exports.serializeCache = exports.loadCache = exports.configure = exports.resetConfigure = exports.__ssrPromises = exports.default = void 0;
+
+var _regenerator = _interopRequireDefault(require("@babel/runtime/regenerator"));
+
+var _asyncToGenerator2 = _interopRequireDefault(require("@babel/runtime/helpers/esm/asyncToGenerator"));
+
+var _extends3 = _interopRequireDefault(require("@babel/runtime/helpers/esm/extends"));
+
+var _react = _interopRequireDefault(require("react"));
+
+var _axios = _interopRequireDefault(require("axios"));
+
+var _lruCache = _interopRequireDefault(require("lru-cache"));
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+var actions = {
+  REQUEST_START: 'REQUEST_START',
+  REQUEST_END: 'REQUEST_END'
+};
+var useAxios = makeUseAxios();
+var __ssrPromises = useAxios.__ssrPromises,
+    resetConfigure = useAxios.resetConfigure,
+    configure = useAxios.configure,
+    loadCache = useAxios.loadCache,
+    serializeCache = useAxios.serializeCache,
+    clearCache = useAxios.clearCache;
+exports.clearCache = clearCache;
+exports.serializeCache = serializeCache;
+exports.loadCache = loadCache;
+exports.configure = configure;
+exports.resetConfigure = resetConfigure;
+exports.__ssrPromises = __ssrPromises;
+var _default = useAxios;
+exports.default = _default;
+
+function isReactEvent(obj) {
+  return obj && obj.nativeEvent && obj.nativeEvent instanceof Event;
+}
+
+function createCacheKey(config) {
+  var cleanedConfig = (0, _extends3.default)({}, config);
+  delete cleanedConfig.cancelToken;
+  return JSON.stringify(cleanedConfig);
+}
+
+function configToObject(config) {
+  if (typeof config === 'string') {
+    return {
+      url: config
+    };
+  }
+
+  return config;
+}
+
+function makeUseAxios(configurationOptions) {
+  var cache;
+  var axiosInstance;
+  var __ssrPromises = [];
+
+  function resetConfigure() {
+    cache = new _lruCache.default();
+    axiosInstance = _axios.default;
+  }
+
+  function configure(options) {
+    if (options === void 0) {
+      options = {};
+    }
+
+    if (options.axios !== undefined) {
+      axiosInstance = options.axios;
+    }
+
+    if (options.cache !== undefined) {
+      cache = options.cache;
+    }
+  }
+
+  resetConfigure();
+  configure(configurationOptions);
+
+  function loadCache(data) {
+    cache.load(data);
+  }
+
+  function serializeCache() {
+    return _serializeCache.apply(this, arguments);
+  }
+
+  function _serializeCache() {
+    _serializeCache = (0, _asyncToGenerator2.default)( /*#__PURE__*/_regenerator.default.mark(function _callee() {
+      var ssrPromisesCopy;
+      return _regenerator.default.wrap(function _callee$(_context) {
+        while (1) {
+          switch (_context.prev = _context.next) {
+            case 0:
+              ssrPromisesCopy = [].concat(__ssrPromises);
+              __ssrPromises.length = 0;
+              _context.next = 4;
+              return Promise.all(ssrPromisesCopy);
+
+            case 4:
+              return _context.abrupt("return", cache.dump());
+
+            case 5:
+            case "end":
+              return _context.stop();
+          }
+        }
+      }, _callee);
+    }));
+    return _serializeCache.apply(this, arguments);
+  }
+
+  function clearCache() {
+    cache.reset();
+  }
+
+  return Object.assign(useAxios, {
+    __ssrPromises: __ssrPromises,
+    resetConfigure: resetConfigure,
+    configure: configure,
+    loadCache: loadCache,
+    serializeCache: serializeCache,
+    clearCache: clearCache
+  });
+
+  function tryStoreInCache(config, response) {
+    if (!cache) {
+      return;
+    }
+
+    var cacheKey = createCacheKey(config);
+    var responseForCache = (0, _extends3.default)({}, response);
+    delete responseForCache.config;
+    delete responseForCache.request;
+    cache.set(cacheKey, responseForCache);
+  }
+
+  function createInitialState(config, options) {
+    var response = !options.manual && tryGetFromCache(config, options);
+    return (0, _extends3.default)({
+      loading: !options.manual && !response,
+      error: null
+    }, response ? {
+      data: response.data,
+      response: response
+    } : null);
+  }
+
+  function reducer(state, action) {
+    var _extends2;
+
+    switch (action.type) {
+      case actions.REQUEST_START:
+        return (0, _extends3.default)({}, state, {
+          loading: true,
+          error: null
+        });
+
+      case actions.REQUEST_END:
+        return (0, _extends3.default)({}, state, {
+          loading: false
+        }, action.error ? {} : {
+          data: action.payload.data
+        }, (_extends2 = {}, _extends2[action.error ? 'error' : 'response'] = action.payload, _extends2));
+    }
+  }
+
+  function tryGetFromCache(config, options, dispatch) {
+    if (!cache || !options.useCache) {
+      return;
+    }
+
+    var cacheKey = createCacheKey(config);
+    var response = cache.get(cacheKey);
+
+    if (response && dispatch) {
+      dispatch({
+        type: actions.REQUEST_END,
+        payload: response
+      });
+    }
+
+    return response;
+  }
+
+  function executeRequest(_x, _x2) {
+    return _executeRequest.apply(this, arguments);
+  }
+
+  function _executeRequest() {
+    _executeRequest = (0, _asyncToGenerator2.default)( /*#__PURE__*/_regenerator.default.mark(function _callee2(config, dispatch) {
+      var response;
+      return _regenerator.default.wrap(function _callee2$(_context2) {
+        while (1) {
+          switch (_context2.prev = _context2.next) {
+            case 0:
+              _context2.prev = 0;
+              dispatch({
+                type: actions.REQUEST_START
+              });
+              _context2.next = 4;
+              return axiosInstance(config);
+
+            case 4:
+              response = _context2.sent;
+              tryStoreInCache(config, response);
+              dispatch({
+                type: actions.REQUEST_END,
+                payload: response
+              });
+              return _context2.abrupt("return", response);
+
+            case 10:
+              _context2.prev = 10;
+              _context2.t0 = _context2["catch"](0);
+
+              if (!_axios.default.isCancel(_context2.t0)) {
+                dispatch({
+                  type: actions.REQUEST_END,
+                  payload: _context2.t0,
+                  error: true
+                });
+              }
+
+              throw _context2.t0;
+
+            case 14:
+            case "end":
+              return _context2.stop();
+          }
+        }
+      }, _callee2, null, [[0, 10]]);
+    }));
+    return _executeRequest.apply(this, arguments);
+  }
+
+  function request(_x3, _x4, _x5) {
+    return _request.apply(this, arguments);
+  }
+
+  function _request() {
+    _request = (0, _asyncToGenerator2.default)( /*#__PURE__*/_regenerator.default.mark(function _callee3(config, options, dispatch) {
+      return _regenerator.default.wrap(function _callee3$(_context3) {
+        while (1) {
+          switch (_context3.prev = _context3.next) {
+            case 0:
+              return _context3.abrupt("return", tryGetFromCache(config, options, dispatch) || executeRequest(config, dispatch));
+
+            case 1:
+            case "end":
+              return _context3.stop();
+          }
+        }
+      }, _callee3);
+    }));
+    return _request.apply(this, arguments);
+  }
+
+  function useAxios(config, options) {
+    config = _react.default.useMemo(function () {
+      return configToObject(config);
+    }, // eslint-disable-next-line react-hooks/exhaustive-deps
+    [JSON.stringify(config)]);
+    options = _react.default.useMemo(function () {
+      return (0, _extends3.default)({
+        manual: false,
+        useCache: true
+      }, options);
+    }, // eslint-disable-next-line react-hooks/exhaustive-deps
+    [JSON.stringify(options)]);
+
+    var cancelSourceRef = _react.default.useRef();
+
+    var _React$useReducer = _react.default.useReducer(reducer, createInitialState(config, options)),
+        state = _React$useReducer[0],
+        dispatch = _React$useReducer[1];
+
+    if (typeof window === 'undefined' && !options.manual) {
+      useAxios.__ssrPromises.push(axiosInstance(config));
+    }
+
+    var cancelOutstandingRequest = _react.default.useCallback(function () {
+      if (cancelSourceRef.current) {
+        cancelSourceRef.current.cancel();
+      }
+    }, []);
+
+    var withCancelToken = _react.default.useCallback(function (config) {
+      cancelOutstandingRequest();
+      cancelSourceRef.current = _axios.default.CancelToken.source();
+      config.cancelToken = cancelSourceRef.current.token;
+      return config;
+    }, [cancelOutstandingRequest]);
+
+    _react.default.useEffect(function () {
+      if (!options.manual) {
+        request(withCancelToken(config), options, dispatch)["catch"](function () {});
+      }
+
+      return cancelOutstandingRequest;
+    }, [config, options, withCancelToken, cancelOutstandingRequest]);
+
+    var refetch = _react.default.useCallback(function (configOverride, options) {
+      configOverride = configToObject(configOverride);
+      return request(withCancelToken((0, _extends3.default)({}, config, isReactEvent(configOverride) ? null : configOverride)), (0, _extends3.default)({
+        useCache: false
+      }, options), dispatch);
+    }, [config, withCancelToken]);
+
+    return [state, refetch];
+  }
+}
+},{"@babel/runtime/regenerator":"node_modules/@babel/runtime/regenerator/index.js","@babel/runtime/helpers/esm/asyncToGenerator":"node_modules/@babel/runtime/helpers/esm/asyncToGenerator.js","@babel/runtime/helpers/esm/extends":"node_modules/@babel/runtime/helpers/esm/extends.js","react":"node_modules/react/index.js","axios":"node_modules/axios/index.js","lru-cache":"node_modules/lru-cache/index.js"}],"components/Home.jsx":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -52812,6 +60522,12 @@ var _yup = require("@hookform/resolvers/yup");
 
 var yup = _interopRequireWildcard(require("yup"));
 
+var _axios = _interopRequireDefault(require("axios"));
+
+var _reactQuery = require("react-query");
+
+var _axiosHooks = _interopRequireDefault(require("axios-hooks"));
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _getRequireWildcardCache() { if (typeof WeakMap !== "function") return null; var cache = new WeakMap(); _getRequireWildcardCache = function () { return cache; }; return cache; }
@@ -52840,12 +60556,6 @@ var schema = yup.object().shape({
 
 function Home(_ref) {
   var user = _ref.user;
-  var history = (0, _reactRouterDom.useHistory)();
-
-  var _useState = (0, _react.useState)(false),
-      _useState2 = _slicedToArray(_useState, 2),
-      posted = _useState2[0],
-      setPosted = _useState2[1];
 
   var _useForm = (0, _reactHookForm.useForm)({
     resolver: (0, _yup.yupResolver)(schema),
@@ -52857,145 +60567,217 @@ function Home(_ref) {
       errors = _useForm.errors;
 
   function onSubmit(data) {
-    var requestOptions = {
+    (0, _axios.default)({
       method: "POST",
-      allowed_headers: "Content-Type",
-      credentials: "same-origin",
+      url: "http://localhost:8080/post",
+      data: data,
       headers: {
-        "Access-Control-Allow-Credentials": "true",
-        "Content-Type": "application/json",
-        "Accept": "application/json"
+        "Content-Type": "application/json"
       },
-      body: JSON.stringify({
-        data: data,
-        user: user
-      })
-    };
-    console.log(requestOptions.body);
-    fetch("http://localhost:8080/post", requestOptions).then(function (response) {
-      return response.json();
-    }).then(function (toto) {
-      if (toto.message === "working!") {
-        setPosted(function (c) {
-          return !c;
-        }); // history.go()
-        //window.location.reload();
-      } else console.log(toto.message);
+      withCredentials: true
+    }).then(function (res) {
+      console.log(res.data.message);
+
+      if (res.data.message == "working!") {
+        refetch();
+      } else {
+        console.log(res.data.message);
+      }
     });
   }
 
   {
-    if (JSON.stringify(user) != JSON.stringify({})) return /*#__PURE__*/_react.default.createElement("div", {
-      className: "parent"
-    }, console.log("render"), /*#__PURE__*/_react.default.createElement("div", {
-      className: "header"
-    }, /*#__PURE__*/_react.default.createElement("div", {
-      className: "gauche"
-    }, /*#__PURE__*/_react.default.createElement("span", null, /*#__PURE__*/_react.default.createElement("a", {
-      href: "/"
-    }, "Main"))), /*#__PURE__*/_react.default.createElement("div", {
-      className: "navbar"
-    }, /*#__PURE__*/_react.default.createElement("div", {
-      className: "dropdown"
-    }, /*#__PURE__*/_react.default.createElement("button", {
-      className: "dropbtn"
-    }, "Section1", /*#__PURE__*/_react.default.createElement("i", {
-      className: "fa fa-caret-down"
-    })), /*#__PURE__*/_react.default.createElement("div", {
-      className: "dropdown-content"
-    }, /*#__PURE__*/_react.default.createElement("a", {
-      href: "/list"
-    }, " Nav1"), /*#__PURE__*/_react.default.createElement("a", {
-      href: "/groupe"
-    }, "Nav1"), /*#__PURE__*/_react.default.createElement("a", {
-      href: "/todo"
-    }, "Nav1"))), /*#__PURE__*/_react.default.createElement("div", {
-      className: "dropdown"
-    }, /*#__PURE__*/_react.default.createElement("button", {
-      className: "dropbtn"
-    }, "Section2", /*#__PURE__*/_react.default.createElement("i", {
-      className: "fa fa-caret-down"
-    })), /*#__PURE__*/_react.default.createElement("div", {
-      className: "dropdown-content"
-    }, /*#__PURE__*/_react.default.createElement("a", {
-      href: "/ptodo"
-    }, " Nav2"), /*#__PURE__*/_react.default.createElement("a", {
-      href: "/plist"
-    }, "Nav2"))))), /*#__PURE__*/_react.default.createElement("div", {
-      className: "main"
-    }, /*#__PURE__*/_react.default.createElement("div", {
-      className: "posting-index"
-    }, errors.posting ? errors.posting.message : "", /*#__PURE__*/_react.default.createElement("form", {
-      action: "",
-      method: "post",
-      className: "posting-index",
-      onSubmit: handleSubmit(onSubmit)
-    }, /*#__PURE__*/_react.default.createElement("textarea", {
-      name: "posting",
-      id: "posting",
-      cols: "30",
-      rows: "10",
-      placeholder: "What's good boomer ?",
-      ref: register
-    }), /*#__PURE__*/_react.default.createElement("button", {
-      type: "submit"
-    }, "Share"))), /*#__PURE__*/_react.default.createElement("div", {
-      className: "courbe-index"
-    }, /*#__PURE__*/_react.default.createElement("div", {
-      className: "card-index"
-    }, /*#__PURE__*/_react.default.createElement("div", {
-      className: "head-card-index"
-    }, /*#__PURE__*/_react.default.createElement("img", {
-      src: _cutepic.default,
-      alt: "",
-      className: "head-card-img"
-    }), /*#__PURE__*/_react.default.createElement("span", {
-      className: "head-card-username"
-    }, "User name"), /*#__PURE__*/_react.default.createElement("span", {
-      className: "head-card-time"
-    }, " ", /*#__PURE__*/_react.default.createElement("small", null, "15:03 21-12-2020"))), /*#__PURE__*/_react.default.createElement("div", {
-      className: "body-card-index"
-    }, /*#__PURE__*/_react.default.createElement("p", {
-      className: "card-index-content"
-    }, "Lorem ipsum dolor, sit amet consectetur adipisicing elit. Saepe, quod vitae placeat dicta, ut dignissimos cumque pariatur ex consectetur rem perspiciatis blanditiis assumenda, repellendus similique libero accusantium quo excepturi est."))), /*#__PURE__*/_react.default.createElement("div", {
-      className: "card-index"
-    }, /*#__PURE__*/_react.default.createElement("div", {
-      className: "head-card-index"
-    }, /*#__PURE__*/_react.default.createElement("img", {
-      src: _cutepic.default,
-      alt: "",
-      className: "head-card-img"
-    }), /*#__PURE__*/_react.default.createElement("span", {
-      className: "head-card-username"
-    }, "User name"), /*#__PURE__*/_react.default.createElement("span", {
-      className: "head-card-time"
-    }, " ", /*#__PURE__*/_react.default.createElement("small", null, "15:03 21-12-2020"))), /*#__PURE__*/_react.default.createElement("div", {
-      className: "body-card-index"
-    }, /*#__PURE__*/_react.default.createElement("p", {
-      className: "card-index-content"
-    }, "Lorem ipsum dolor, sit amet consectetur adipisicing elit. Saepe, quod vitae placeat dicta, ut dignissimos cumque pariatur ex consectetur rem perspiciatis blanditiis assumenda, repellendus similique libero accusantium quo excepturi est."))), /*#__PURE__*/_react.default.createElement("div", {
-      className: "card-index"
-    }, /*#__PURE__*/_react.default.createElement("div", {
-      className: "head-card-index"
-    }, /*#__PURE__*/_react.default.createElement("img", {
-      src: _cutepic.default,
-      alt: "",
-      className: "head-card-img"
-    }), /*#__PURE__*/_react.default.createElement("span", {
-      className: "head-card-username"
-    }, "User name"), /*#__PURE__*/_react.default.createElement("span", {
-      className: "head-card-time"
-    }, " ", /*#__PURE__*/_react.default.createElement("small", null, "15:03 21-12-2020"))), /*#__PURE__*/_react.default.createElement("div", {
-      className: "body-card-index"
-    }, /*#__PURE__*/_react.default.createElement("p", {
-      className: "card-index-content"
-    }, "Lorem ipsum dolor, sit amet consectetur adipisicing elit. Saepe, quod vitae placeat dicta, ut dignissimos cumque pariatur ex consectetur rem perspiciatis blanditiis assumenda, repellendus similique libero accusantium quo excepturi est."))))));else return /*#__PURE__*/_react.default.createElement(_reactRouterDom.Redirect, {
+    if (JSON.stringify(user) != JSON.stringify({})) {
+      var _useAxios = (0, _axiosHooks.default)({
+        url: 'http://localhost:8080/posts',
+        method: "GET",
+        withCredentials: true
+      }),
+          _useAxios2 = _slicedToArray(_useAxios, 2),
+          _useAxios2$ = _useAxios2[0],
+          data = _useAxios2$.data,
+          loading = _useAxios2$.loading,
+          error = _useAxios2$.error,
+          _refetch = _useAxios2[1];
+
+      if (error) return "Error!";
+      if (loading) return "loading...";else {
+        return /*#__PURE__*/_react.default.createElement("div", {
+          className: "parent"
+        }, /*#__PURE__*/_react.default.createElement("div", {
+          className: "header"
+        }, /*#__PURE__*/_react.default.createElement("div", {
+          className: "gauche"
+        }, /*#__PURE__*/_react.default.createElement("span", null, /*#__PURE__*/_react.default.createElement("a", {
+          href: "/"
+        }, "Main"))), /*#__PURE__*/_react.default.createElement("div", {
+          className: "navbar"
+        }, /*#__PURE__*/_react.default.createElement("div", {
+          className: "dropdown"
+        }, /*#__PURE__*/_react.default.createElement("button", {
+          className: "dropbtn"
+        }, "Section1", /*#__PURE__*/_react.default.createElement("i", {
+          className: "fa fa-caret-down"
+        })), /*#__PURE__*/_react.default.createElement("div", {
+          className: "dropdown-content"
+        }, /*#__PURE__*/_react.default.createElement("a", {
+          href: "/list"
+        }, " Nav1"), /*#__PURE__*/_react.default.createElement("a", {
+          href: "/groupe"
+        }, "Nav1"), /*#__PURE__*/_react.default.createElement("a", {
+          href: "/todo"
+        }, "Nav1"))), /*#__PURE__*/_react.default.createElement("div", {
+          className: "dropdown"
+        }, /*#__PURE__*/_react.default.createElement("button", {
+          className: "dropbtn"
+        }, "Section2", /*#__PURE__*/_react.default.createElement("i", {
+          className: "fa fa-caret-down"
+        })), /*#__PURE__*/_react.default.createElement("div", {
+          className: "dropdown-content"
+        }, /*#__PURE__*/_react.default.createElement("a", {
+          href: "/ptodo"
+        }, " Nav2"), /*#__PURE__*/_react.default.createElement("a", {
+          href: "/plist"
+        }, "Nav2"))))), /*#__PURE__*/_react.default.createElement("div", {
+          className: "main"
+        }, /*#__PURE__*/_react.default.createElement("div", {
+          className: "posting-index"
+        }, errors.posting ? errors.posting.message : "", /*#__PURE__*/_react.default.createElement("form", {
+          action: "",
+          method: "post",
+          className: "posting-index",
+          onSubmit: handleSubmit(onSubmit)
+        }, /*#__PURE__*/_react.default.createElement("textarea", {
+          name: "posting",
+          id: "posting",
+          cols: "30",
+          rows: "10",
+          placeholder: "What's good boomer ?",
+          ref: register
+        }), /*#__PURE__*/_react.default.createElement("button", {
+          type: "submit"
+        }, "Share"))), /*#__PURE__*/_react.default.createElement("div", {
+          className: "courbe-index"
+        }, data.map(function (data) {
+          return /*#__PURE__*/_react.default.createElement("div", {
+            className: "card-index"
+          }, /*#__PURE__*/_react.default.createElement("div", {
+            className: "head-card-index"
+          }, /*#__PURE__*/_react.default.createElement("img", {
+            src: _cutepic.default,
+            alt: "",
+            className: "head-card-img"
+          }), /*#__PURE__*/_react.default.createElement("span", {
+            className: "head-card-username"
+          }, "User name"), /*#__PURE__*/_react.default.createElement("span", {
+            className: "head-card-time"
+          }, " ", /*#__PURE__*/_react.default.createElement("small", null, "15:03 21-12-2020"))), /*#__PURE__*/_react.default.createElement("div", {
+            className: "body-card-index"
+          }, /*#__PURE__*/_react.default.createElement("p", {
+            className: "card-index-content"
+          }, data.post)));
+        }))));
+      }
+    } else return /*#__PURE__*/_react.default.createElement(_reactRouterDom.Redirect, {
       from: "/chat",
       to: "/login"
     });
-  }
+  } //return JSON.stringify(data)
 }
-},{"react":"node_modules/react/index.js","react-dom":"node_modules/react-dom/index.js","babel-core/register":"node_modules/babel-core/register.js","babel-polyfill":"node_modules/babel-polyfill/lib/index.js","../style.css":"style.css","react-router-dom":"node_modules/react-router-dom/esm/react-router-dom.js","../components/Signup":"components/Signup.jsx","../components/Login":"components/Login.jsx","../components/Chat":"components/Chat.jsx","../components/Conversation":"components/Conversation.jsx","../components/Profil":"components/Profil.jsx","../cutepic.jpeg":"cutepic.jpeg","react-hook-form":"node_modules/react-hook-form/dist/index.esm.js","@hookform/resolvers/yup":"node_modules/@hookform/resolvers/yup.js","yup":"node_modules/yup/es/index.js"}],"components/app.jsx":[function(require,module,exports) {
+/*function usePosts(){
+  return useQuery("posts",async ()=>{
+      const {data}=await axios.get("http://localhost:8080/posts",{withCredentials:true})
+      return data
+  })
+}*/
+//const history = useHistory();
+//const [posted,setPosted]=useState(false)
+
+/*useEffect(()=>{
+  console.log("toto")
+  
+},[refresh])*/
+//const [refresh,setRefresh]=useState(false)
+//const {status,data,error,isFetching}=usePosts();
+
+/*const { register, handleSubmit, watch, errors } = useForm({ resolver: yupResolver(schema),mode:'onSubmit'});
+function onSubmit(data){
+  axios({
+    method: "POST",
+    url: "http://localhost:8080/post",
+    data,
+    headers: {
+      "Content-Type": "application/json"
+    },
+    withCredentials:true
+  }).then(res => {
+    console.log(res.data.message);
+    if(res.data.message=="working!"){
+      history.push("/home")
+    }else{console.log(res.data.message)}
+  });
+}
+  /*{if(JSON.stringify(user)!=JSON.stringify({})) {
+    if(isFetching) return "loading..."
+    else {return   <div className="parent">
+        
+    <div className="header">
+        <div className="gauche">
+            <span><a href="/">Main</a></span>
+        </div>
+        <div className="navbar">
+            <div className="dropdown">
+              <button className="dropbtn">Section1
+                <i className="fa fa-caret-down"></i>
+              </button>
+              <div className="dropdown-content">
+                <a href="/list"> Nav1</a>
+                <a href="/groupe">Nav1</a>
+                <a href="/todo">Nav1</a>
+              </div>
+            </div>
+            <div className="dropdown">
+                <button className="dropbtn">Section2
+                  <i className="fa fa-caret-down"></i>
+                </button>
+                <div className="dropdown-content">
+                  <a href="/ptodo"> Nav2</a>
+                  <a href="/plist">Nav2</a>
+                </div>
+              </div>
+    </div>
+</div>
+    <div className="main">
+      <div className="posting-index">
+       {(errors.posting)? errors.posting.message:""}
+        <form action="" method="post" className="posting-index"  onSubmit={handleSubmit(onSubmit)}>
+        <textarea name="posting" id="posting" cols="30" rows="10" placeholder="What's good boomer ?" ref={register}></textarea>
+        <button type="submit" >Share</button>
+        </form>
+      </div>
+      <div className="courbe-index">
+        {
+        data.map((data)=>(
+        <div className="card-index">
+          <div className="head-card-index">
+            <img src={img} alt=""  className="head-card-img"/>
+            <span className="head-card-username">User name</span>
+            <span className="head-card-time"> <small>15:03 21-12-2020</small></span>
+          </div>
+          <div className="body-card-index">
+            <p className="card-index-content">{data.post}</p>
+          </div>
+        </div>)
+        )
+        }
+        
+      </div>
+    </div>
+</div>}
+  }
+else return <Redirect from="/chat" to="/login"/>
+  }*/
+},{"react":"node_modules/react/index.js","react-dom":"node_modules/react-dom/index.js","babel-core/register":"node_modules/babel-core/register.js","babel-polyfill":"node_modules/babel-polyfill/lib/index.js","../style.css":"style.css","react-router-dom":"node_modules/react-router-dom/esm/react-router-dom.js","../components/Signup":"components/Signup.jsx","../components/Login":"components/Login.jsx","../components/Chat":"components/Chat.jsx","../components/Conversation":"components/Conversation.jsx","../components/Profil":"components/Profil.jsx","../cutepic.jpeg":"cutepic.jpeg","react-hook-form":"node_modules/react-hook-form/dist/index.esm.js","@hookform/resolvers/yup":"node_modules/@hookform/resolvers/yup.js","yup":"node_modules/yup/es/index.js","axios":"node_modules/axios/index.js","react-query":"node_modules/react-query/es/index.js","axios-hooks":"node_modules/axios-hooks/es/index.js"}],"components/app.jsx":[function(require,module,exports) {
 "use strict";
 
 var _react = _interopRequireWildcard(require("react"));
@@ -53015,6 +60797,8 @@ var _Conversation = _interopRequireDefault(require("../components/Conversation")
 var _Profil = _interopRequireDefault(require("../components/Profil"));
 
 var _Home = _interopRequireDefault(require("../components/Home"));
+
+var _reactQuery = require("react-query");
 
 var _reactRouterDom = require("react-router-dom");
 
@@ -53040,6 +60824,8 @@ require("babel-core/register");
 
 require("babel-polyfill");
 
+var queryClient = new _reactQuery.QueryClient();
+
 function App() {
   var _useState = (0, _react.useState)({}),
       _useState2 = _slicedToArray(_useState, 2),
@@ -53057,9 +60843,11 @@ function App() {
   })), /*#__PURE__*/_react.default.createElement(_reactRouterDom.Route, {
     exact: true,
     path: "/home"
+  }, /*#__PURE__*/_react.default.createElement(_reactQuery.QueryClientProvider, {
+    client: queryClient
   }, /*#__PURE__*/_react.default.createElement(_Home.default, {
     user: user
-  })), /*#__PURE__*/_react.default.createElement(_reactRouterDom.Route, {
+  }))), /*#__PURE__*/_react.default.createElement(_reactRouterDom.Route, {
     exact: true,
     path: "/conversation"
   }, /*#__PURE__*/_react.default.createElement(_Conversation.default, {
@@ -53083,7 +60871,7 @@ function App() {
 }
 
 (0, _reactDom.render)( /*#__PURE__*/_react.default.createElement(_reactRouterDom.BrowserRouter, null, /*#__PURE__*/_react.default.createElement(App, null)), document.querySelector(".app"));
-},{"react":"node_modules/react/index.js","react-dom":"node_modules/react-dom/index.js","babel-core/register":"node_modules/babel-core/register.js","babel-polyfill":"node_modules/babel-polyfill/lib/index.js","../style.css":"style.css","../components/Signup":"components/Signup.jsx","../components/Login":"components/Login.jsx","../components/Chat":"components/Chat.jsx","../components/Conversation":"components/Conversation.jsx","../components/Profil":"components/Profil.jsx","../components/Home":"components/Home.jsx","react-router-dom":"node_modules/react-router-dom/esm/react-router-dom.js"}],"node_modules/parcel-bundler/src/builtins/hmr-runtime.js":[function(require,module,exports) {
+},{"react":"node_modules/react/index.js","react-dom":"node_modules/react-dom/index.js","babel-core/register":"node_modules/babel-core/register.js","babel-polyfill":"node_modules/babel-polyfill/lib/index.js","../style.css":"style.css","../components/Signup":"components/Signup.jsx","../components/Login":"components/Login.jsx","../components/Chat":"components/Chat.jsx","../components/Conversation":"components/Conversation.jsx","../components/Profil":"components/Profil.jsx","../components/Home":"components/Home.jsx","react-query":"node_modules/react-query/es/index.js","react-router-dom":"node_modules/react-router-dom/esm/react-router-dom.js"}],"node_modules/parcel-bundler/src/builtins/hmr-runtime.js":[function(require,module,exports) {
 var global = arguments[3];
 var OVERLAY_ID = '__parcel__error__overlay__';
 var OldModule = module.bundle.Module;
@@ -53111,7 +60899,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "35231" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "37821" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};

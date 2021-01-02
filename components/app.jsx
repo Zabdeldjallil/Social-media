@@ -9,7 +9,7 @@ import Chat from "../components/Chat";
 import Conversation from "../components/Conversation";
 import Profil from "../components/Profil";
 import Home from "../components/Home";
-
+import {useQuery,useQueryClient,QueryClient, QueryClientProvider} from 'react-query'
 import {
   Route,
   BrowserRouter as Router,
@@ -19,6 +19,7 @@ import {
   withRouter,
   useLocation,
 } from "react-router-dom";
+const queryClient = new QueryClient();
 
 function App() {
   const [user, setUser] = useState({});
@@ -33,7 +34,9 @@ function App() {
       </Route>
 
       <Route exact path="/home">
+      <QueryClientProvider client={queryClient}>
         <Home user={user} />
+        </QueryClientProvider>
       </Route>
 
       <Route exact path="/conversation">

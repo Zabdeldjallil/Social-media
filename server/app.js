@@ -8,7 +8,7 @@ const Schema = mongoose.Schema;
 const session = require("express-session");
 const cookieParser = require("cookie-parser");
 const passport = require("passport");
-require("./passport-config.cjs");
+const initialize = require("./passport-config.cjs");
 const localStrategy = require("passport-local").Strategy;
 const bodyParser = require("body-parser");
 const bcrypt = require("bcrypt");
@@ -17,8 +17,8 @@ const app = express();
 import cors from "cors";
 const corsOptions = {
   origin: "http://localhost:1234",
-  optionsSuccessStatus: 200, // some legacy browsers (IE11, various SmartTVs) choke on 204
-  credentials: "true",
+  methods: ["GET", "POST"],
+  credentials: true,
 };
 /*const User = new Schema({
   email: {
@@ -37,16 +37,16 @@ app.use(
   session({
     secret: "secretcode",
     resave: false,
-    saveUninitialized: false,
+    saveUninitialized: true,
   })
 );
 app.use(express.json());
 app.use(
   express.urlencoded({
-    extended: false,
+    extended: true,
   })
 );
-app.use(cookieParser("secretcode"));
+app.use(cookieParser());
 app.use(passport.initialize());
 app.use(passport.session());
 
@@ -110,19 +110,25 @@ app.post("/signup", (req, res) => {
 });
 app.post("/post", (req, res) => {
   //console.log(req);
-  console.log(req.body.user);
+  console.log(req.user);
+  console.log(req.body);
   const new_post = new PostModel({
-    email: req.body.user.email,
-    post: req.body.data.posting,
+    email: req.user.email,
+    post: req.body.posting,
   });
   new_post.save(function (err, result) {
     if (err) {
       console.log(err);
       res.json({ message: "not working!" });
     } else {
-      console.log(result, "working:");
+      console.log(result, "working!");
       res.json({ message: "working!" });
     }
   });
+});
+app.get("/posts", async (req, res) => {
+  console.log(req.user);
+  const all = await PostModel.find();
+  res.json(all);
 });
 app.listen(PORT, () => console.log("Server started on " + PORT));
