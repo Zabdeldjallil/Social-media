@@ -9,7 +9,7 @@ import Chat from "../components/Chat";
 import Conversation from "../components/Conversation";
 import Profil from "../components/Profil";
 import Home from "../components/Home";
-import {useQuery,useQueryClient,QueryClient, QueryClientProvider} from 'react-query'
+
 import {
   Route,
   BrowserRouter as Router,
@@ -19,10 +19,16 @@ import {
   withRouter,
   useLocation,
 } from "react-router-dom";
-const queryClient = new QueryClient();
+import io from "socket.io-client";
+const ENDPOINT = "http://localhost:8080";
+
 
 function App() {
+  const history=useLocation()
   const [user, setUser] = useState({});
+  {if(history.pathname=="/conversation"){
+    console.log("toto")
+    var socket=socket=io.connect(ENDPOINT)}}
   return (
     <Switch>
       <Route exact path="/signup">
@@ -34,13 +40,13 @@ function App() {
       </Route>
 
       <Route exact path="/home">
-      <QueryClientProvider client={queryClient}>
+      
         <Home user={user} />
-        </QueryClientProvider>
+       
       </Route>
 
       <Route exact path="/conversation">
-        <Conversation user={user} />
+        <Conversation user={user} socket={socket}/>
       </Route>
 
       <Route exact path="/chat">

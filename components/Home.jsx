@@ -4,7 +4,7 @@ require('babel-core/register');
 require('babel-polyfill');
 import "../style.css"
 import img from "../cutepic.jpeg"
-import {Redirect} from "react-router-dom";
+import {Redirect,Link} from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from "yup";
@@ -53,7 +53,7 @@ export default  function Home({user}){
                   <i className="fa fa-caret-down"></i>
                 </button>
                 <div className="dropdown-content">
-                  <a href="/list"> Nav1</a>
+                  <Link to='/conversation'>Conversation</Link>
                   <a href="/groupe">Nav1</a>
                   <a href="/todo">Nav1</a>
                 </div>

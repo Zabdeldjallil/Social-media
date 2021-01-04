@@ -2,6 +2,7 @@ import { createRequire } from "module";
 const require = createRequire(import.meta.url);
 import express from "express";
 import mongoose from "mongoose";
+import http from "http";
 var UserModel = require("./model.cjs");
 const PostModel = require("./post-model.cjs");
 const Schema = mongoose.Schema;
@@ -12,14 +13,37 @@ const initialize = require("./passport-config.cjs");
 const localStrategy = require("passport-local").Strategy;
 const bodyParser = require("body-parser");
 const bcrypt = require("bcrypt");
-
 const app = express();
+const server = http.createServer(app);
+
 import cors from "cors";
 const corsOptions = {
   origin: "http://localhost:1234",
   methods: ["GET", "POST"],
   credentials: true,
 };
+const io = require("socket.io")(server, {
+  cors: {
+    origin: "http://localhost:1234",
+    methods: ["PUT", "GET", "POST", "DELETE", "OPTIONS"],
+    allowedHeaders: ["secretHeader"],
+    credentials: true,
+  },
+});
+io.on("connection", (socket) => {
+  console.log("New client connected");
+  //console.log(socket);
+  socket.on("connected", () => {
+    console.log("connecting my way");
+  });
+  socket.on("onMessage", (message, email) => {
+    io.emit("message", message, email);
+  });
+  socket.on("disconnect", () => {
+    console.log("Client disconnected");
+  });
+});
+
 /*const User = new Schema({
   email: {
     type: String,
@@ -131,4 +155,4 @@ app.get("/posts", async (req, res) => {
   const all = await PostModel.find();
   res.json(all);
 });
-app.listen(PORT, () => console.log("Server started on " + PORT));
+server.listen(PORT, () => console.log("Server started on " + PORT));
