@@ -9,7 +9,7 @@ import Chat from "../components/Chat";
 import Conversation from "../components/Conversation";
 import Profil from "../components/Profil";
 import Home from "../components/Home";
-
+import SeeProfil from '../components/SeeProfil'
 import {
   Route,
   BrowserRouter as Router,
@@ -34,9 +34,11 @@ function App() {
       <Route exact path="/signup">
         <Signup />
       </Route>
-
       <Route exact path="/login">
         <Login setUser={setUser} />
+      </Route>
+      <Route exact path="/seeprofil/:id">
+        <SeeProfil user={user} />
       </Route>
 
       <Route exact path="/home">

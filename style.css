@@ -635,3 +635,25 @@ hr {
   /*background-color:black;*/
   text-align: center;
 }
+.loading {
+  display: flex;
+  height: 100vh;
+  justify-content: center;
+  align-items: center;
+  background-color: darkgrey;
+}
+.choices {
+  display: flex;
+}
+.choices button {
+  background-color: inherit;
+  border: none;
+  text-decoration: underline;
+}
+.choices button:focus {
+  border: none;
+  outline: none;
+}
+.choices button:hover {
+  cursor: pointer;
+}

@@ -3,7 +3,7 @@ import {render} from 'react-dom'
 require('babel-core/register');
 require('babel-polyfill');
 import img from "../cutepic.jpeg"
-import {Redirect} from "react-router-dom";
+import {Redirect,Link} from "react-router-dom";
 import io from "socket.io-client";
 
    
@@ -41,7 +41,7 @@ export default function Conversation({user,socket}){
         <div className="parent">
         <div className="header">
             <div className="gauche">
-                <span><a href="/">←</a></span>
+                <span><Link to='/home'>←</Link></span>
             </div>
             <div className="pic-conversation">
                 <img src={img} alt=""/>

@@ -16,6 +16,7 @@ export default function Chat({user}){
         <div className="main">
           <div className="maintain-chat">
             <div className="body-chat">
+              <div className="choices"><button>Conversation</button> <button>Friends</button></div>
                 <div className="chat-one">
                  <a href="#"><img src={img} alt="" /><span className="chat-one-name">Name username</span> <span><small> 20:20 20/12/2020</small></span></a>
                 </div>

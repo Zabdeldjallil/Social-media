@@ -88,7 +88,7 @@ app.post("/signin", (req, res, next) => {
           message: "working!",
           connected: req.user,
         });
-        console.log(req.user);
+        //console.log(req.user);
       });
     }
   })(req, res, next);
@@ -134,11 +134,12 @@ app.post("/signup", (req, res) => {
 });
 app.post("/post", (req, res) => {
   //console.log(req);
-  console.log(req.user);
-  console.log(req.body);
+  //console.log(req.user);
+  //console.log(req.body);
   const new_post = new PostModel({
     email: req.user.email,
     post: req.body.posting,
+    idPoster: req.user._id,
   });
   new_post.save(function (err, result) {
     if (err) {
@@ -150,9 +151,16 @@ app.post("/post", (req, res) => {
     }
   });
 });
-app.get("/posts", async (req, res) => {
+app.get("/hisposts/:id", async (req, res) => {
   console.log(req.user);
+  console.log(req.params.id);
+  const all = await PostModel.find({ idPoster: req.params.id });
+  res.json(all);
+});
+app.get("/posts", async (req, res) => {
+  //console.log(req.user);
   const all = await PostModel.find();
+  //console.log(all);
   res.json(all);
 });
 server.listen(PORT, () => console.log("Server started on " + PORT));
